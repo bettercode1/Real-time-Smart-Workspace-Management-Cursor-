@@ -73,201 +73,172 @@ export default function Dashboard() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-200 px-6 py-4">
+      <header className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-800">Dashboard Overview</h2>
-            <p className="text-sm text-slate-500">Real-time workspace monitoring and management</p>
+            <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+            <p className="text-indigo-100">Complete system overview and management</p>
           </div>
           <div className="flex items-center space-x-4">
-            {/* Live Status Indicator */}
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-slate-600">Live</span>
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-indigo-100">Live</span>
             </div>
-            
-            {/* Current Time */}
-            <div className="text-sm text-slate-600">
-              <i className="fas fa-clock mr-1"></i>
-              <span>{currentTime}</span>
-            </div>
-            
-            {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <i className="fas fa-bell text-lg"></i>
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                {stats?.alerts?.count || 0}
-              </span>
-            </Button>
+            <div className="text-sm text-indigo-100">{currentTime}</div>
           </div>
         </div>
       </header>
 
       {/* Main Dashboard Content */}
-      <main className="flex-1 overflow-y-auto">
-        {/* Quick Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-6">
-          {/* Current Occupancy */}
-          <Card>
+      <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Current Occupancy</p>
-                  <p className="text-3xl font-bold text-slate-800">
-                    {stats?.occupancy?.current || "0%"}
-                  </p>
-                  <p className="text-sm text-green-600 mt-1">
-                    <i className="fas fa-arrow-up mr-1"></i>
-                    {stats?.occupancy?.change || "+0% from yesterday"}
-                  </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <Users className="w-6 h-6 text-blue-600" />
                 </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Users className="text-primary" size={24} />
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Users</p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Active Bookings */}
-          <Card>
+          
+          <Card className="shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Active Bookings</p>
-                  <p className="text-3xl font-bold text-slate-800">
-                    {stats?.bookings?.active || 0}
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {stats?.bookings?.pending || 0} pending
-                  </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <CalendarCheck className="w-6 h-6 text-green-600" />
                 </div>
-                <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <CalendarCheck className="text-green-500" size={24} />
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active Rooms</p>
+                  <p className="text-2xl font-bold text-gray-900">9</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Air Quality */}
-          <Card>
+          
+          <Card className="shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Avg Air Quality</p>
-                  <p className="text-3xl font-bold text-slate-800">
-                    {stats?.airQuality?.average || "Good"}
-                  </p>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {stats?.airQuality?.co2 || "0 ppm CO₂"}
-                  </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <Leaf className="w-6 h-6 text-purple-600" />
                 </div>
-                <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <Leaf className="text-green-500" size={24} />
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Air Quality</p>
+                  <p className="text-2xl font-bold text-gray-900">Good</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Devices Online */}
-          <Card>
+          
+          <Card className="shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Devices Online</p>
-                  <p className="text-3xl font-bold text-slate-800">
-                    {stats?.devices?.online || "0/0"}
-                  </p>
-                  <p className="text-sm text-yellow-600 mt-1">
-                    <i className="fas fa-exclamation-triangle mr-1"></i>
-                    {stats?.devices?.offline || 0} offline
-                  </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                  <Wifi className="w-6 h-6 text-orange-600" />
                 </div>
-                <div className="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center">
-                  <Wifi className="text-yellow-500" size={24} />
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Devices Online</p>
+                  <p className="text-2xl font-bold text-gray-900">12/15</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-6">
-          {/* Left Column: Floor Plan and IAQ */}
-          <div className="lg:col-span-2 space-y-8">
-            <FloorPlan onResourceSelect={handleResourceSelect} />
-            <IAQWidgets />
-          </div>
-
-          {/* Right Column: Alerts, Bookings, Analytics */}
-          <div className="space-y-8">
-            <AlertsPanel />
-            <QuickBooking />
-            <Analytics />
-          </div>
-        </div>
-
-        {/* Device Status Footer */}
-        <div className="mt-8">
-          <Card>
+        {/* System Health Section */}
+        <div className="mb-8">
+          <Card className="shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-slate-800">Device Status</h3>
-                <Button 
-                  variant="link" 
-                  className="text-primary"
-                  onClick={handleManageDevices}
-                >
-                  Manage Devices
-                </Button>
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">System Health</h2>
+                  <p className="text-sm text-gray-600">Real-time system status monitoring</p>
+                </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-thermometer-half text-green-500"></i>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">IAQ-001</p>
-                    <p className="text-xs text-green-600">Online</p>
-                    <p className="text-xs text-slate-500">Conference A</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <span className="font-medium text-gray-700">Database Status</span>
+                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Online</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <span className="font-medium text-gray-700">API Services</span>
+                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Running</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <span className="font-medium text-gray-700">IoT Connectivity</span>
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">Partial</span>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <span className="font-medium text-gray-700">Current Occupancy</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">42 People</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Administration Tools Section */}
+        <div className="mb-8">
+          <Card className="shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Wifi className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Administration Tools</h2>
+                  <p className="text-sm text-gray-600">Manage system components and resources</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Users className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-2">User Management</h3>
+                      <p className="text-sm text-gray-600 mb-4">Manage user accounts and permissions</p>
+                      <Button size="sm" className="w-full">
+                        Manage Users
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <div className="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-wifi text-yellow-500"></i>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">NFC-002</p>
-                    <p className="text-xs text-yellow-600">Offline</p>
-                    <p className="text-xs text-slate-500">Desk Area</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-id-card text-green-500"></i>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">Badge Reader</p>
-                    <p className="text-xs text-green-600">Online</p>
-                    <p className="text-xs text-slate-500">Main Entrance</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-video text-green-500"></i>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">Occupancy Sensor</p>
-                    <p className="text-xs text-green-600">Online</p>
-                    <p className="text-xs text-slate-500">Conference B</p>
+                <div className="p-6 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Leaf className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-2">Monitor Resources</h3>
+                      <p className="text-sm text-gray-600 mb-4">Real-time system monitoring</p>
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        onClick={handleManageDevices}
+                      >
+                        Monitor System
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
+
       </main>
 
       {/* Modals */}
