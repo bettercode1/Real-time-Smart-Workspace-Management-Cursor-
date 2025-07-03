@@ -311,7 +311,7 @@ export default function SettingsPage() {
                           <SelectValue placeholder="Select room" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">No Room</SelectItem>
+                          <SelectItem value="none">No Room</SelectItem>
                           {rooms.map((room) => (
                             <SelectItem key={room.id} value={room.id.toString()}>
                               {room.name}
@@ -364,7 +364,7 @@ export default function SettingsPage() {
                             </span>
                           </td>
                           <td className="py-3 px-4 text-sm text-slate-600">
-                            {new Date(device.lastSeen).toLocaleString()}
+                            {device.lastSeen ? new Date(device.lastSeen as Date).toLocaleString() : 'Never'}
                           </td>
                           <td className="py-3 px-4">
                             <div className="flex space-x-2">

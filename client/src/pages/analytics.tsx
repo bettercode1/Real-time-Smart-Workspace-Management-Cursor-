@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Room, Booking, Occupancy } from "@shared/schema";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
+import { TrendingUp, TrendingDown, Users, Calendar, Activity, BarChart3 } from "lucide-react";
 
 export default function AnalyticsPage() {
   const { data: rooms = [] } = useQuery<Room[]>({
@@ -54,52 +56,90 @@ export default function AnalyticsPage() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <header className="bg-white shadow-sm border-b border-slate-200 px-6 py-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-800">Analytics</h2>
-          <p className="text-sm text-slate-500">Workspace insights and utilization metrics</p>
+      <header className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-6 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
+              <BarChart3 className="text-primary" size={28} />
+              Analytics Dashboard
+            </h2>
+            <p className="text-slate-600 mt-1">Real-time workspace insights and utilization metrics</p>
+          </div>
+          <Badge variant="outline" className="text-sm">
+            Live Data
+          </Badge>
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="shadow-lg border-0">
             <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-slate-500">Overall Utilization</p>
-                <p className="text-3xl font-bold text-slate-800">{overallUtilization}%</p>
-                <p className="text-sm text-slate-600">{totalOccupied}/{totalCapacity} spaces</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-1">Overall Utilization</p>
+                  <p className="text-3xl font-bold text-slate-800">{overallUtilization}%</p>
+                  <p className="text-sm text-slate-600 flex items-center gap-1">
+                    <Users size={14} />
+                    {totalOccupied}/{totalCapacity} spaces
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${overallUtilization > 80 ? 'bg-red-100' : overallUtilization > 60 ? 'bg-yellow-100' : 'bg-green-100'}`}>
+                  <Activity className={`${overallUtilization > 80 ? 'text-red-600' : overallUtilization > 60 ? 'text-yellow-600' : 'text-green-600'}`} size={24} />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-lg border-0">
             <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-slate-500">Booking Efficiency</p>
-                <p className="text-3xl font-bold text-slate-800">{bookingEfficiency}%</p>
-                <p className="text-sm text-slate-600">{usedBookings}/{totalBookings} used</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-1">Booking Efficiency</p>
+                  <p className="text-3xl font-bold text-slate-800">{bookingEfficiency}%</p>
+                  <p className="text-sm text-slate-600 flex items-center gap-1">
+                    <Calendar size={14} />
+                    {usedBookings}/{totalBookings} used
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${bookingEfficiency > 80 ? 'bg-green-100' : bookingEfficiency > 60 ? 'bg-yellow-100' : 'bg-red-100'}`}>
+                  {bookingEfficiency > 70 ? (
+                    <TrendingUp className="text-green-600" size={24} />
+                  ) : (
+                    <TrendingDown className="text-red-600" size={24} />
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-lg border-0">
             <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-slate-500">Total Rooms</p>
-                <p className="text-3xl font-bold text-slate-800">{rooms.length}</p>
-                <p className="text-sm text-slate-600">Available spaces</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-1">Total Rooms</p>
+                  <p className="text-3xl font-bold text-slate-800">{rooms.length}</p>
+                  <p className="text-sm text-slate-600">Available spaces</p>
+                </div>
+                <div className="p-3 rounded-full bg-blue-100">
+                  <BarChart3 className="text-blue-600" size={24} />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-lg border-0">
             <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-slate-500">Total Bookings</p>
-                <p className="text-3xl font-bold text-slate-800">{totalBookings}</p>
-                <p className="text-sm text-slate-600">All time</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-1">Total Bookings</p>
+                  <p className="text-3xl font-bold text-slate-800">{totalBookings}</p>
+                  <p className="text-sm text-slate-600">All time</p>
+                </div>
+                <div className="p-3 rounded-full bg-purple-100">
+                  <Calendar className="text-purple-600" size={24} />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -108,9 +148,12 @@ export default function AnalyticsPage() {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Room Utilization Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Room Utilization</CardTitle>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="text-blue-600" size={20} />
+                Room Utilization
+              </CardTitle>
               <p className="text-sm text-slate-500">Current occupancy by room</p>
             </CardHeader>
             <CardContent>

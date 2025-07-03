@@ -91,8 +91,8 @@ export default function AlertsPage() {
       alert.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       getRoomName(alert.roomId).toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSeverity = severityFilter === "" || alert.severity === severityFilter;
-    const matchesType = typeFilter === "" || alert.type === typeFilter;
+    const matchesSeverity = severityFilter === "" || severityFilter === "all" || alert.severity === severityFilter;
+    const matchesType = typeFilter === "" || typeFilter === "all" || alert.type === typeFilter;
     
     return matchesSearch && matchesSeverity && matchesType;
   });
@@ -100,7 +100,7 @@ export default function AlertsPage() {
   const activeAlerts = filteredAlerts.filter(alert => !alert.isResolved);
   const resolvedAlerts = filteredAlerts.filter(alert => alert.isResolved);
 
-  const alertTypes = [...new Set(alerts.map(alert => alert.type))];
+  const alertTypes = Array.from(new Set(alerts.map(alert => alert.type)));
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -143,7 +143,7 @@ export default function AlertsPage() {
                     <SelectValue placeholder="Severity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Severities</SelectItem>
+                    <SelectItem value="all">All Severities</SelectItem>
                     <SelectItem value="critical">Critical</SelectItem>
                     <SelectItem value="high">High</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
@@ -156,10 +156,10 @@ export default function AlertsPage() {
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all">All Types</SelectItem>
                     {alertTypes.map(type => (
                       <SelectItem key={type} value={type}>
-                        {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        {type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -169,8 +169,8 @@ export default function AlertsPage() {
                   variant="outline"
                   onClick={() => {
                     setSearchTerm("");
-                    setSeverityFilter("");
-                    setTypeFilter("");
+                    setSeverityFilter("all");
+                    setTypeFilter("all");
                   }}
                 >
                   <Filter size={16} className="mr-2" />
@@ -223,7 +223,7 @@ export default function AlertsPage() {
                               {getRoomName(alert.roomId)}
                             </span>
                             <span className="text-xs text-slate-500">
-                              {formatDateTime(alert.createdAt)}
+                              {alert.createdAt ? formatDateTime(new Date(alert.createdAt)) : 'Unknown time'}
                             </span>
                           </div>
                         </div>
