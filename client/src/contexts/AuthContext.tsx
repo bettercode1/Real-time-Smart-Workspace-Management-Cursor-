@@ -12,7 +12,7 @@ interface User {
   id: string;
   username: string;
   email: string;
-  role: 'admin' | 'user' | 'manager';
+  role: 'admin' | 'user';
   firstName?: string;
   lastName?: string;
   department?: string;
@@ -88,11 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Helper function to determine user role based on email
-  const determineUserRole = (email: string): 'admin' | 'user' | 'manager' => {
+  const determineUserRole = (email: string): 'admin' | 'user' => {
     if (email.includes('admin') || email.endsWith('@admin.company.com')) {
       return 'admin';
-    } else if (email.includes('manager') || email.endsWith('@manager.company.com')) {
-      return 'manager';
     }
     return 'user';
   };
