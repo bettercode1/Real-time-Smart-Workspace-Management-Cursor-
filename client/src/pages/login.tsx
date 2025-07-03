@@ -3,14 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { Building, User, Lock } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { login, loginWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +23,16 @@ export default function LoginPage() {
       await login(username, password);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    
+    try {
+      await loginWithGoogle();
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -78,11 +91,41 @@ export default function LoginPage() {
               <Button 
                 type="submit" 
                 className="w-full h-11 text-base" 
-                disabled={isLoading}
+                disabled={isLoading || isGoogleLoading}
               >
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
+
+            {/* Divider */}
+            <div className="my-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <Separator className="w-full" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-slate-500">Or continue with</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Google Sign-in */}
+            <Button 
+              type="button"
+              variant="outline"
+              className="w-full h-11 text-base"
+              disabled={isLoading || isGoogleLoading}
+              onClick={handleGoogleLogin}
+            >
+              {isGoogleLoading ? (
+                "Connecting to Google..."
+              ) : (
+                <>
+                  <FaGoogle className="w-5 h-5 mr-2 text-red-500" />
+                  Sign in with Google
+                </>
+              )}
+            </Button>
 
             {/* Demo Credentials */}
             <div className="mt-6 p-4 bg-slate-50 rounded-lg">
