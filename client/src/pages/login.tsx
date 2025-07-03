@@ -1,190 +1,326 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
-import { Building, User, Lock } from "lucide-react";
-import { FaGoogle } from "react-icons/fa";
+import {
+  Box,
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+  Divider,
+  Alert,
+  CircularProgress,
+  Grid,
+  Paper,
+  Chip,
+  IconButton,
+} from '@mui/material';
+import {
+  Google as GoogleIcon,
+  AdminPanelSettings,
+  Group,
+  Person,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
   const { login, loginWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username || !password) {
+      setError("Please enter both username and password");
+      return;
+    }
+
     setIsLoading(true);
+    setError("");
     
     try {
-      await login(username, password);
+      const success = await login(username, password);
+      if (!success) {
+        setError("Invalid username or password");
+      }
+    } catch (error) {
+      setError("Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
+    setIsLoading(true);
+    setError("");
     
     try {
-      await loginWithGoogle();
+      const success = await loginWithGoogle();
+      if (!success) {
+        setError("Google login failed. Please try again.");
+      }
+    } catch (error) {
+      setError("Google login failed. Please try again.");
     } finally {
-      setIsGoogleLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleDemoLogin = async (demoUsername: string, demoPassword: string) => {
     setIsLoading(true);
+    setError("");
     
     try {
-      await login(demoUsername, demoPassword);
+      const success = await login(demoUsername, demoPassword);
+      if (!success) {
+        setError("Demo login failed");
+      }
+    } catch (error) {
+      setError("Demo login failed");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Building className="text-white" size={32} />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-800">SmartSpace</h1>
-          <p className="text-slate-600 mt-2">Workplace Management System</p>
-        </div>
-
-        {/* Login Card */}
-        <Card className="shadow-xl border-0">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-semibold">Welcome Back</CardTitle>
-            <p className="text-sm text-slate-600">Sign in to your account</p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="Enter your username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full h-11 text-base" 
-                disabled={isLoading || isGoogleLoading}
-              >
-                {isLoading ? "Signing In..." : "Sign In"}
-              </Button>
-            </form>
-
-            {/* Divider */}
-            <div className="my-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-500">Or continue with</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Google Sign-in */}
-            <Button 
-              type="button"
-              variant="outline"
-              className="w-full h-11 text-base"
-              disabled={isLoading || isGoogleLoading}
-              onClick={handleGoogleLogin}
+    <Box 
+      sx={{ 
+        minHeight: '100vh', 
+        bgcolor: 'grey.100',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2
+      }}
+    >
+      <Card 
+        sx={{ 
+          maxWidth: 480, 
+          width: '100%',
+          boxShadow: 3,
+          borderRadius: 3
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          {/* Header */}
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Typography 
+              variant="h3" 
+              component="h1" 
+              sx={{ 
+                fontWeight: 'bold',
+                color: 'primary.main',
+                mb: 1
+              }}
             >
-              {isGoogleLoading ? (
-                "Connecting to Google..."
+              SmartSpace
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+              Workplace Dashboard
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Sign in to access your workspace
+            </Typography>
+          </Box>
+
+          {/* Error Alert */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          {/* Login Form */}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+              sx={{ mb: 2 }}
+            />
+            
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              sx={{ mb: 3 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                ),
+              }}
+            />
+            
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={isLoading}
+              sx={{ mb: 2, py: 1.5 }}
+            >
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
               ) : (
-                <>
-                  <FaGoogle className="w-5 h-5 mr-2 text-red-500" />
-                  Sign in with Google
-                </>
+                "Sign In"
               )}
             </Button>
+          </Box>
 
-            {/* Demo Login Buttons */}
-            <div className="mt-6 p-4 bg-slate-50 rounded-lg">
-              <h4 className="text-sm font-medium text-slate-700 mb-3">Quick Demo Login:</h4>
-              <div className="grid grid-cols-3 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-8"
-                  disabled={isLoading || isGoogleLoading}
-                  onClick={() => handleDemoLogin('admin', 'admin123')}
-                >
-                  {isLoading ? '...' : 'Admin'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-8"
-                  disabled={isLoading || isGoogleLoading}
-                  onClick={() => handleDemoLogin('john.doe', 'user123')}
-                >
-                  {isLoading ? '...' : 'User'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-8"
-                  disabled={isLoading || isGoogleLoading}
-                  onClick={() => handleDemoLogin('jane.smith', 'manager123')}
-                >
-                  {isLoading ? '...' : 'Manager'}
-                </Button>
-              </div>
-              <p className="text-xs text-slate-500 mt-2 text-center">
-                Click a button for instant demo login with that role
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+          <Divider sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-slate-500">
-          <p>© 2025 SmartSpace Dashboard v1.0</p>
-          <p>Secure workplace management solution</p>
-        </div>
-      </div>
-    </div>
+          {/* Google Login */}
+          <Button
+            fullWidth
+            variant="outlined"
+            size="large"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            sx={{ mb: 3, py: 1.5 }}
+          >
+            Continue with Google
+          </Button>
+
+          <Divider sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              DEMO ACCOUNTS
+            </Typography>
+          </Divider>
+
+          {/* Demo Login Buttons */}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Paper 
+                variant="outlined" 
+                sx={{ 
+                  p: 2, 
+                  textAlign: 'center',
+                  bgcolor: 'grey.50',
+                  mb: 2
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                  <Chip
+                    icon={<AdminPanelSettings />}
+                    label="Administrator"
+                    color="error"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Full system access and management
+                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDemoLogin("admin", "admin123")}
+                  disabled={isLoading}
+                >
+                  Login as Admin
+                </Button>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Paper 
+                variant="outlined" 
+                sx={{ 
+                  p: 2, 
+                  textAlign: 'center',
+                  bgcolor: 'grey.50',
+                  mb: 2
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                  <Chip
+                    icon={<Group />}
+                    label="Manager"
+                    color="warning"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Team management and analytics access
+                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="warning"
+                  onClick={() => handleDemoLogin("jane.smith", "manager123")}
+                  disabled={isLoading}
+                >
+                  Login as Manager
+                </Button>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Paper 
+                variant="outlined" 
+                sx={{ 
+                  p: 2, 
+                  textAlign: 'center',
+                  bgcolor: 'grey.50'
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                  <Chip
+                    icon={<Person />}
+                    label="User"
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Standard user with booking access
+                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleDemoLogin("john.doe", "user123")}
+                  disabled={isLoading}
+                >
+                  Login as User
+                </Button>
+              </Paper>
+            </Grid>
+          </Grid>
+
+          {/* Footer */}
+          <Box sx={{ textAlign: 'center', mt: 4 }}>
+            <Typography variant="caption" color="text.secondary">
+              Demo credentials are provided for testing purposes
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

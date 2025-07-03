@@ -1,23 +1,36 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/contexts/AuthContext";
-import { 
-  Building, 
-  Menu, 
-  X,
-  LayoutDashboard, 
-  Map, 
-  Calendar, 
-  BarChart3, 
-  Bell, 
-  Settings, 
-  User,
-  LogOut,
-  Shield,
-  Users
-} from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Avatar,
+  Chip,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  Divider,
+  useTheme,
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Close as CloseIcon,
+  Dashboard as DashboardIcon,
+  Map as MapIcon,
+  CalendarToday,
+  Analytics,
+  NotificationsActive,
+  Settings as SettingsIcon,
+  Logout,
+  Person,
+  AdminPanelSettings,
+  Group,
+} from '@mui/icons-material';
 
 interface MobileHeaderProps {
   isMenuOpen: boolean;
@@ -25,146 +38,243 @@ interface MobileHeaderProps {
 }
 
 export default function MobileHeader({ isMenuOpen, setIsMenuOpen }: MobileHeaderProps) {
-  const { user, logout } = useAuth();
   const [location] = useLocation();
+  const { user, logout } = useAuth();
+  const theme = useTheme();
 
-  const getMenuItems = () => {
-    const baseItems = [
-      { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-      { path: "/floor-plan", icon: Map, label: "Floor Plan" },
-      { path: "/bookings", icon: Calendar, label: "Bookings" },
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
-      { path: "/alerts", icon: Bell, label: "Alerts" },
-    ];
+  const getMenuItems = () => [
+    { path: "/", icon: DashboardIcon, label: "Dashboard" },
+    { path: "/floor-plan", icon: MapIcon, label: "Floor Plan" },
+    { path: "/bookings", icon: CalendarToday, label: "Bookings" },
+    { path: "/analytics", icon: Analytics, label: "Analytics" },
+    { path: "/alerts", icon: NotificationsActive, label: "Alerts" },
+    { path: "/settings", icon: SettingsIcon, label: "Settings" },
+  ];
 
-    const adminItems = [
-      { path: "/users", icon: Users, label: "User Management", adminOnly: true }
-    ];
-
-    const settingsItem = { path: "/settings", icon: Settings, label: "Settings" };
-
-    if (user?.role === 'admin') {
-      return [...baseItems, ...adminItems, settingsItem];
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'admin': return <AdminPanelSettings />;
+      case 'manager': return <Group />;
+      default: return <Person />;
     }
-    
-    return [...baseItems, settingsItem];
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin': return 'error';
+      case 'manager': return 'warning';
+      default: return 'primary';
+    }
   };
 
   const menuItems = getMenuItems();
 
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
+  const mobileDrawer = (
+    <Box sx={{ width: 280, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+          SmartSpace
+        </Typography>
+        <IconButton
+          color="inherit"
+          onClick={handleMenuClose}
+          edge="end"
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      {/* User Profile */}
+      <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar 
+            src={user?.photoURL} 
+            sx={{ 
+              width: 48, 
+              height: 48, 
+              mr: 2,
+              bgcolor: 'primary.main'
+            }}
+          >
+            {user?.firstName?.[0] || user?.username?.[0]?.toUpperCase()}
+          </Avatar>
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Typography 
+              variant="subtitle1" 
+              sx={{ 
+                fontWeight: 500,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.username}
+            </Typography>
+            <Chip
+              size="small"
+              icon={getRoleIcon(user?.role || 'user')}
+              label={(user?.role || 'user').charAt(0).toUpperCase() + (user?.role || 'user').slice(1)}
+              color={getRoleColor(user?.role || 'user') as any}
+              variant="outlined"
+              sx={{ mt: 0.5 }}
+            />
+          </Box>
+        </Box>
+      </Box>
+
+      <Divider />
+
+      {/* Navigation */}
+      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+        <List>
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location === item.path || 
+              (item.path !== "/" && location.startsWith(item.path));
+
+            return (
+              <ListItem key={item.path} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href={item.path}
+                  selected={isActive}
+                  onClick={handleMenuClose}
+                  sx={{
+                    mx: 1,
+                    mb: 0.5,
+                    borderRadius: 2,
+                    '&.Mui-selected': {
+                      bgcolor: 'primary.main',
+                      color: 'primary.contrastText',
+                      '&:hover': {
+                        bgcolor: 'primary.dark',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'primary.contrastText',
+                      },
+                    },
+                    '&:hover': {
+                      bgcolor: isActive ? 'primary.dark' : 'action.hover',
+                    },
+                  }}
+                >
+                  <ListItemIcon 
+                    sx={{ 
+                      minWidth: 40,
+                      color: isActive ? 'inherit' : 'text.secondary'
+                    }}
+                  >
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item.label}
+                    primaryTypographyProps={{
+                      fontSize: '0.9rem',
+                      fontWeight: isActive ? 500 : 400,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
+
+      <Divider />
+
+      {/* Logout */}
+      <Box sx={{ p: 2 }}>
+        <ListItemButton
+          onClick={() => {
+            logout();
+            handleMenuClose();
+          }}
+          sx={{
+            borderRadius: 2,
+            color: 'error.main',
+            '&:hover': {
+              bgcolor: 'error.light',
+              color: 'error.contrastText',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText 
+            primary="Logout"
+            primaryTypographyProps={{
+              fontSize: '0.9rem',
+              fontWeight: 500,
+            }}
+          />
+        </ListItemButton>
+      </Box>
+    </Box>
+  );
+
   return (
     <>
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-50 flex items-center justify-between px-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Building className="text-white" size={16} />
-          </div>
-          <h1 className="text-lg font-bold text-slate-800">SmartSpace</h1>
-        </div>
-        
-        <div className="flex items-center space-x-3">
-          <Badge variant="outline" className={`text-xs ${
-            user?.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200' :
-            user?.role === 'manager' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-            'bg-green-50 text-green-700 border-green-200'
-          }`}>
-            {user?.role === 'admin' ? 'Admin' :
-             user?.role === 'manager' ? 'Manager' : 'User'}
-          </Badge>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+      {/* Mobile AppBar */}
+      <AppBar 
+        position="fixed" 
+        sx={{ 
+          display: { xs: 'block', lg: 'none' },
+          zIndex: theme.zIndex.drawer + 1
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={() => setIsMenuOpen(true)}
+            sx={{ mr: 2 }}
           >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
-          <div 
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsMenuOpen(false)}
+            <MenuIcon />
+          </IconButton>
+          
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+            SmartSpace
+          </Typography>
+          
+          <Chip
+            size="small"
+            icon={getRoleIcon(user?.role || 'user')}
+            label={(user?.role || 'user').charAt(0).toUpperCase() + (user?.role || 'user').slice(1)}
+            color={getRoleColor(user?.role || 'user') as any}
+            variant="outlined"
+            sx={{ 
+              color: 'primary.contrastText',
+              borderColor: 'primary.contrastText',
+              '& .MuiChip-icon': {
+                color: 'primary.contrastText',
+              },
+            }}
           />
-          <div className="absolute right-0 top-16 bottom-0 w-64 bg-white shadow-lg">
-            <div className="flex flex-col h-full">
-              {/* Navigation Menu */}
-              <nav className="flex-1 p-4">
-                <ul className="space-y-2">
-                  {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location === item.path;
-                    
-                    return (
-                      <li key={item.path}>
-                        <Link href={item.path}>
-                          <Button
-                            variant={isActive ? "default" : "ghost"}
-                            className={`w-full justify-start ${
-                              isActive 
-                                ? "bg-primary/10 text-primary hover:bg-primary/20" 
-                                : "text-slate-600 hover:bg-slate-100"
-                            }`}
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            <Icon size={20} className="mr-3" />
-                            {item.label}
-                          </Button>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </nav>
-              
-              {/* User Profile */}
-              <div className="p-4 border-t border-slate-200">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    user?.role === 'admin' ? 'bg-red-100' :
-                    user?.role === 'manager' ? 'bg-blue-100' : 'bg-green-100'
-                  }`}>
-                    {user?.role === 'admin' ? (
-                      <Shield className="text-red-600" size={20} />
-                    ) : (
-                      <User className="text-slate-600" size={20} />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-800 truncate">
-                      {user?.firstName && user?.lastName 
-                        ? `${user.firstName} ${user.lastName}`
-                        : user?.username || 'User'
-                      }
-                    </p>
-                    {user?.department && (
-                      <p className="text-xs text-slate-500 truncate">
-                        {user.department}
-                      </p>
-                    )}
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-slate-400 hover:text-slate-600"
-                    onClick={() => {
-                      logout();
-                      setIsMenuOpen(false);
-                    }}
-                    title="Logout"
-                  >
-                    <LogOut size={16} />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="left"
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        sx={{
+          display: { xs: 'block', lg: 'none' },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: 280,
+          },
+        }}
+      >
+        {mobileDrawer}
+      </Drawer>
     </>
   );
 }
