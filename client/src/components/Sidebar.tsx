@@ -46,7 +46,7 @@ export default function Sidebar() {
   const menuItems = getMenuItems();
 
   return (
-    <div className="w-64 bg-white shadow-lg border-r border-slate-200 flex flex-col">
+    <div className="fixed left-0 top-0 w-64 h-full bg-white shadow-lg border-r border-slate-200 flex-col z-40 transform lg:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out hidden lg:flex">
       {/* Logo and Title */}
       <div className="p-6 border-b border-slate-200">
         <div className="flex items-center space-x-3">
