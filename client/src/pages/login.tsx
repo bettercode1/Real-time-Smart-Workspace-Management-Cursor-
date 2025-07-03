@@ -203,115 +203,92 @@ export default function LoginPage() {
             Continue with Google
           </Button>
 
-          <Divider sx={{ mb: 3 }}>
-            <Typography variant="body2" color="text.secondary">
+          <Divider sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
               DEMO ACCOUNTS
             </Typography>
           </Divider>
 
-          {/* Demo Login Buttons */}
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Paper 
-                variant="outlined" 
-                sx={{ 
-                  p: 2, 
-                  textAlign: 'center',
-                  bgcolor: 'grey.50',
-                  mb: 2
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                  <Chip
-                    icon={<AdminPanelSettings />}
-                    label="Administrator"
-                    color="error"
-                    variant="outlined"
-                    size="small"
-                  />
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Full system access and management
-                </Typography>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleDemoLogin("admin", "admin123")}
-                  disabled={isLoading}
-                >
-                  Login as Admin
-                </Button>
-              </Paper>
-            </Grid>
+          {/* Compact Demo Login Buttons */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {/* Admin Demo */}
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<AdminPanelSettings />}
+              onClick={() => handleDemoLogin("admin", "admin123")}
+              disabled={isLoading}
+              sx={{
+                justifyContent: 'flex-start',
+                px: 2,
+                py: 1,
+                textTransform: 'none',
+                borderColor: 'error.main',
+                color: 'error.main',
+                '&:hover': {
+                  borderColor: 'error.dark',
+                  bgcolor: 'error.50'
+                }
+              }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
+                <Typography variant="body2" fontWeight="medium">Administrator</Typography>
+                <Typography variant="caption" color="text.secondary">Full system access</Typography>
+              </Box>
+            </Button>
 
-            <Grid item xs={12}>
-              <Paper 
-                variant="outlined" 
-                sx={{ 
-                  p: 2, 
-                  textAlign: 'center',
-                  bgcolor: 'grey.50',
-                  mb: 2
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                  <Chip
-                    icon={<Group />}
-                    label="Manager"
-                    color="warning"
-                    variant="outlined"
-                    size="small"
-                  />
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Team management and analytics access
-                </Typography>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="warning"
-                  onClick={() => handleDemoLogin("jane.smith", "manager123")}
-                  disabled={isLoading}
-                >
-                  Login as Manager
-                </Button>
-              </Paper>
-            </Grid>
+            {/* Manager Demo */}
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<Group />}
+              onClick={() => handleDemoLogin("jane.smith", "manager123")}
+              disabled={isLoading}
+              sx={{
+                justifyContent: 'flex-start',
+                px: 2,
+                py: 1,
+                textTransform: 'none',
+                borderColor: 'warning.main',
+                color: 'warning.main',
+                '&:hover': {
+                  borderColor: 'warning.dark',
+                  bgcolor: 'warning.50'
+                }
+              }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
+                <Typography variant="body2" fontWeight="medium">Manager</Typography>
+                <Typography variant="caption" color="text.secondary">Team & analytics access</Typography>
+              </Box>
+            </Button>
 
-            <Grid item xs={12}>
-              <Paper 
-                variant="outlined" 
-                sx={{ 
-                  p: 2, 
-                  textAlign: 'center',
-                  bgcolor: 'grey.50'
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                  <Chip
-                    icon={<Person />}
-                    label="User"
-                    color="primary"
-                    variant="outlined"
-                    size="small"
-                  />
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Standard user with booking access
-                </Typography>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleDemoLogin("john.doe", "user123")}
-                  disabled={isLoading}
-                >
-                  Login as User
-                </Button>
-              </Paper>
-            </Grid>
-          </Grid>
+            {/* User Demo */}
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<Person />}
+              onClick={() => handleDemoLogin("john.doe", "user123")}
+              disabled={isLoading}
+              sx={{
+                justifyContent: 'flex-start',
+                px: 2,
+                py: 1,
+                textTransform: 'none',
+                borderColor: 'primary.main',
+                color: 'primary.main',
+                '&:hover': {
+                  borderColor: 'primary.dark',
+                  bgcolor: 'primary.50'
+                }
+              }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
+                <Typography variant="body2" fontWeight="medium">User</Typography>
+                <Typography variant="caption" color="text.secondary">Standard booking access</Typography>
+              </Box>
+            </Button>
+          </Box>
 
           {/* Footer */}
           <Box sx={{ textAlign: 'center', mt: 4 }}>
