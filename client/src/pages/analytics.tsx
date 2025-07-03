@@ -83,9 +83,9 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 0 }}>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ p: 2, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
           Analytics Dashboard
         </Typography>
@@ -95,7 +95,7 @@ export default function AnalyticsPage() {
       </Box>
 
       {/* Key Performance Indicators */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={3} sx={{ px: 2, mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
@@ -254,7 +254,7 @@ export default function AnalyticsPage() {
       </Grid>
 
       {/* Charts Row */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ px: 2 }}>
         {/* Room Utilization Chart */}
         <Grid item xs={12} lg={8}>
           <Card>

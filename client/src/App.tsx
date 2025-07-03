@@ -43,11 +43,11 @@ function AuthenticatedRouter() {
         component="main" 
         sx={{ 
           flexGrow: 1, 
-          pt: { xs: 8, lg: 1 }, 
-          pl: { xs: 1, lg: '256px' },
-          pr: 1,
-          pb: 1,
-          ml: { xs: 0, lg: 0 },
+          pt: { xs: 8, lg: 0 }, 
+          pl: { xs: 0, lg: '256px' },
+          pr: 0,
+          pb: 0,
+          margin: 0,
           transition: 'all 0.3s ease',
           minHeight: '100vh'
         }}
