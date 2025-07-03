@@ -36,6 +36,16 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = async (demoUsername: string, demoPassword: string) => {
+    setIsLoading(true);
+    
+    try {
+      await login(demoUsername, demoPassword);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -127,23 +137,44 @@ export default function LoginPage() {
               )}
             </Button>
 
-            {/* Demo Credentials */}
+            {/* Demo Login Buttons */}
             <div className="mt-6 p-4 bg-slate-50 rounded-lg">
-              <h4 className="text-sm font-medium text-slate-700 mb-2">Demo Credentials:</h4>
-              <div className="space-y-2 text-sm text-slate-600">
-                <div className="flex justify-between">
-                  <span className="font-medium">Admin:</span>
-                  <span>admin / admin123</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">User:</span>
-                  <span>john.doe / user123</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Manager:</span>
-                  <span>jane.smith / manager123</span>
-                </div>
+              <h4 className="text-sm font-medium text-slate-700 mb-3">Quick Demo Login:</h4>
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8"
+                  disabled={isLoading || isGoogleLoading}
+                  onClick={() => handleDemoLogin('admin', 'admin123')}
+                >
+                  {isLoading ? '...' : 'Admin'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8"
+                  disabled={isLoading || isGoogleLoading}
+                  onClick={() => handleDemoLogin('john.doe', 'user123')}
+                >
+                  {isLoading ? '...' : 'User'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8"
+                  disabled={isLoading || isGoogleLoading}
+                  onClick={() => handleDemoLogin('jane.smith', 'manager123')}
+                >
+                  {isLoading ? '...' : 'Manager'}
+                </Button>
               </div>
+              <p className="text-xs text-slate-500 mt-2 text-center">
+                Click a button for instant demo login with that role
+              </p>
             </div>
           </CardContent>
         </Card>
