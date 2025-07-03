@@ -44,9 +44,10 @@ function AuthenticatedRouter() {
         sx={{ 
           flexGrow: 1, 
           pt: { xs: 8, lg: 1 }, 
-          pl: { xs: 1, lg: '257px' },
+          pl: { xs: 1, lg: '256px' },
           pr: 1,
           pb: 1,
+          ml: { xs: 0, lg: 0 },
           transition: 'all 0.3s ease',
           minHeight: '100vh'
         }}

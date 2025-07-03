@@ -224,8 +224,9 @@ export default function Sidebar() {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          borderRight: `1px solid ${theme.palette.divider}`,
+          borderRight: 'none',
           bgcolor: 'background.paper',
+          boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
         },
       }}
     >
