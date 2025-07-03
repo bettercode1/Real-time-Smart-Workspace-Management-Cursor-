@@ -104,9 +104,9 @@ export default function Dashboard() {
       </header>
 
       {/* Main Dashboard Content */}
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto">
         {/* Quick Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 px-6">
           {/* Current Occupancy */}
           <Card>
             <CardContent className="p-6">
@@ -190,7 +190,7 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-6">
           {/* Left Column: Floor Plan and IAQ */}
           <div className="lg:col-span-2 space-y-8">
             <FloorPlan onResourceSelect={handleResourceSelect} />
