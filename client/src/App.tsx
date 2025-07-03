@@ -43,9 +43,12 @@ function AuthenticatedRouter() {
         component="main" 
         sx={{ 
           flexGrow: 1, 
-          pt: { xs: 8, lg: 0 }, 
-          ml: { xs: 0, lg: '256px' },
-          transition: 'margin 0.3s ease'
+          pt: { xs: 8, lg: 3 }, 
+          pl: { xs: 0, lg: '272px' },
+          pr: 3,
+          pb: 3,
+          transition: 'all 0.3s ease',
+          minHeight: '100vh'
         }}
       >
         <Switch>
