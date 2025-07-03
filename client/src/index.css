@@ -83,3 +83,16 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+/* Remove Material-UI automatic padding that creates gap with sidebar */
+@media (min-width: 1200px) {
+  .css-12xhya3 {
+    padding-left: 0 !important;
+  }
+  
+  /* Override any Material-UI containers with automatic 256px padding */
+  .MuiContainer-root,
+  .MuiBox-root {
+    padding-left: 0 !important;
+  }
+}
