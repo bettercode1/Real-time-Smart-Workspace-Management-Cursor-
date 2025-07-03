@@ -1,15 +1,24 @@
 import { 
-  users, rooms, desks, devices, bookings, iaqData, occupancy, alerts,
+  users, rooms, desks, devices, bookings, iaqData, occupancy, alerts, sessions,
   type User, type InsertUser, type Room, type InsertRoom, type Desk, type InsertDesk,
   type Device, type InsertDevice, type Booking, type InsertBooking, type IAQData, type InsertIAQData,
-  type Occupancy, type InsertOccupancy, type Alert, type InsertAlert
+  type Occupancy, type InsertOccupancy, type Alert, type InsertAlert, type Session, type InsertSession
 } from "@shared/schema";
 
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
   getUserByBadgeId(badgeId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUser(id: number, user: Partial<User>): Promise<User | undefined>;
+  
+  // Sessions
+  createSession(session: InsertSession): Promise<Session>;
+  getSession(id: string): Promise<Session | undefined>;
+  deleteSession(id: string): Promise<boolean>;
+  deleteUserSessions(userId: number): Promise<boolean>;
   
   // Rooms
   getAllRooms(): Promise<Room[]>;
@@ -55,6 +64,7 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<number, User> = new Map();
+  private sessions: Map<string, Session> = new Map();
   private rooms: Map<number, Room> = new Map();
   private desks: Map<number, Desk> = new Map();
   private devices: Map<number, Device> = new Map();
@@ -79,6 +89,57 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
+    // Initialize with sample users (admin and regular user)
+    const sampleUsers: User[] = [
+      { 
+        id: 1, 
+        username: "admin", 
+        email: "admin@smartspace.com", 
+        password: "admin123", // In real app, this would be hashed
+        badgeId: "BADGE_ADMIN_001", 
+        role: "admin" as const, 
+        firstName: "System", 
+        lastName: "Administrator", 
+        department: "IT", 
+        isActive: true, 
+        createdAt: new Date(), 
+        lastLogin: null 
+      },
+      { 
+        id: 2, 
+        username: "john.doe", 
+        email: "john.doe@smartspace.com", 
+        password: "user123", // In real app, this would be hashed
+        badgeId: "BADGE_USER_001", 
+        role: "user" as const, 
+        firstName: "John", 
+        lastName: "Doe", 
+        department: "Engineering", 
+        isActive: true, 
+        createdAt: new Date(), 
+        lastLogin: null 
+      },
+      { 
+        id: 3, 
+        username: "jane.smith", 
+        email: "jane.smith@smartspace.com", 
+        password: "manager123", // In real app, this would be hashed
+        badgeId: "BADGE_MGR_001", 
+        role: "manager" as const, 
+        firstName: "Jane", 
+        lastName: "Smith", 
+        department: "Operations", 
+        isActive: true, 
+        createdAt: new Date(), 
+        lastLogin: null 
+      }
+    ];
+
+    sampleUsers.forEach(user => {
+      this.users.set(user.id, user);
+      this.currentId.users = Math.max(this.currentId.users, user.id + 1);
+    });
+
     // Initialize with sample data
     const sampleRooms: Room[] = [
       { id: 1, name: "Conference A", type: "conference", capacity: 8, floor: 1, isActive: true },
@@ -139,15 +200,66 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.username === username);
+  }
+
   async getUserByBadgeId(badgeId: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(user => user.badgeId === badgeId);
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values()).filter(user => user.isActive);
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId.users++;
-    const user: User = { ...insertUser, id, createdAt: new Date() };
+    const user: User = { ...insertUser, id, createdAt: new Date(), lastLogin: null };
     this.users.set(id, user);
     return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    const updated = { ...user, ...updates };
+    this.users.set(id, updated);
+    return updated;
+  }
+
+  // Sessions
+  async createSession(insertSession: InsertSession): Promise<Session> {
+    const session: Session = { ...insertSession, createdAt: new Date() };
+    this.sessions.set(session.id, session);
+    return session;
+  }
+
+  async getSession(id: string): Promise<Session | undefined> {
+    const session = this.sessions.get(id);
+    if (!session) return undefined;
+    
+    // Check if session is expired
+    if (session.expiresAt < new Date()) {
+      this.sessions.delete(id);
+      return undefined;
+    }
+    
+    return session;
+  }
+
+  async deleteSession(id: string): Promise<boolean> {
+    return this.sessions.delete(id);
+  }
+
+  async deleteUserSessions(userId: number): Promise<boolean> {
+    const userSessions = Array.from(this.sessions.entries())
+      .filter(([_, session]) => session.userId === userId);
+    
+    userSessions.forEach(([sessionId]) => {
+      this.sessions.delete(sessionId);
+    });
+    
+    return userSessions.length > 0;
   }
 
   // Rooms

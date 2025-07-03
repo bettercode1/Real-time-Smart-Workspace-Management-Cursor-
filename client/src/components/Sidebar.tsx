@@ -1,5 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Building, 
   LayoutDashboard, 
@@ -9,20 +11,39 @@ import {
   Bell, 
   Settings, 
   User,
-  LogOut
+  LogOut,
+  Shield,
+  Users
 } from "lucide-react";
 
 export default function Sidebar() {
   const [location] = useLocation();
+  const { user, logout } = useAuth();
 
-  const menuItems = [
-    { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/floor-plan", icon: Map, label: "Floor Plan" },
-    { path: "/bookings", icon: Calendar, label: "Bookings" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-    { path: "/alerts", icon: Bell, label: "Alerts" },
-    { path: "/settings", icon: Settings, label: "Settings" },
-  ];
+  // Role-based navigation items
+  const getMenuItems = () => {
+    const baseItems = [
+      { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+      { path: "/floor-plan", icon: Map, label: "Floor Plan" },
+      { path: "/bookings", icon: Calendar, label: "Bookings" },
+      { path: "/analytics", icon: BarChart3, label: "Analytics" },
+      { path: "/alerts", icon: Bell, label: "Alerts" },
+    ];
+
+    const adminItems = [
+      { path: "/users", icon: Users, label: "User Management", adminOnly: true }
+    ];
+
+    const settingsItem = { path: "/settings", icon: Settings, label: "Settings" };
+
+    if (user?.role === 'admin') {
+      return [...baseItems, ...adminItems, settingsItem];
+    }
+    
+    return [...baseItems, settingsItem];
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <div className="w-64 bg-white shadow-lg border-r border-slate-200 flex flex-col">
@@ -70,17 +91,49 @@ export default function Sidebar() {
       {/* User Profile */}
       <div className="p-4 border-t border-slate-200">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center">
-            <User className="text-slate-600" size={20} />
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+            user?.role === 'admin' ? 'bg-red-100' :
+            user?.role === 'manager' ? 'bg-blue-100' : 'bg-green-100'
+          }`}>
+            {user?.role === 'admin' ? (
+              <Shield className="text-red-600" size={20} />
+            ) : (
+              <User className="text-slate-600" size={20} />
+            )}
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-slate-800">Admin User</p>
-            <p className="text-xs text-slate-500">Administrator</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-slate-800 truncate">
+              {user?.firstName && user?.lastName 
+                ? `${user.firstName} ${user.lastName}`
+                : user?.username || 'User'
+              }
+            </p>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className={`text-xs ${
+                user?.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200' :
+                user?.role === 'manager' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                'bg-green-50 text-green-700 border-green-200'
+              }`}>
+                {user?.role === 'admin' ? 'Admin' :
+                 user?.role === 'manager' ? 'Manager' : 'User'}
+              </Badge>
+            </div>
           </div>
-          <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-600">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-slate-400 hover:text-slate-600 flex-shrink-0"
+            onClick={logout}
+            title="Logout"
+          >
             <LogOut size={16} />
           </Button>
         </div>
+        {user?.department && (
+          <p className="text-xs text-slate-500 mt-2 pl-13">
+            {user.department}
+          </p>
+        )}
       </div>
     </div>
   );

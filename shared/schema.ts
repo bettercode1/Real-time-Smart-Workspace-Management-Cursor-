@@ -6,9 +6,15 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
+  password: text("password").notNull(),
   badgeId: text("badge_id").unique(),
-  role: text("role").notNull().default("user"),
+  role: text("role", { enum: ["admin", "user", "manager"] }).notNull().default("user"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  department: text("department"),
+  isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
+  lastLogin: timestamp("last_login"),
 });
 
 export const rooms = pgTable("rooms", {
@@ -82,8 +88,18 @@ export const alerts = pgTable("alerts", {
   resolvedAt: timestamp("resolved_at"),
 });
 
+// Sessions table for authentication
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  role: text("role").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, lastLogin: true });
+export const insertSessionSchema = createInsertSchema(sessions).omit({ createdAt: true });
 export const insertRoomSchema = createInsertSchema(rooms).omit({ id: true });
 export const insertDeskSchema = createInsertSchema(desks).omit({ id: true });
 export const insertDeviceSchema = createInsertSchema(devices).omit({ id: true, lastSeen: true });
@@ -103,6 +119,8 @@ export const insertAlertSchema = createInsertSchema(alerts).omit({
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Room = typeof rooms.$inferSelect;
 export type InsertRoom = z.infer<typeof insertRoomSchema>;
 export type Desk = typeof desks.$inferSelect;
