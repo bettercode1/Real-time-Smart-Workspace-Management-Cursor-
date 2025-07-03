@@ -1,366 +1,362 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  Paper,
-  Chip,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import {
-  TrendingUp,
-  TrendingDown,
-  People,
-  EventAvailable,
-  CheckCircle,
-  Cancel,
-  Room,
-  DesktopWindows,
-} from '@mui/icons-material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Users, 
+  Calendar, 
+  CheckCircle, 
+  XCircle, 
+  Building, 
+  Monitor,
+  Activity,
+  BarChart3,
+  PieChart
+} from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { Booking, Room, Occupancy } from "@shared/schema";
 
 export default function AnalyticsPage() {
-  const { data: bookings = [], isLoading: bookingsLoading } = useQuery({
+  const { data: bookings = [], isLoading: bookingsLoading } = useQuery<Booking[]>({
     queryKey: ['/api/bookings'],
   });
 
-  const { data: rooms = [], isLoading: roomsLoading } = useQuery({
+  const { data: rooms = [], isLoading: roomsLoading } = useQuery<Room[]>({
     queryKey: ['/api/rooms'],
   });
 
-  const { data: occupancy = [], isLoading: occupancyLoading } = useQuery({
+  const { data: occupancy = [], isLoading: occupancyLoading } = useQuery<Occupancy[]>({
     queryKey: ['/api/occupancy'],
   });
 
   // Calculate analytics data
   const totalBookings = bookings.length;
-  const activeBookings = bookings.filter((b: any) => b.status === 'active').length;
-  const completedBookings = bookings.filter((b: any) => b.status === 'completed').length;
-  const cancelledBookings = bookings.filter((b: any) => b.status === 'cancelled').length;
+  const activeBookings = bookings.filter((b) => b.status === 'active').length;
+  const completedBookings = bookings.filter((b) => b.status === 'completed').length;
+  const cancelledBookings = bookings.filter((b) => b.status === 'cancelled').length;
   
   const utilizationRate = totalBookings > 0 ? Math.round((completedBookings / totalBookings) * 100) : 0;
   const checkInRate = totalBookings > 0 ? Math.round(((activeBookings + completedBookings) / totalBookings) * 100) : 0;
+  const totalOccupancy = occupancy.reduce((sum, occ) => sum + (occ.currentCount || 0), 0);
 
   // Room utilization data
-  const roomData = rooms.map((room: any) => {
-    const roomBookings = bookings.filter((b: any) => b.roomId === room.id);
+  const roomData = rooms.map((room) => {
+    const roomBookings = bookings.filter((b) => b.resourceType === 'room' && b.resourceId === room.id);
     return {
       name: room.name,
       bookings: roomBookings.length,
-      utilization: roomBookings.length > 0 ? Math.round((roomBookings.filter((b: any) => b.status === 'completed').length / roomBookings.length) * 100) : 0,
+      utilization: room.capacity > 0 ? Math.round((roomBookings.length / room.capacity) * 100) : 0,
     };
   });
 
-  // Booking status distribution
+  // Status distribution data
   const statusData = [
-    { name: 'Active', value: activeBookings, color: '#4caf50' },
-    { name: 'Completed', value: completedBookings, color: '#2196f3' },
-    { name: 'Cancelled', value: cancelledBookings, color: '#f44336' },
+    { name: 'Completed', value: completedBookings, color: '#10b981' },
+    { name: 'Active', value: activeBookings, color: '#3b82f6' },
+    { name: 'Cancelled', value: cancelledBookings, color: '#ef4444' },
   ];
 
-  // Weekly booking trend (mock data for demo)
+  // Weekly booking trend (mock data for demonstration)
   const weeklyData = [
-    { day: 'Mon', bookings: 24 },
-    { day: 'Tue', bookings: 32 },
-    { day: 'Wed', bookings: 28 },
-    { day: 'Thu', bookings: 35 },
-    { day: 'Fri', bookings: 42 },
-    { day: 'Sat', bookings: 18 },
-    { day: 'Sun', bookings: 12 },
+    { day: 'Mon', bookings: 12, occupancy: 85 },
+    { day: 'Tue', bookings: 19, occupancy: 92 },
+    { day: 'Wed', bookings: 15, occupancy: 78 },
+    { day: 'Thu', bookings: 22, occupancy: 95 },
+    { day: 'Fri', bookings: 18, occupancy: 87 },
+    { day: 'Sat', bookings: 8, occupancy: 45 },
+    { day: 'Sun', bookings: 5, occupancy: 32 },
   ];
 
-  const isLoading = bookingsLoading || roomsLoading || occupancyLoading;
+  const COLORS = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b'];
 
-  if (isLoading) {
+  if (bookingsLoading || roomsLoading || occupancyLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <Activity className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">Loading analytics...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ p: 0 }}>
+    <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
-      <Box sx={{ p: 2, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Analytics Dashboard
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Comprehensive workspace utilization and booking insights
-        </Typography>
-      </Box>
+      <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
+            <p className="text-blue-100">Insights and performance metrics</p>
+          </div>
+          <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+            <BarChart3 className="w-8 h-8" />
+          </div>
+        </div>
+      </header>
 
-      {/* Key Performance Indicators */}
-      <Grid container spacing={3} sx={{ px: 2, mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: 'primary.light',
-                    color: 'primary.contrastText',
-                    mr: 2,
-                  }}
-                >
-                  <EventAvailable />
-                </Box>
-                <Box>
-                  <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
-                    {totalBookings}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Bookings
-                  </Typography>
-                </Box>
-              </Box>
-              <Chip
-                icon={<TrendingUp />}
-                label="+12% from last week"
-                color="success"
-                size="small"
-                variant="outlined"
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: 'success.light',
-                    color: 'success.contrastText',
-                    mr: 2,
-                  }}
-                >
-                  <CheckCircle />
-                </Box>
-                <Box>
-                  <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
-                    {utilizationRate}%
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Utilization Rate
-                  </Typography>
-                </Box>
-              </Box>
-              <Chip
-                icon={<TrendingUp />}
-                label="+5% from last week"
-                color="success"
-                size="small"
-                variant="outlined"
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: 'info.light',
-                    color: 'info.contrastText',
-                    mr: 2,
-                  }}
-                >
-                  <People />
-                </Box>
-                <Box>
-                  <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
-                    {checkInRate}%
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Check-in Rate
-                  </Typography>
-                </Box>
-              </Box>
-              <Chip
-                icon={<TrendingDown />}
-                label="-2% from last week"
-                color="error"
-                size="small"
-                variant="outlined"
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: 'warning.light',
-                    color: 'warning.contrastText',
-                    mr: 2,
-                  }}
-                >
-                  <Room />
-                </Box>
-                <Box>
-                  <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
-                    {rooms.length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Active Rooms
-                  </Typography>
-                </Box>
-              </Box>
-              <Chip
-                icon={<TrendingUp />}
-                label="Stable"
-                color="default"
-                size="small"
-                variant="outlined"
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Charts Row */}
-      <Grid container spacing={3} sx={{ px: 2 }}>
-        {/* Room Utilization Chart */}
-        <Grid item xs={12} lg={8}>
+      {/* Key Metrics */}
+      <div className="bg-white border-b px-6 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
+                  <p className="text-2xl font-bold text-gray-900">{totalBookings}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Utilization Rate</p>
+                  <p className="text-2xl font-bold text-gray-900">{utilizationRate}%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <CheckCircle className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Check-in Rate</p>
+                  <p className="text-2xl font-bold text-gray-900">{checkInRate}%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                  <Users className="w-6 h-6 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Current Occupancy</p>
+                  <p className="text-2xl font-bold text-gray-900">{totalOccupancy}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Content */}
+      <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <TabsList className="grid w-full grid-cols-3 bg-gray-100">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="utilization" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
                 Room Utilization
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Booking frequency and completion rates by room
-              </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={roomData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="bookings" fill="#1976d2" name="Total Bookings" />
-                  <Bar dataKey="utilization" fill="#4caf50" name="Utilization %" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="trends" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
+                Trends
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        {/* Booking Status Distribution */}
-        <Grid item xs={12} lg={4}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                Booking Status
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Distribution of booking statuses
-              </Typography>
-              <ResponsiveContainer width="100%" height={240}>
-                <PieChart>
-                  <Pie
-                    data={statusData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {statusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Booking Status Distribution */}
+              <Card className="shadow-sm">
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <PieChart className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Booking Status Distribution</CardTitle>
+                      <p className="text-sm text-gray-600">Current booking statuses</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPieChart>
+                        <Pie
+                          data={statusData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {statusData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </RechartsPieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex justify-center space-x-4 mt-4">
+                    {statusData.map((item) => (
+                      <div key={item.name} className="flex items-center space-x-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span className="text-sm text-gray-600">
+                          {item.name}: {item.value}
+                        </span>
+                      </div>
                     ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <Box sx={{ mt: 2 }}>
-                {statusData.map((item) => (
-                  <Box key={item.name} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Box
-                      sx={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: '50%',
-                        bgcolor: item.color,
-                        mr: 1,
-                      }}
-                    />
-                    <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                      {item.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                      {item.value}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+                  </div>
+                </CardContent>
+              </Card>
 
-        {/* Weekly Trend */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                Weekly Booking Trend
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Daily booking patterns over the current week
-              </Typography>
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line 
-                    type="monotone" 
-                    dataKey="bookings" 
-                    stroke="#1976d2" 
-                    strokeWidth={3}
-                    dot={{ fill: '#1976d2', strokeWidth: 2, r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+              {/* Quick Stats */}
+              <Card className="shadow-sm">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Activity className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Performance Metrics</CardTitle>
+                      <p className="text-sm text-gray-600">Key performance indicators</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <span className="font-medium">Completed Bookings</span>
+                      </div>
+                      <Badge variant="default">{completedBookings}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Activity className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium">Active Bookings</span>
+                      </div>
+                      <Badge variant="secondary">{activeBookings}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <XCircle className="w-5 h-5 text-red-600" />
+                        <span className="font-medium">Cancelled Bookings</span>
+                      </div>
+                      <Badge variant="destructive">{cancelledBookings}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Building className="w-5 h-5 text-purple-600" />
+                        <span className="font-medium">Total Rooms</span>
+                      </div>
+                      <Badge variant="outline">{rooms.length}</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="utilization" className="space-y-6">
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Room Utilization</CardTitle>
+                    <p className="text-sm text-gray-600">Booking rates by room</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={roomData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="bookings" fill="#8b5cf6" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="trends" className="space-y-6">
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 border-b">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Weekly Trends</CardTitle>
+                    <p className="text-sm text-gray-600">Booking and occupancy trends</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={weeklyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line 
+                        type="monotone" 
+                        dataKey="bookings" 
+                        stroke="#3b82f6" 
+                        strokeWidth={2}
+                        name="Bookings"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="occupancy" 
+                        stroke="#10b981" 
+                        strokeWidth={2}
+                        name="Occupancy %"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
   );
 }

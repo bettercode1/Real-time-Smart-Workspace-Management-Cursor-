@@ -128,41 +128,55 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <header className="bg-white shadow-sm border-b border-slate-200 px-6 py-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-800">Settings</h2>
-          <p className="text-sm text-slate-500">Configure workspace settings and preferences</p>
+      <header className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">System Settings</h1>
+            <p className="text-purple-100">Configure workspace settings and preferences</p>
+          </div>
+          <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+            <SettingsIcon className="w-8 h-8" />
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
         <Tabs defaultValue="rooms" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="rooms" className="flex items-center space-x-2">
-              <Building size={16} />
-              <span>Rooms</span>
-            </TabsTrigger>
-            <TabsTrigger value="devices" className="flex items-center space-x-2">
-              <Wifi size={16} />
-              <span>Devices</span>
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center space-x-2">
-              <Bell size={16} />
-              <span>Notifications</span>
-            </TabsTrigger>
-            <TabsTrigger value="general" className="flex items-center space-x-2">
-              <SettingsIcon size={16} />
-              <span>General</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <TabsList className="grid w-full grid-cols-4 bg-gray-100">
+              <TabsTrigger value="rooms" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <Building size={16} />
+                <span>Rooms</span>
+              </TabsTrigger>
+              <TabsTrigger value="devices" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <Wifi size={16} />
+                <span>Devices</span>
+              </TabsTrigger>
+              <TabsTrigger value="notifications" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <Bell size={16} />
+                <span>Notifications</span>
+              </TabsTrigger>
+              <TabsTrigger value="general" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <SettingsIcon size={16} />
+                <span>General</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Rooms Tab */}
           <TabsContent value="rooms" className="space-y-6">
             {/* Add New Room */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Room</CardTitle>
-                <p className="text-sm text-slate-500">Create a new workspace room</p>
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Add New Room</CardTitle>
+                    <p className="text-sm text-slate-600">Create a new workspace room</p>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleCreateRoom} className="space-y-4">
@@ -210,10 +224,17 @@ export default function SettingsPage() {
             </Card>
 
             {/* Existing Rooms */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Existing Rooms</CardTitle>
-                <p className="text-sm text-slate-500">Manage workspace rooms</p>
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Building className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Existing Rooms</CardTitle>
+                    <p className="text-sm text-slate-600">Manage workspace rooms</p>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">

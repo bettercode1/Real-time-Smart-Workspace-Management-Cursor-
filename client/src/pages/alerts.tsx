@@ -2,73 +2,29 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Alert, Room } from "@shared/schema";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-  Button,
-  TextField,
-  InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Alert as MuiAlert,
-  CircularProgress,
-  Tabs,
-  Tab,
-  Divider,
-} from '@mui/material';
-import {
-  Warning,
-  People,
-  Schedule,
-  WifiOff,
-  Search,
-  Clear,
-  CheckCircle,
-  ErrorOutline,
-  InfoOutlined,
-  Close,
-} from '@mui/icons-material';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`alerts-tabpanel-${index}`}
-      aria-labelledby={`alerts-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
-  );
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  AlertTriangle, 
+  Users, 
+  Clock, 
+  WifiOff, 
+  Search, 
+  X, 
+  CheckCircle, 
+  Info,
+  Activity,
+  TrendingUp
+} from "lucide-react";
 
 export default function AlertsPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [severityFilter, setSeverityFilter] = useState<string>("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
   
   const queryClient = useQueryClient();
 
@@ -92,31 +48,21 @@ export default function AlertsPage() {
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case 'high_co2': return <Warning />;
-      case 'over_capacity': return <People />;
-      case 'no_show': return <Schedule />;
-      case 'device_offline': return <WifiOff />;
-      default: return <ErrorOutline />;
+      case 'high_co2': return AlertTriangle;
+      case 'over_capacity': return Users;
+      case 'no_show': return Clock;
+      case 'device_offline': return WifiOff;
+      default: return Info;
     }
   };
 
-  const getAlertColor = (severity: string) => {
+  const getSeverityVariant = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'error';
-      case 'high': return 'warning';
-      case 'medium': return 'info';
-      case 'low': return 'success';
+      case 'critical': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'default';
       default: return 'default';
-    }
-  };
-
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'critical': return <ErrorOutline color="error" />;
-      case 'high': return <Warning color="warning" />;
-      case 'medium': return <InfoOutlined color="info" />;
-      case 'low': return <CheckCircle color="success" />;
-      default: return <InfoOutlined />;
     }
   };
 
@@ -151,284 +97,246 @@ export default function AlertsPage() {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <Activity className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600">Loading alerts...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box>
+    <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Alerts & Notifications
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Monitor and manage system alerts
-        </Typography>
-      </Box>
+      <header className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-6 py-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Alerts & Notifications</h1>
+            <p className="text-red-100">Monitor and manage system alerts</p>
+          </div>
+          <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8" />
+          </div>
+        </div>
+      </header>
 
-      {/* Statistics Cards */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={6} sm={3}>
+      {/* Stats Cards */}
+      <div className="bg-white border-b px-6 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
-            <CardContent sx={{ textAlign: 'center', py: 2 }}>
-              <Chip 
-                label={alertCounts.active} 
-                color="primary" 
-                sx={{ fontSize: '1.1rem', fontWeight: 'bold', mb: 1 }} 
-              />
-              <Typography variant="body2" color="text.secondary">
-                Active
-              </Typography>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active Alerts</p>
+                  <p className="text-2xl font-bold text-gray-900">{alertCounts.active}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
+          
           <Card>
-            <CardContent sx={{ textAlign: 'center', py: 2 }}>
-              <Chip 
-                label={alertCounts.resolved} 
-                color="success" 
-                sx={{ fontSize: '1.1rem', fontWeight: 'bold', mb: 1 }} 
-              />
-              <Typography variant="body2" color="text.secondary">
-                Resolved
-              </Typography>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                  <TrendingUp className="w-6 h-6 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Critical</p>
+                  <p className="text-2xl font-bold text-gray-900">{alertCounts.critical}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
+          
           <Card>
-            <CardContent sx={{ textAlign: 'center', py: 2 }}>
-              <Chip 
-                label={alertCounts.critical} 
-                color="error" 
-                sx={{ fontSize: '1.1rem', fontWeight: 'bold', mb: 1 }} 
-              />
-              <Typography variant="body2" color="text.secondary">
-                Critical
-              </Typography>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                  <Activity className="w-6 h-6 text-yellow-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">High Priority</p>
+                  <p className="text-2xl font-bold text-gray-900">{alertCounts.high}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={6} sm={3}>
+          
           <Card>
-            <CardContent sx={{ textAlign: 'center', py: 2 }}>
-              <Chip 
-                label={alertCounts.high} 
-                color="warning" 
-                sx={{ fontSize: '1.1rem', fontWeight: 'bold', mb: 1 }} 
-              />
-              <Typography variant="body2" color="text.secondary">
-                High Priority
-              </Typography>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Resolved</p>
+                  <p className="text-2xl font-bold text-gray-900">{alertCounts.resolved}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       {/* Filters */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Search alerts..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchTerm && (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => setSearchTerm("")}>
-                        <Clear />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Severity</InputLabel>
-                <Select
-                  value={severityFilter}
-                  label="Severity"
-                  onChange={(e) => setSeverityFilter(e.target.value)}
-                >
-                  <MenuItem value="">All Severities</MenuItem>
-                  <MenuItem value="critical">Critical</MenuItem>
-                  <MenuItem value="high">High</MenuItem>
-                  <MenuItem value="medium">Medium</MenuItem>
-                  <MenuItem value="low">Low</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Type</InputLabel>
-                <Select
-                  value={typeFilter}
-                  label="Type"
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                >
-                  <MenuItem value="">All Types</MenuItem>
-                  <MenuItem value="high_co2">High CO₂</MenuItem>
-                  <MenuItem value="over_capacity">Over Capacity</MenuItem>
-                  <MenuItem value="no_show">No Show</MenuItem>
-                  <MenuItem value="device_offline">Device Offline</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-
-      {/* Tabs */}
-      <Card>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs 
-            value={activeTab} 
-            onChange={(_, newValue) => setActiveTab(newValue)}
-            variant="fullWidth"
-          >
-            <Tab 
-              label={`Active Alerts (${activeAlerts.length})`}
-              icon={<Warning />}
-              iconPosition="start"
+      <div className="bg-gray-50 px-6 py-4 border-b">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search alerts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
             />
-            <Tab 
-              label={`Recent Resolved Alerts (${resolvedAlerts.length})`}
-              icon={<CheckCircle />}
-              iconPosition="start"
-            />
-          </Tabs>
-        </Box>
+          </div>
+          <Select value={severityFilter} onValueChange={setSeverityFilter}>
+            <SelectTrigger className="w-full sm:w-48">
+              <SelectValue placeholder="Filter by severity" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Severities</SelectItem>
+              <SelectItem value="critical">Critical</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-full sm:w-48">
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="high_co2">High CO₂</SelectItem>
+              <SelectItem value="over_capacity">Over Capacity</SelectItem>
+              <SelectItem value="no_show">No Show</SelectItem>
+              <SelectItem value="device_offline">Device Offline</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-        {/* Active Alerts Tab */}
-        <TabPanel value={activeTab} index={0}>
-          {activeAlerts.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <CheckCircle sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                No active alerts
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                All systems are operating normally
-              </Typography>
-            </Box>
-          ) : (
-            <List disablePadding>
-              {activeAlerts.map((alert, index) => (
-                <Box key={alert.id}>
-                  <ListItem sx={{ px: 0, py: 2 }}>
-                    <ListItemIcon>
-                      {getSeverityIcon(alert.severity)}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                          {getAlertIcon(alert.type)}
-                          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                            {alert.title || alert.description}
-                          </Typography>
-                          <Chip 
-                            label={alert.severity} 
-                            color={getAlertColor(alert.severity) as any}
-                            size="small"
-                          />
-                        </Box>
-                      }
-                      secondary={
-                        <Typography variant="body2" color="text.secondary">
-                          Room ID: {alert.roomId} • {alert.createdAt ? formatDateTime(alert.createdAt) : 'N/A'}
-                        </Typography>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        color="success"
-                        startIcon={<CheckCircle />}
-                        onClick={() => resolveAlertMutation.mutate(alert.id)}
-                        disabled={resolveAlertMutation.isPending}
-                      >
-                        Resolve
-                      </Button>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                  {index < activeAlerts.length - 1 && <Divider />}
-                </Box>
-              ))}
-            </List>
-          )}
-        </TabPanel>
+      {/* Content */}
+      <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <Tabs defaultValue="active" className="space-y-6">
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+              <TabsTrigger 
+                value="active" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
+                Active Alerts ({alertCounts.active})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="resolved" 
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
+                Resolved ({alertCounts.resolved})
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        {/* Resolved Alerts Tab */}
-        <TabPanel value={activeTab} index={1}>
-          {resolvedAlerts.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 6 }}>
-              <InfoOutlined sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                No resolved alerts
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Resolved alerts will appear here
-              </Typography>
-            </Box>
-          ) : (
-            <List disablePadding>
-              {resolvedAlerts.map((alert, index) => (
-                <Box key={alert.id}>
-                  <ListItem sx={{ px: 0, py: 2 }}>
-                    <ListItemIcon>
-                      <CheckCircle color="success" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                          {getAlertIcon(alert.type)}
-                          <Typography 
-                            variant="subtitle1" 
-                            sx={{ 
-                              fontWeight: 500,
-                              textDecoration: 'line-through',
-                              color: 'text.secondary'
-                            }}
-                          >
-                            {alert.message}
-                          </Typography>
-                          <Chip 
-                            label="Resolved" 
-                            color="success"
-                            size="small"
-                            variant="outlined"
-                          />
-                        </Box>
-                      }
-                      secondary={
-                        <Typography variant="body2" color="text.secondary">
-                          Room ID: {alert.roomId} • Resolved: {alert.resolvedAt ? formatDateTime(alert.resolvedAt) : 'N/A'}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                  {index < resolvedAlerts.length - 1 && <Divider />}
-                </Box>
-              ))}
-            </List>
-          )}
-        </TabPanel>
-      </Card>
-    </Box>
+          <TabsContent value="active" className="space-y-4">
+            {activeAlerts.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <CheckCircle className="w-12 h-12 mx-auto mb-4 text-green-600" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Alerts</h3>
+                  <p className="text-gray-600">All systems are running normally.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              activeAlerts.map((alert) => {
+                const IconComponent = getAlertIcon(alert.type);
+                return (
+                  <Card key={alert.id} className="shadow-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-4">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            alert.severity === 'critical' ? 'bg-red-100' : 
+                            alert.severity === 'high' ? 'bg-orange-100' : 
+                            alert.severity === 'medium' ? 'bg-yellow-100' : 'bg-blue-100'
+                          }`}>
+                            <IconComponent className={`w-5 h-5 ${
+                              alert.severity === 'critical' ? 'text-red-600' : 
+                              alert.severity === 'high' ? 'text-orange-600' : 
+                              alert.severity === 'medium' ? 'text-yellow-600' : 'text-blue-600'
+                            }`} />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <h3 className="font-semibold text-gray-900">{alert.title}</h3>
+                              <Badge variant={getSeverityVariant(alert.severity) as any}>
+                                {alert.severity}
+                              </Badge>
+                            </div>
+                            <p className="text-gray-600 mb-2">{alert.description}</p>
+                            <p className="text-sm text-gray-500">
+                              {alert.createdAt ? formatDateTime(alert.createdAt) : 'No date'}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => resolveAlertMutation.mutate(alert.id)}
+                          disabled={resolveAlertMutation.isPending}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Resolve
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
+          </TabsContent>
+
+          <TabsContent value="resolved" className="space-y-4">
+            {resolvedAlerts.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Info className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Resolved Alerts</h3>
+                  <p className="text-gray-600">No alerts have been resolved yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              resolvedAlerts.map((alert) => {
+                const IconComponent = getAlertIcon(alert.type);
+                return (
+                  <Card key={alert.id} className="shadow-sm opacity-75">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <IconComponent className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <h3 className="font-semibold text-gray-900">{alert.title}</h3>
+                            <Badge variant="outline">Resolved</Badge>
+                          </div>
+                          <p className="text-gray-600 mb-2">{alert.description}</p>
+                          <div className="text-sm text-gray-500">
+                            <p>Created: {alert.createdAt ? formatDateTime(alert.createdAt) : 'No date'}</p>
+                            <p>Resolved: {alert.resolvedAt ? formatDateTime(alert.resolvedAt) : 'No date'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
   );
 }
