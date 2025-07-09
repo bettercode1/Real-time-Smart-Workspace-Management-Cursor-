@@ -18,8 +18,9 @@ const PageContainer: React.FC<PageContainerProps> = ({
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        width: '100vw',
+        minHeight: '100%',
+        width: '100%',
+        maxWidth: '100%',
         background: `radial-gradient(ellipse at 60% 0%, ${theme.palette.primary.light}10 0%, ${theme.palette.secondary.light}05 100%), linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)`,
         display: 'flex',
         flexDirection: 'column',
@@ -38,6 +39,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'stretch',
+          overflowX: 'hidden',
         }}
       >
         {title && (

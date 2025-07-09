@@ -22,7 +22,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', width: '100vw', maxWidth: '100vw' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      height: '100vh', 
+      overflow: 'hidden', 
+      width: '100%',
+      maxWidth: '100%'
+    }}>
       {/* Desktop Sidebar */}
       {!isMobile && <Sidebar />}
       
@@ -37,13 +43,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          width: '100vw',
-          maxWidth: '100vw',
+          width: isMobile ? '100%' : 'calc(100% - 280px)',
+          maxWidth: isMobile ? '100%' : 'calc(100% - 280px)',
           background: theme.palette.mode === 'light' 
             ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
             : 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
           position: 'relative',
-          paddingLeft: isMobile ? 0 : '280px', // Sidebar offset
+          marginLeft: isMobile ? 0 : '280px', // Sidebar offset
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -111,8 +117,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             pt: isMobile ? 8 : 0,
             px: { xs: 2, sm: 3, md: 4 },
             py: { xs: 2, sm: 3, md: 4 },
-            width: '100vw',
-            maxWidth: '100vw'
+            width: '100%',
+            maxWidth: '100%',
+            minWidth: 0 // Prevent flex items from overflowing
           }}
         >
           {children}

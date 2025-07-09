@@ -260,9 +260,9 @@ const IAQWidgets = () => {
         </Typography>
       </Box>
       
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ width: '100%', mx: 0 }}>
         {metrics.map((metric) => (
-          <Grid item xs={12} sm={4} key={metric.id}>
+          <Grid item xs={12} sm={4} key={metric.id} sx={{ width: '100%', maxWidth: '100%' }}>
             <MetricCard metric={metric} />
           </Grid>
         ))}

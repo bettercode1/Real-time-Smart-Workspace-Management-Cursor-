@@ -75,7 +75,19 @@ export default function FloorPlan() {
   };
 
   return (
-    <Box sx={{ width: "100%", minWidth: 700, maxWidth: 1000, height: 600, minHeight: 400, maxHeight: 700, position: "relative", overflow: "auto", background: "transparent", borderRadius: 2, boxShadow: "none", p: 0, m: 0 }}>
+    <Box sx={{ 
+      width: "100%", 
+      maxWidth: "100%", 
+      height: { xs: 400, md: 500 }, 
+      minHeight: 300, 
+      position: "relative", 
+      overflow: "auto", 
+      background: "transparent", 
+      borderRadius: 2, 
+      boxShadow: "none", 
+      p: 0, 
+      m: 0 
+    }}>
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", gap: 3, width: "100%", height: "100%", p: 3, background: "#f8fafc", borderRadius: 4, border: "2px solid #e5e7eb" }}>
         {/* Left column: Meeting Room 1 and Open Space */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>

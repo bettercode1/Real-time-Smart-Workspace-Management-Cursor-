@@ -325,12 +325,22 @@ export default function AdminDashboard() {
 
   return (
     <Box sx={{
-      minHeight: '100vh',
+      minHeight: '100%',
+      width: '100%',
+      maxWidth: '100%',
       background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
       position: 'relative',
-      pb: 6
+      pb: 6,
+      overflowX: 'hidden'
     }}>
-      <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 1, md: 2 }, pt: 8 }}>
+      <Box sx={{ 
+        maxWidth: '1200px', 
+        mx: 'auto', 
+        px: { xs: 2, md: 3 }, 
+        pt: { xs: 4, md: 6 },
+        width: '100%',
+        overflowX: 'hidden'
+      }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
@@ -341,8 +351,8 @@ export default function AdminDashboard() {
           </Typography>
         </Box>
         {/* Welcome Card + Stats */}
-        <Grid container spacing={3} alignItems="stretch" sx={{ mb: 4 }}>
-          <Grid item xs={12} md={7}>
+        <Grid container spacing={3} alignItems="stretch" sx={{ mb: 4, width: '100%', mx: 0 }}>
+          <Grid item xs={12} md={7} sx={{ width: '100%', maxWidth: '100%' }}>
             {/* Welcome Card */}
             <Paper
               elevation={0}
@@ -420,9 +430,9 @@ export default function AdminDashboard() {
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={5} sx={{ width: '100%', maxWidth: '100%' }}>
             {/* Stats Cards Row */}
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ width: '100%', mx: 0 }}>
               <Grid item xs={12} sm={6}>
                 <Card elevation={0} sx={{
                   p: 3,
@@ -503,21 +513,25 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
         {/* Notifications & IAQ */}
-        <Grid container spacing={3} alignItems="stretch">
-          <Grid item xs={12} md={6}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%' }}>
+        <Grid container spacing={3} alignItems="stretch" sx={{ width: '100%', mx: 0 }}>
+          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
               <Typography variant="h6" fontWeight={700} mb={2}>
                 Recent Notifications
               </Typography>
-              <NotificationCenter />
+              <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+                <NotificationCenter />
+              </Box>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%' }}>
+          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
               <Typography variant="h6" fontWeight={700} mb={2}>
                 IAQ Monitoring
               </Typography>
-              <IAQWidgets />
+              <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+                <IAQWidgets />
+              </Box>
             </Paper>
           </Grid>
         </Grid>
