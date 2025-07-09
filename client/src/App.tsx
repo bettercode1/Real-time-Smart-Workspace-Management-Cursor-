@@ -20,6 +20,7 @@ import NotFoundPage from "@/pages/not-found";
 import DevicesPage from "@/pages/devices";
 import RoomSetupPage from "@/pages/room-setup";
 import UserManagementPage from "@/pages/user-management";
+import IAQMonitoringPage from "@/pages/iaq-monitoring";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -85,9 +86,7 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
             <Route path="/devices" component={DevicesPage} />
             <Route path="/users" component={UserManagementPage} />
             <Route path="/rooms" component={RoomSetupPage} />
-            <Route path="/iaq">
-              <div>IAQ Monitoring (TODO)</div>
-            </Route>
+            <Route path="/iaq" component={IAQMonitoringPage} />
           </>
         )}
         
