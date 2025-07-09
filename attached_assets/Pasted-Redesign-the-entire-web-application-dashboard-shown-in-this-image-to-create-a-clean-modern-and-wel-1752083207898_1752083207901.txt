@@ -1,0 +1,53 @@
+Redesign the entire web application dashboard shown in this image to create a clean, modern, and well-aligned UI for both admin and user views.
+
+Requirements:
+
+Modern Look & Feel:
+Use a consistent color palette, soft shadows, smooth gradients, rounded edges, and clean typography. Prioritize usability and clarity.
+
+Layout & Alignment:
+All elements must be properly aligned and spaced (cards, buttons, headings, icons). Ensure a responsive layout that works on desktop, tablet, and mobile.
+
+Functional Elements:
+Ensure every panel (Admin Panel, Live Floor Plan, Booking Management, Analytics, Alerts, Device Status, User Management, Room Setup, IAQ Monitoring, and Settings) contains sample data relevant to the module.
+
+For example:
+
+Live Floor Plan: Render a mock floor map with clickable room nodes.
+
+Analytics & Reports: Include sample charts (bar, line, pie) for user traffic, usage, etc.
+
+Alert Manager: Show alert list with status, date, and severity.
+
+Device Status: List devices with statuses like online/offline.
+
+Dashboard Overview:
+
+Keep core KPIs like Total Users, Room Utilization, Alerts, System Health, but redesign cards to be more consistent in height, padding, and color gradients.
+
+Admin Welcome Section:
+
+Update welcome section with a cleaner design (less visual clutter), and add profile image or icon next to name.
+
+Side Navigation:
+
+Use minimal icons with labels.
+
+Highlight active menu.
+
+Add hover effect and collapsible menu option.
+
+Logout Button:
+
+Place clearly at the bottom, minimal red styling unless it's a warning action.
+
+Performance:
+All features should be functionally working — connected with a dummy backend or mock Firebase integration for testing purposes.
+
+User Panel:
+
+Provide a cleaner user view with access to relevant data only (remove admin-only elements).
+
+Add sample components like room bookings, recent notifications, or user activity.
+
+Final result should reflect a production-ready design with real component hierarchy and data structure suitable for implementation.
