@@ -12,7 +12,7 @@ import {
   useTheme,
   alpha
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Dashboard as DashboardIcon,
@@ -33,7 +33,7 @@ import {
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
-  const location = useLocation();
+  const [location] = useLocation();
   const theme = useTheme();
 
   const adminMenuItems = [
@@ -62,9 +62,9 @@ const Sidebar = () => {
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
-      return location.pathname === "/" || location.pathname === "/dashboard";
+      return location === "/" || location === "/dashboard";
     }
-    return location.pathname === path;
+    return location === path;
   };
 
   return (

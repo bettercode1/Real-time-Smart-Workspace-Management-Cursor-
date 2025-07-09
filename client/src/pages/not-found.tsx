@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Typography, Button, Paper, useTheme, alpha } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "wouter";
 import { Home, ArrowBack } from "@mui/icons-material";
 
 export default function NotFoundPage() {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
   const theme = useTheme();
 
   return (
@@ -51,7 +51,7 @@ export default function NotFoundPage() {
           <Button 
             variant="outlined" 
             startIcon={<ArrowBack />}
-            onClick={() => navigate(-1)}
+            onClick={() => window.history.back()}
             sx={{ fontWeight: 700, borderRadius: 2, px: 3, py: 1 }}
           >
             Go Back

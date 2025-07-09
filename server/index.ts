@@ -56,8 +56,8 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Serve the app on port 60000
-  const port = process.env.PORT || 60000;
+  // Serve the app on port 5000 for Replit compatibility
+  const port = process.env.PORT || 5000;
   
   server.listen(port, (err?: Error) => {
     if (err) {

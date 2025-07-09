@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Router, Route, Switch, Redirect } from "wouter";
 import { ThemeProvider, CssBaseline, Box, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -70,35 +70,44 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
 
   return (
     <Layout>
-      <Routes>
+      <Switch>
         {/* Default dashboard route based on user role */}
-        <Route 
-          path="/dashboard" 
-          element={user?.role === 'admin' ? <AdminDashboard /> : <UserDashboard />} 
-        />
+        <Route path="/dashboard">
+          {user?.role === 'admin' ? <AdminDashboard /> : <UserDashboard />}
+        </Route>
         
         {/* Admin-specific routes */}
         {user?.role === 'admin' && (
           <>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/devices" element={<DevicesPage />} />
-            <Route path="/users" element={<div>User Management (TODO)</div>} />
-            <Route path="/rooms" element={<div>Room Setup (TODO)</div>} />
-            <Route path="/iaq" element={<div>IAQ Monitoring (TODO)</div>} />
+            <Route path="/admin" component={AdminDashboard} />
+            <Route path="/devices" component={DevicesPage} />
+            <Route path="/users">
+              <div>User Management (TODO)</div>
+            </Route>
+            <Route path="/rooms">
+              <div>Room Setup (TODO)</div>
+            </Route>
+            <Route path="/iaq">
+              <div>IAQ Monitoring (TODO)</div>
+            </Route>
           </>
         )}
         
         {/* Common routes for both admin and users */}
-        <Route path="/floor-plan" element={<FloorPlanPage />} />
-        <Route path="/bookings" element={<BookingsPage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/alerts" element={<AlertsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/floor-plan" component={FloorPlanPage} />
+        <Route path="/bookings" component={BookingsPage} />
+        <Route path="/analytics" component={AnalyticsPage} />
+        <Route path="/alerts" component={AlertsPage} />
+        <Route path="/settings" component={SettingsPage} />
         
         {/* Redirects */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+        <Route path="/">
+          <Redirect to="/dashboard" />
+        </Route>
+        <Route>
+          <NotFoundPage />
+        </Route>
+      </Switch>
     </Layout>
   );
 };
@@ -115,9 +124,9 @@ export default function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <AuthProvider>
-        <BrowserRouter>
+        <Router>
           <AppRoutes darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </BrowserRouter>
+        </Router>
       </AuthProvider>
     </ThemeProvider>
     </QueryClientProvider>
