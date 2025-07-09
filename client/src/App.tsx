@@ -18,6 +18,8 @@ import AlertsPage from "@/pages/alerts";
 import SettingsPage from "@/pages/settings";
 import NotFoundPage from "@/pages/not-found";
 import DevicesPage from "@/pages/devices";
+import RoomSetupPage from "@/pages/room-setup";
+import UserManagementPage from "@/pages/user-management";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -81,12 +83,8 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
           <>
             <Route path="/admin" component={AdminDashboard} />
             <Route path="/devices" component={DevicesPage} />
-            <Route path="/users">
-              <div>User Management (TODO)</div>
-            </Route>
-            <Route path="/rooms">
-              <div>Room Setup (TODO)</div>
-            </Route>
+            <Route path="/users" component={UserManagementPage} />
+            <Route path="/rooms" component={RoomSetupPage} />
             <Route path="/iaq">
               <div>IAQ Monitoring (TODO)</div>
             </Route>

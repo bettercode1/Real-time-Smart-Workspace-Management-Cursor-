@@ -268,11 +268,63 @@ export default function DevicesPage() {
       description="View and manage connected devices in your workspace"
     >
       <Grid container spacing={3}>
-        {mockDevices.map((device) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={device.id}>
-            <DeviceCard device={device} />
+        {/* Device Statistics */}
+        <Grid item xs={12}>
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" fontWeight={600}>
+                Device Overview
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="outlined" startIcon={<Refresh />} size="small">
+                  Refresh
+                </Button>
+                <Button variant="contained" startIcon={<Add />} size="small">
+                  Add Device
+                </Button>
+              </Box>
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6} sm={3}>
+                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'primary.main', color: 'white' }}>
+                  <Typography variant="h4" fontWeight={700}>{deviceStats.total}</Typography>
+                  <Typography variant="caption">Total Devices</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'success.main', color: 'white' }}>
+                  <Typography variant="h4" fontWeight={700}>{deviceStats.online}</Typography>
+                  <Typography variant="caption">Online</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'error.main', color: 'white' }}>
+                  <Typography variant="h4" fontWeight={700}>{deviceStats.offline}</Typography>
+                  <Typography variant="caption">Offline</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'warning.main', color: 'white' }}>
+                  <Typography variant="h4" fontWeight={700}>{deviceStats.maintenance}</Typography>
+                  <Typography variant="caption">Maintenance</Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Device Cards */}
+        {hasDevices ? (
+          mockDevices.map((device) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={device.id}>
+              <DeviceCard device={device} />
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <EmptyDevicePlaceholder />
           </Grid>
-        ))}
+        )}
       </Grid>
     </PageContainer>
   );
