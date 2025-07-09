@@ -1,280 +1,283 @@
-import { Link, useLocation } from "wouter";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { useState } from 'react';
 import {
   AppBar,
   Toolbar,
-  Typography,
   IconButton,
+  Typography,
   Avatar,
-  Chip,
+  Menu,
+  MenuItem,
+  Box,
+  Badge,
   Drawer,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
-  Box,
-  Divider,
+  useMediaQuery,
   useTheme,
+  Divider
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Close as CloseIcon,
-  Dashboard as DashboardIcon,
-  Map as MapIcon,
+  Notifications,
+  Person,
+  Dashboard,
   CalendarToday,
   Analytics,
   NotificationsActive,
-  Settings as SettingsIcon,
-  Logout,
-  Person,
-  AdminPanelSettings,
-  Group,
+  Settings,
+  ExitToApp,
+  ChevronRight
 } from '@mui/icons-material';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface MobileHeaderProps {
-  isMenuOpen: boolean;
-  setIsMenuOpen: (open: boolean) => void;
-}
-
-export default function MobileHeader({ isMenuOpen, setIsMenuOpen }: MobileHeaderProps) {
-  const [location] = useLocation();
-  const { user, logout } = useAuth();
+const MobileHeader = () => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const { user, logout } = useAuth();
+  
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const getMenuItems = () => [
-    { path: "/", icon: DashboardIcon, label: "Dashboard" },
-    { path: "/floor-plan", icon: MapIcon, label: "Floor Plan" },
-    { path: "/bookings", icon: CalendarToday, label: "Bookings" },
-    { path: "/analytics", icon: Analytics, label: "Analytics" },
-    { path: "/alerts", icon: NotificationsActive, label: "Alerts" },
-    { path: "/settings", icon: SettingsIcon, label: "Settings" },
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleProfileMenuClose();
+    logout();
+  };
+
+  const navigationItems = [
+    { label: 'Dashboard', icon: <Dashboard />, path: '/' },
+    { label: 'Floor Plan', icon: <Dashboard />, path: '/floor-plan' },
+    { label: 'Bookings', icon: <CalendarToday />, path: '/bookings' },
+    { label: 'Analytics', icon: <Analytics />, path: '/analytics' },
+    { label: 'Alerts', icon: <NotificationsActive />, path: '/alerts' },
+    { label: 'Settings', icon: <Settings />, path: '/settings' }
   ];
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'admin': return <AdminPanelSettings />;
-      case 'manager': return <Group />;
-      default: return <Person />;
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin': return 'error';
-      case 'manager': return 'warning';
-      default: return 'primary';
-    }
-  };
-
-  const menuItems = getMenuItems();
-
-  const handleMenuClose = () => {
-    setIsMenuOpen(false);
-  };
-
-  const mobileDrawer = (
-    <Box sx={{ width: 280, height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
-        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-          SmartSpace
-        </Typography>
-        <IconButton
-          color="inherit"
-          onClick={handleMenuClose}
-          edge="end"
-        >
-          <CloseIcon />
-        </IconButton>
-      </Box>
-
-      {/* User Profile */}
-      <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  const drawer = (
+    <Box sx={{ width: 280, height: '100%', bgcolor: 'background.paper' }}>
+      <Box sx={{ 
+        p: 3, 
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white'
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar 
-            src={user?.photoURL} 
             sx={{ 
               width: 48, 
-              height: 48, 
-              mr: 2,
-              bgcolor: 'primary.main'
+              height: 48,
+              bgcolor: 'rgba(255,255,255,0.2)',
+              border: '2px solid rgba(255,255,255,0.3)'
             }}
           >
-            {user?.firstName?.[0] || user?.username?.[0]?.toUpperCase()}
+            <Person />
           </Avatar>
-          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-            <Typography 
-              variant="subtitle1" 
-              sx={{ 
-                fontWeight: 500,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.username}
+          <Box>
+            <Typography variant="h6" fontWeight={600}>
+              {user?.displayName || 'User'}
             </Typography>
-            <Chip
-              size="small"
-              icon={getRoleIcon(user?.role || 'user')}
-              label={(user?.role || 'user').charAt(0).toUpperCase() + (user?.role || 'user').slice(1)}
-              color={getRoleColor(user?.role || 'user') as any}
-              variant="outlined"
-              sx={{ mt: 0.5 }}
-            />
+            <Typography variant="caption" sx={{ opacity: 0.8 }}>
+              {user?.email}
+            </Typography>
           </Box>
         </Box>
       </Box>
-
-      <Divider />
-
-      {/* Navigation */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-        <List>
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location === item.path || 
-              (item.path !== "/" && location.startsWith(item.path));
-
-            return (
-              <ListItem key={item.path} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  href={item.path}
-                  selected={isActive}
-                  onClick={handleMenuClose}
-                  sx={{
-                    mx: 1,
-                    mb: 0.5,
-                    borderRadius: 2,
-                    '&.Mui-selected': {
-                      bgcolor: 'primary.main',
-                      color: 'primary.contrastText',
-                      '&:hover': {
-                        bgcolor: 'primary.dark',
-                      },
-                      '& .MuiListItemIcon-root': {
-                        color: 'primary.contrastText',
-                      },
-                    },
-                    '&:hover': {
-                      bgcolor: isActive ? 'primary.dark' : 'action.hover',
-                    },
-                  }}
-                >
-                  <ListItemIcon 
-                    sx={{ 
-                      minWidth: 40,
-                      color: isActive ? 'inherit' : 'text.secondary'
-                    }}
-                  >
-                    <Icon />
-                  </ListItemIcon>
-                  <ListItemText 
-                    primary={item.label}
-                    primaryTypographyProps={{
-                      fontSize: '0.9rem',
-                      fontWeight: isActive ? 500 : 400,
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </Box>
-
-      <Divider />
-
-      {/* Logout */}
-      <Box sx={{ p: 2 }}>
-        <ListItemButton
-          onClick={() => {
-            logout();
-            handleMenuClose();
-          }}
-          sx={{
+      
+      <List sx={{ p: 2 }}>
+        {navigationItems.map((item, index) => (
+          <ListItem 
+            key={index}
+            sx={{ 
+              borderRadius: 2,
+              mb: 0.5,
+              '&:hover': {
+                bgcolor: 'action.hover'
+              }
+            }}
+          >
+            <ListItemIcon sx={{ color: 'primary.main', minWidth: 40 }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.label}
+              primaryTypographyProps={{
+                fontWeight: 500,
+                fontSize: '0.95rem'
+              }}
+            />
+            <ChevronRight sx={{ color: 'text.secondary', fontSize: 20 }} />
+          </ListItem>
+        ))}
+        
+        <Divider sx={{ my: 2 }} />
+        
+        <ListItem 
+          onClick={handleLogout}
+          sx={{ 
             borderRadius: 2,
             color: 'error.main',
             '&:hover': {
-              bgcolor: 'error.light',
-              color: 'error.contrastText',
-            },
+              bgcolor: 'error.lighter'
+            }
           }}
         >
-          <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>
-            <Logout />
+          <ListItemIcon sx={{ color: 'error.main', minWidth: 40 }}>
+            <ExitToApp />
           </ListItemIcon>
           <ListItemText 
             primary="Logout"
             primaryTypographyProps={{
-              fontSize: '0.9rem',
               fontWeight: 500,
+              fontSize: '0.95rem'
             }}
           />
-        </ListItemButton>
-      </Box>
+        </ListItem>
+      </List>
     </Box>
   );
 
+  if (!isMobile) {
+    return null;
+  }
+
   return (
     <>
-      {/* Mobile AppBar */}
       <AppBar 
         position="fixed" 
+        elevation={0}
         sx={{ 
-          display: { xs: 'block', lg: 'none' },
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          borderBottom: '1px solid',
+          borderColor: 'divider',
           zIndex: theme.zIndex.drawer + 1
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ px: 2 }}>
           <IconButton
             edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={() => setIsMenuOpen(true)}
-            sx={{ mr: 2 }}
+            onClick={handleDrawerToggle}
+            sx={{ 
+              mr: 2,
+              color: 'primary.main',
+              '&:hover': {
+                bgcolor: 'primary.lighter'
+              }
+            }}
           >
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            SmartSpace
-          </Typography>
-          
-          <Chip
-            size="small"
-            icon={getRoleIcon(user?.role || 'user')}
-            label={(user?.role || 'user').charAt(0).toUpperCase() + (user?.role || 'user').slice(1)}
-            color={getRoleColor(user?.role || 'user') as any}
-            variant="outlined"
+          <Typography 
+            variant="h6" 
+            component="div" 
             sx={{ 
-              color: 'primary.contrastText',
-              borderColor: 'primary.contrastText',
-              '& .MuiChip-icon': {
-                color: 'primary.contrastText',
-              },
+              flexGrow: 1,
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent'
             }}
-          />
+          >
+            Smart Workspace
+          </Typography>
+
+          <IconButton 
+            sx={{ 
+              mr: 1,
+              color: 'text.secondary',
+              '&:hover': {
+                bgcolor: 'action.hover'
+              }
+            }}
+          >
+            <Badge badgeContent={3} color="error">
+              <Notifications />
+            </Badge>
+          </IconButton>
+
+          <IconButton
+            onClick={handleProfileMenuOpen}
+            sx={{ 
+              p: 0.5,
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              '&:hover': { 
+                bgcolor: 'primary.dark' 
+              }
+            }}
+          >
+            <Avatar sx={{ width: 32, height: 32 }}>
+              <Person />
+            </Avatar>
+          </IconButton>
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleProfileMenuClose}
+        sx={{ mt: 1 }}
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            minWidth: 200,
+            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)'
+          }
+        }}
+      >
+        <MenuItem onClick={handleProfileMenuClose}>
+          <Person sx={{ mr: 2, color: 'primary.main' }} />
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <Settings sx={{ mr: 2, color: 'primary.main' }} />
+          Settings
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+          <ExitToApp sx={{ mr: 2 }} />
+          Logout
+        </MenuItem>
+      </Menu>
+
       <Drawer
-        anchor="left"
-        open={isMenuOpen}
-        onClose={handleMenuClose}
+        variant="temporary"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
         sx={{
           display: { xs: 'block', lg: 'none' },
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: 280,
+            borderRadius: '0 16px 16px 0',
+            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)'
           },
         }}
       >
-        {mobileDrawer}
+        {drawer}
       </Drawer>
     </>
   );
-}
+};
+
+export default MobileHeader;

@@ -1,191 +1,231 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { Room, Desk, Occupancy } from "@shared/schema";
+import React, { useState } from "react";
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Grid } from "@mui/material";
 
-interface FloorPlanProps {
-  onResourceSelect?: (type: string, id: number) => void;
-}
+const rooms = [
+  {
+    id: "meeting1",
+    name: "Meeting Room 1",
+    type: "meeting",
+    co2: 420,
+    humidity: 45,
+    temperature: 22,
+    desks: [
+      { id: "m1d1", status: "available" },
+      { id: "m1d2", status: "available" },
+      { id: "m1d3", status: "available" },
+      { id: "m1d4", status: "available" },
+      { id: "m1d5", status: "available" },
+      { id: "m1d6", status: "available" },
+    ],
+  },
+  {
+    id: "meeting2",
+    name: "Meeting Room 2",
+    type: "meeting",
+    co2: 480,
+    humidity: 50,
+    temperature: 23,
+    desks: [
+      { id: "m2d1", status: "occupied" },
+      { id: "m2d2", status: "occupied" },
+      { id: "m2d3", status: "occupied" },
+      { id: "m2d4", status: "occupied" },
+      { id: "m2d5", status: "occupied" },
+      { id: "m2d6", status: "occupied" },
+    ],
+  },
+  {
+    id: "open1",
+    name: "Open Space",
+    type: "open",
+    co2: 400,
+    humidity: 42,
+    temperature: 21,
+    desks: [
+      { id: "o1d1", status: "available" },
+      { id: "o1d2", status: "available" },
+      { id: "o1d3", status: "available" },
+      { id: "o1d4", status: "available" },
+      { id: "o1d5", status: "available" },
+      { id: "o1d6", status: "available" },
+    ],
+  },
+];
 
-export default function FloorPlan({ onResourceSelect }: FloorPlanProps) {
-  const [lastUpdate] = useState(new Date().toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  }));
+const deskStatusColor = {
+  available: "#22c55e",
+  occupied: "#a3a3a3",
+  booked: "#fbbf24",
+};
 
-  const { data: rooms = [] } = useQuery<Room[]>({
-    queryKey: ["/api/rooms"]
-  });
+export default function FloorPlan() {
+  const [selectedDesk, setSelectedDesk] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: desks = [] } = useQuery<Desk[]>({
-    queryKey: ["/api/desks"]
-  });
-
-  const { data: occupancy = [] } = useQuery<Occupancy[]>({
-    queryKey: ["/api/occupancy"]
-  });
-
-  const getOccupancyStatus = (roomId: number, capacity: number) => {
-    const occ = occupancy.find(o => o.roomId === roomId);
-    if (!occ) return 'available';
-    
-    const percentage = (occ.currentCount / capacity) * 100;
-    if (percentage === 0) return 'available';
-    if (percentage <= 75) return 'occupied';
-    if (percentage <= 100) return 'warning';
-    return 'critical';
+  const handleDeskClick = (room, desk) => {
+    setSelectedDesk(desk);
+    setSelectedRoom(room);
+    setDialogOpen(true);
   };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available': return 'bg-green-500 border-green-300';
-      case 'occupied': return 'bg-yellow-500 border-yellow-300';
-      case 'warning': return 'bg-orange-500 border-orange-300';
-      case 'critical': return 'bg-red-500 border-red-300';
-      default: return 'bg-gray-500 border-gray-300';
-    }
-  };
-
-  const conferenceRooms = rooms.filter(r => r.type === 'conference');
-  const offices = rooms.filter(r => r.type === 'office');
-  const commonAreas = rooms.filter(r => r.type === 'common' && r.name !== 'Open Workspace');
-  const openWorkspace = rooms.find(r => r.name === 'Open Workspace');
-  const workspaceDesks = desks.filter(d => d.roomId === openWorkspace?.id);
-
-  const handleResourceClick = (type: string, id: number) => {
-    onResourceSelect?.(type, id);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedDesk(null);
+    setSelectedRoom(null);
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Live Floor Plan</CardTitle>
-            <p className="text-sm text-slate-500">Real-time occupancy status</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-xs text-slate-600">Available</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <span className="text-xs text-slate-600">Occupied</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-xs text-slate-600">Over Capacity</span>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* Floor Plan SVG Container */}
-        <div className="relative bg-slate-50 rounded-lg p-6 min-h-[400px]">
-          {/* Conference Rooms */}
-          <div className="absolute top-6 left-6">
-            <div className="space-y-3">
-              {conferenceRooms.map((room) => {
-                const status = getOccupancyStatus(room.id, room.capacity);
-                const occ = occupancy.find(o => o.roomId === room.id);
-                return (
-                  <button
-                    key={room.id}
-                    onClick={() => handleResourceClick('room', room.id)}
-                    className={`w-24 h-16 ${getStatusColor(status)} border-2 rounded-lg flex flex-col items-center justify-center text-xs font-medium text-white hover:opacity-90 transition-opacity`}
-                  >
-                    <i className="fas fa-users mb-1"></i>
-                    <span>{room.name}</span>
-                    <span className="text-xs opacity-75">
-                      {occ?.currentCount || 0}/{room.capacity}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          
-          {/* Open Workspace Desks */}
-          <div className="absolute top-6 right-6">
-            <div className="grid grid-cols-6 gap-2">
-              {workspaceDesks.map((desk, index) => {
-                // Simulate desk occupancy (every 3rd desk occupied for demo)
-                const isOccupied = (index + 1) % 3 === 0;
-                return (
-                  <button
-                    key={desk.id}
-                    onClick={() => handleResourceClick('desk', desk.id)}
-                    className={`w-8 h-8 ${isOccupied ? 'bg-yellow-500 border-yellow-300' : 'bg-green-500 border-green-300'} rounded border-2 hover:opacity-90 transition-opacity`}
-                    title={`${desk.name} - ${isOccupied ? 'Occupied' : 'Available'}`}
-                  ></button>
-                );
-              })}
-            </div>
-            <p className="text-xs text-slate-500 mt-2 text-center">Open Workspace</p>
-          </div>
-          
-          {/* Private Offices */}
-          <div className="absolute bottom-6 left-6">
-            <div className="flex space-x-3">
-              {offices.map((office) => {
-                const status = getOccupancyStatus(office.id, office.capacity);
-                const occ = occupancy.find(o => o.roomId === office.id);
-                return (
-                  <button
-                    key={office.id}
-                    onClick={() => handleResourceClick('room', office.id)}
-                    className={`w-20 h-20 ${getStatusColor(status)} border-2 rounded-lg flex flex-col items-center justify-center text-xs font-medium text-white hover:opacity-90 transition-opacity`}
-                  >
-                    <i className="fas fa-user mb-1"></i>
-                    <span>{office.name}</span>
-                    <span className="text-xs opacity-75">
-                      {occ?.currentCount || 0 > 0 ? 'Occupied' : 'Available'}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="text-xs text-slate-500 mt-2 text-center">Private Offices</p>
-          </div>
-          
-          {/* Common Areas */}
-          <div className="absolute bottom-6 right-6">
-            <div className="space-y-3">
-              {commonAreas.map((area) => {
-                const status = getOccupancyStatus(area.id, area.capacity);
-                return (
-                  <button
-                    key={area.id}
-                    onClick={() => handleResourceClick('room', area.id)}
-                    className={`w-20 h-12 ${getStatusColor(status)} border-2 rounded-lg flex items-center justify-center text-xs font-medium text-white hover:opacity-90 transition-opacity`}
-                  >
-                    <i className={`fas ${area.name === 'Kitchen' ? 'fa-coffee' : 'fa-couch'} mr-1`}></i>
-                    <span>{area.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-        
-        {/* Quick Actions */}
-        <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-200">
-          <div className="flex items-center space-x-4">
-            <Button onClick={() => onResourceSelect?.('quick-book', 0)}>
-              <i className="fas fa-plus mr-2"></i>Quick Book
-            </Button>
-            <Button variant="outline">
-              <i className="fas fa-unlock mr-2"></i>Release All No-Shows
-            </Button>
-          </div>
-          <div className="text-sm text-slate-500">
-            Last updated: {lastUpdate}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <Box sx={{ width: "100%", minWidth: 700, maxWidth: 1000, height: 600, minHeight: 400, maxHeight: 700, position: "relative", overflow: "auto", background: "transparent", borderRadius: 2, boxShadow: "none", p: 0, m: 0 }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", gap: 3, width: "100%", height: "100%", p: 3, background: "#f8fafc", borderRadius: 4, border: "2px solid #e5e7eb" }}>
+        {/* Left column: Meeting Room 1 and Open Space */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {/* Meeting Room 1 */}
+          <Box sx={{ flex: 1, background: "#f8fafc", borderRadius: 3, border: "2px solid #e5e7eb", p: 2, minHeight: 180, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography fontWeight={700} fontSize={20} mb={1} align="center">Meeting Room 1</Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {rooms[0].desks.map((desk, i) => (
+                <Grid item key={desk.id} xs={4} sm={2} md={2} lg={2}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      background: deskStatusColor[desk.status],
+                      cursor: "pointer",
+                      boxShadow: desk.status === "available" ? "0 2px 8px #22c55e33" : undefined,
+                      border: desk.status === "available" ? "2px solid #16a34a" : "2px solid #e5e7eb",
+                      transition: "transform 0.1s",
+                      '&:hover': { transform: "scale(1.08)" },
+                    }}
+                    onClick={() => handleDeskClick(rooms[0], desk)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+          {/* Open Space */}
+          <Box sx={{ flex: 1, background: "#f1f5f9", borderRadius: 3, border: "2px solid #e5e7eb", p: 2, minHeight: 180, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography fontWeight={600} fontSize={16} mb={1} align="center">Open Space</Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {rooms[2].desks.map((desk, i) => (
+                <Grid item key={desk.id} xs={4} sm={2} md={2} lg={2}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      background: deskStatusColor[desk.status],
+                      cursor: "pointer",
+                      boxShadow: desk.status === "available" ? "0 2px 8px #22c55e33" : undefined,
+                      border: desk.status === "available" ? "2px solid #16a34a" : "2px solid #e5e7eb",
+                      transition: "transform 0.1s",
+                      '&:hover': { transform: "scale(1.08)" },
+                    }}
+                    onClick={() => handleDeskClick(rooms[2], desk)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Box>
+        {/* Right column: Meeting Room 1 (right) and Meeting Room 2 */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {/* Meeting Room 1 (right) */}
+          <Box sx={{ flex: 1, background: "#f8fafc", borderRadius: 3, border: "2px solid #e5e7eb", p: 2, minHeight: 180, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography fontWeight={700} fontSize={20} mb={1} align="center">Meeting Room 1</Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {rooms[0].desks.map((desk, i) => (
+                <Grid item key={desk.id + "r"} xs={4} sm={2} md={2} lg={2}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      background: deskStatusColor[desk.status],
+                      cursor: "pointer",
+                      boxShadow: desk.status === "available" ? "0 2px 8px #22c55e33" : undefined,
+                      border: desk.status === "available" ? "2px solid #16a34a" : "2px solid #e5e7eb",
+                      transition: "transform 0.1s",
+                      '&:hover': { transform: "scale(1.08)" },
+                    }}
+                    onClick={() => handleDeskClick(rooms[0], desk)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+          {/* Meeting Room 2 */}
+          <Box sx={{ flex: 1, background: "#f8fafc", borderRadius: 3, border: "2px solid #e5e7eb", p: 2, minHeight: 180, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+            <Typography fontWeight={700} fontSize={20} mb={1} align="center">Meeting Room 2</Typography>
+            <Grid container spacing={1} justifyContent="center">
+              {rooms[1].desks.map((desk, i) => (
+                <Grid item key={desk.id} xs={4} sm={2} md={2} lg={2}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      background: deskStatusColor[desk.status],
+                      cursor: "pointer",
+                      boxShadow: desk.status === "available" ? "0 2px 8px #22c55e33" : undefined,
+                      border: desk.status === "available" ? "2px solid #16a34a" : "2px solid #e5e7eb",
+                      transition: "transform 0.1s",
+                      '&:hover': { transform: "scale(1.08)" },
+                    }}
+                    onClick={() => handleDeskClick(rooms[1], desk)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {/* Legend */}
+            <Box sx={{ position: "absolute", bottom: 12, right: 12, p: 2, borderRadius: 2, background: "#fff", boxShadow: "0 2px 8px #0001", border: "1px solid #e5e7eb", zIndex: 2, minWidth: 120 }}>
+              <Typography variant="caption" fontWeight={600} color="text.primary" sx={{ mb: 1, display: "block" }}>
+                Status Legend
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box sx={{ width: 12, height: 12, borderRadius: 1, backgroundColor: "#22c55e" }} />
+                  <Typography variant="caption" color="text.secondary">Available</Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box sx={{ width: 12, height: 12, borderRadius: 1, backgroundColor: "#a3a3a3" }} />
+                  <Typography variant="caption" color="text.secondary">Occupied</Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box sx={{ width: 12, height: 12, borderRadius: 1, backgroundColor: "#fbbf24" }} />
+                  <Typography variant="caption" color="text.secondary">Booked</Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+      {/* Booking Dialog */}
+      <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="xs" fullWidth>
+        <DialogTitle>Book Desk</DialogTitle>
+        <DialogContent>
+          {selectedDesk && selectedRoom && (
+            <Box>
+              <Typography variant="subtitle1" fontWeight={600} mb={1}>Desk: {selectedDesk.id}</Typography>
+              <Typography variant="body2" mb={1}>Room: {selectedRoom.name}</Typography>
+              <Typography variant="body2" mb={1}>Status: {selectedDesk.status.charAt(0).toUpperCase() + selectedDesk.status.slice(1)}</Typography>
+              <Box sx={{ display: "flex", gap: 2, mb: 2, mt: 2 }}>
+                <Chip label={`CO₂: ${selectedRoom.co2} ppm`} color="info" variant="outlined" />
+                <Chip label={`Humidity: ${selectedRoom.humidity}%`} color="primary" variant="outlined" />
+                <Chip label={`Temp: ${selectedRoom.temperature}°C`} color="success" variant="outlined" />
+              </Box>
+              {selectedDesk.status === 'available' ? (
+                <Button variant="contained" color="success" fullWidth>Book This Desk</Button>
+              ) : (
+                <Button variant="outlined" color="inherit" fullWidth disabled>Not Available</Button>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }

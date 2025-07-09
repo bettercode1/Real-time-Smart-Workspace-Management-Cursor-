@@ -1,301 +1,146 @@
-import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  Box,
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography,
+import React, { useState } from "react";
+import { 
+  Box, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Button, 
   Divider,
-  Alert,
+  Stack,
   CircularProgress,
-  Grid,
-  Paper,
-  Chip,
-  IconButton,
-} from '@mui/material';
-import {
-  Google as GoogleIcon,
-  AdminPanelSettings,
-  Group,
-  Person,
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
+  Alert,
+  useTheme,
+  alpha
+} from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
+import PersonIcon from "@mui/icons-material/Person";
+import { useAuth } from "@/contexts/AuthContext";
+import bettercodeLogo from '../assets/bettercode-logo.png';
 
-export default function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+export default function Login() {
+  const { loginWithGoogle, loginWithDemo } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login, loginWithGoogle } = useAuth();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username || !password) {
-      setError("Please enter both username and password");
-      return;
-    }
-
-    setIsLoading(true);
-    setError("");
-    
-    try {
-      const success = await login(username, password);
-      if (!success) {
-        setError("Invalid username or password");
-      }
-    } catch (error) {
-      setError("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const theme = useTheme();
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
+    setLoading(true);
     setError("");
-    
     try {
-      const success = await loginWithGoogle();
-      if (!success) {
-        setError("Google login failed. Please try again.");
-      }
+      await loginWithGoogle();
     } catch (error) {
       setError("Google login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
+    setLoading(false);
   };
 
-  const handleDemoLogin = async (demoUsername: string, demoPassword: string) => {
-    setIsLoading(true);
+  const handleDemoLogin = async () => {
+    setLoading(true);
     setError("");
-    
     try {
-      const success = await login(demoUsername, demoPassword);
-      if (!success) {
-        setError("Demo login failed");
-      }
+      await loginWithDemo();
     } catch (error) {
-      setError("Demo login failed");
-    } finally {
-      setIsLoading(false);
+      setError("Demo login failed. Please try again.");
     }
+    setLoading(false);
   };
 
   return (
-    <Box 
-      sx={{ 
-        minHeight: '100vh', 
-        bgcolor: 'grey.100',
+    <Box
+      sx={{
+        minHeight: '100vh',
+        width: '100vw',
+        background: `radial-gradient(ellipse at 60% 0%, ${theme.palette.primary.light}10 0%, ${theme.palette.secondary.light}05 100%), linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        p: 2
+        py: 4,
+        px: 2,
+        position: 'relative',
+        flexDirection: 'column'
       }}
     >
-      <Card 
-        sx={{ 
-          maxWidth: 480, 
-          width: '100%',
-          boxShadow: 3,
-          borderRadius: 3
+      {/* Powered by BetterCode (Top Right, Fixed) */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 24,
+          right: 32,
+          zIndex: 100,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          background: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.85)',
+          borderRadius: 999,
+          px: 2,
+          py: 0.5,
+          boxShadow: '0 2px 8px rgba(99,102,241,0.08)',
+          border: `1px solid ${theme.palette.divider}`,
+          fontSize: 14,
+          fontWeight: 500,
+          color: theme.palette.text.secondary,
+          transition: 'background 0.2s',
+          pointerEvents: 'auto',
         }}
+        aria-label="Powered by BetterCode"
       >
-        <CardContent sx={{ p: 4 }}>
-          {/* Header */}
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography 
-              variant="h3" 
-              component="h1" 
-              sx={{ 
-                fontWeight: 'bold',
-                color: 'primary.main',
-                mb: 1
-              }}
-            >
+        <span style={{ fontSize: 13, fontWeight: 500, marginRight: 6 }}>Powered by</span>
+        <img
+          src={bettercodeLogo}
+          alt="BetterCode logo"
+          style={{ height: 22, width: 'auto', display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}
+        />
+        <span style={{ fontWeight: 700, fontSize: 14, color: '#222' }}>BetterCode</span>
+      </Box>
+      <Card sx={{ width: '100%', maxWidth: 420, p: 3, borderRadius: 4, boxShadow: '0 8px 32px rgba(99,102,241,0.10)' }}>
+        <CardContent>
+          <Box textAlign="center" mb={4}>
+            <Typography variant="h3" fontWeight={900} color="primary" mb={1} sx={{ letterSpacing: 1 }}>
               SmartSpace
             </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-              Workplace Dashboard
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Sign in to access your workspace
+            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Workspace Management System
             </Typography>
           </Box>
 
-          {/* Error Alert */}
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>
               {error}
             </Alert>
           )}
 
-          {/* Login Form */}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Username"
-              variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading}
-              sx={{ mb: 2 }}
-            />
-            
-            <TextField
-              fullWidth
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              sx={{ mb: 3 }}
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                ),
-              }}
-            />
-            
+          <Stack spacing={3}>
             <Button
-              type="submit"
-              fullWidth
               variant="contained"
               size="large"
-              disabled={isLoading}
-              sx={{ mb: 2, py: 1.5 }}
-            >
-              {isLoading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Sign In"
-              )}
-            </Button>
-          </Box>
-
-          <Divider sx={{ mb: 3 }}>
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
-
-          {/* Google Login */}
-          <Button
-            fullWidth
-            variant="outlined"
-            size="large"
-            startIcon={<GoogleIcon />}
-            onClick={handleGoogleLogin}
-            disabled={isLoading}
-            sx={{ mb: 3, py: 1.5 }}
-          >
-            Continue with Google
-          </Button>
-
-          <Divider sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-              DEMO ACCOUNTS
-            </Typography>
-          </Divider>
-
-          {/* Compact Demo Login Buttons */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {/* Admin Demo */}
-            <Button
               fullWidth
-              variant="outlined"
-              startIcon={<AdminPanelSettings />}
-              onClick={() => handleDemoLogin("admin", "admin123")}
-              disabled={isLoading}
-              sx={{
-                justifyContent: 'flex-start',
-                px: 2,
-                py: 1,
-                textTransform: 'none',
-                borderColor: 'error.main',
-                color: 'error.main',
-                '&:hover': {
-                  borderColor: 'error.dark',
-                  bgcolor: 'error.50'
-                }
-              }}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <GoogleIcon />}
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              sx={{ py: 1.5, fontWeight: 700, fontSize: '1rem', borderRadius: 2, boxShadow: '0 2px 8px rgba(99,102,241,0.08)' }}
             >
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
-                <Typography variant="body2" fontWeight="medium">Administrator</Typography>
-                <Typography variant="caption" color="text.secondary">Full system access</Typography>
-              </Box>
+              {loading ? "Signing in..." : "Continue with Google (Admin)"}
             </Button>
 
-            {/* Manager Demo */}
+            <Divider sx={{ fontWeight: 600, color: 'text.secondary' }}>OR</Divider>
+
             <Button
-              fullWidth
               variant="outlined"
-              startIcon={<Group />}
-              onClick={() => handleDemoLogin("jane.smith", "manager123")}
-              disabled={isLoading}
-              sx={{
-                justifyContent: 'flex-start',
-                px: 2,
-                py: 1,
-                textTransform: 'none',
-                borderColor: 'warning.main',
-                color: 'warning.main',
-                '&:hover': {
-                  borderColor: 'warning.dark',
-                  bgcolor: 'warning.50'
-                }
-              }}
-            >
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
-                <Typography variant="body2" fontWeight="medium">Manager</Typography>
-                <Typography variant="caption" color="text.secondary">Team & analytics access</Typography>
-              </Box>
-            </Button>
-
-            {/* User Demo */}
-            <Button
+              size="large"
               fullWidth
-              variant="outlined"
-              startIcon={<Person />}
-              onClick={() => handleDemoLogin("john.doe", "user123")}
-              disabled={isLoading}
-              sx={{
-                justifyContent: 'flex-start',
-                px: 2,
-                py: 1,
-                textTransform: 'none',
-                borderColor: 'primary.main',
-                color: 'primary.main',
-                '&:hover': {
-                  borderColor: 'primary.dark',
-                  bgcolor: 'primary.50'
-                }
-              }}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <PersonIcon />}
+              onClick={handleDemoLogin}
+              disabled={loading}
+              sx={{ py: 1.5, fontWeight: 700, fontSize: '1rem', borderRadius: 2, borderWidth: 2, borderColor: alpha(theme.palette.primary.main, 0.2), '&:hover': { borderColor: theme.palette.primary.main } }}
             >
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1 }}>
-                <Typography variant="body2" fontWeight="medium">User</Typography>
-                <Typography variant="caption" color="text.secondary">Standard booking access</Typography>
-              </Box>
+              {loading ? "Signing in..." : "Demo Login (User)"}
             </Button>
-          </Box>
+          </Stack>
 
-          {/* Footer */}
-          <Box sx={{ textAlign: 'center', mt: 4 }}>
-            <Typography variant="caption" color="text.secondary">
-              Demo credentials are provided for testing purposes
-            </Typography>
-          </Box>
+          <Typography variant="body2" color="text.secondary" textAlign="center" mt={3}>
+            Access your smart office dashboard with real-time occupancy monitoring, booking system, and analytics.
+          </Typography>
+          {/* Demo Accounts info box removed */}
         </CardContent>
       </Card>
     </Box>

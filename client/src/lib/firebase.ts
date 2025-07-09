@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 
 // Firebase configuration using environment variables
+console.log("FIREBASE_PROJECT_ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "hotel-management-5cee0.firebaseapp.com",

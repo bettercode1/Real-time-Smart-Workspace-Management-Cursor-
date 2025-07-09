@@ -1,138 +1,125 @@
-import { useState } from "react";
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, Box } from '@mui/material';
-import { theme } from './lib/theme';
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import Sidebar from "@/components/Sidebar";
-import MobileHeader from "@/components/MobileHeader";
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider, CssBaseline, Box, Typography } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { lightTheme, darkTheme } from "@/lib/theme";
+import Layout from "@/components/Layout";
+
+// Import pages
 import Dashboard from "@/pages/dashboard";
-import FloorPlan from "@/pages/floor-plan";
-import Bookings from "@/pages/bookings";
-import Analytics from "@/pages/analytics";
-import Alerts from "@/pages/alerts";
-import Settings from "@/pages/settings";
-import LoginPage from "@/pages/login";
-import NotFound from "@/pages/not-found";
-import AdminDashboard from "@/components/AdminDashboard";
-import UserDashboard from "@/components/UserDashboard";
+import UserDashboard from "@/pages/UserDashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
+import Login from "@/pages/login";
+import FloorPlanPage from "@/pages/floor-plan";
+import BookingsPage from "@/pages/bookings";
+import AnalyticsPage from "@/pages/analytics";
+import AlertsPage from "@/pages/alerts";
+import SettingsPage from "@/pages/settings";
+import NotFoundPage from "@/pages/not-found";
+import DevicesPage from "@/pages/devices";
 
-function AuthenticatedRouter() {
-  const { user } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
+
+const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDarkMode: () => void }) => {
+  const { isAuthenticated, loading, user } = useAuth();
   
-  if (!user) return null;
-
-  return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      {/* Desktop Sidebar */}
-      <Sidebar />
-      
-      {/* Mobile Header */}
-      <MobileHeader 
-        isMenuOpen={isMobileMenuOpen} 
-        setIsMenuOpen={setIsMobileMenuOpen} 
-      />
-      
-      {/* Main Content */}
-      <Box 
-        component="main" 
-        sx={{ 
-          flexGrow: 1, 
-          pt: { xs: 8, lg: 0 }, 
-          pl: { xs: 0, lg: '256px' },
-          pr: 0,
-          pb: 0,
-          margin: 0,
-          transition: 'all 0.3s ease',
-          minHeight: '100vh'
-        }}
-      >
-        <Switch>
-          <Route path="/" component={() => {
-            // Route to different dashboards based on user role
-            if (user.role === 'admin') {
-              return <AdminDashboard />;
-            } else {
-              return <UserDashboard />;
-            }
-          }} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/floor-plan" component={FloorPlan} />
-          <Route path="/bookings" component={Bookings} />
-          <Route path="/analytics" component={Analytics} />
-          <Route path="/alerts" component={Alerts} />
-          <Route path="/settings" component={Settings} />
-          <Route component={NotFound} />
-        </Switch>
-      </Box>
-    </Box>
-  );
-}
-
-function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <Box 
-        sx={{ 
-          minHeight: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          bgcolor: 'background.default'
-        }}
-      >
-        <Box sx={{ textAlign: 'center' }}>
-          <Box 
-            sx={{ 
-              width: 48, 
-              height: 48, 
-              border: '3px solid', 
-              borderColor: 'primary.main', 
-              borderTopColor: 'transparent',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              mx: 'auto',
-              mb: 2,
-              '@keyframes spin': {
-                '0%': { transform: 'rotate(0deg)' },
-                '100%': { transform: 'rotate(360deg)' },
-              },
-            }}
-          />
-          <Box sx={{ color: 'text.secondary' }}>Loading...</Box>
+      <Box sx={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      }}>
+        <Box sx={{ 
+          textAlign: 'center',
+          p: 4,
+          backgroundColor: 'white',
+          borderRadius: 3,
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+        }}>
+          <Typography variant="h5" fontWeight={700} color="primary.main" mb={2}>
+            SmartSpace Loading...
+          </Typography>
+          <Box sx={{ 
+            width: 40, 
+            height: 4, 
+            backgroundColor: 'primary.main', 
+            borderRadius: 2,
+            mx: 'auto',
+            animation: 'pulse 2s ease-in-out infinite alternate'
+          }} />
         </Box>
       </Box>
     );
   }
 
   if (!isAuthenticated) {
-    return <LoginPage />;
+    return <Login />;
   }
 
-  return <AuthenticatedRouter />;
-}
-
-function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <Layout>
+      <Routes>
+        {/* Default dashboard route based on user role */}
+        <Route 
+          path="/dashboard" 
+          element={user?.role === 'admin' ? <AdminDashboard /> : <UserDashboard />} 
+        />
+        
+        {/* Admin-specific routes */}
+        {user?.role === 'admin' && (
+          <>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/devices" element={<DevicesPage />} />
+            <Route path="/users" element={<div>User Management (TODO)</div>} />
+            <Route path="/rooms" element={<div>Room Setup (TODO)</div>} />
+            <Route path="/iaq" element={<div>IAQ Monitoring (TODO)</div>} />
+          </>
+        )}
+        
+        {/* Common routes for both admin and users */}
+        <Route path="/floor-plan" element={<FloorPlanPage />} />
+        <Route path="/bookings" element={<BookingsPage />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/alerts" element={<AlertsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        
+        {/* Redirects */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Layout>
+  );
+};
+
+export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </AuthProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
+    </QueryClientProvider>
   );
 }
-
-export default App;
