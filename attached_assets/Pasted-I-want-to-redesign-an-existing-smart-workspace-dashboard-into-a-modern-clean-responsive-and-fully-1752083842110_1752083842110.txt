@@ -1,0 +1,119 @@
+I want to redesign an existing smart workspace dashboard into a modern, clean, responsive, and fully functional web application using the following features and modules.
+
+This dashboard must have two panels: Admin Panel and User Panel, each with specific permissions, functionality, and views. Please keep the visual design minimal, professional, and mobile-responsive, with components structured for real deployment.
+
+🎯 Core Design Goals:
+Clean, modern UI (inspired by tools like Notion, Linear, Vercel)
+
+Neatly aligned elements and consistent spacing
+
+Soft gradients, shadows, rounded corners, and system icons
+
+Dashboard layout with a sidebar and main content
+
+Work well across desktop and mobile devices
+
+Every section should show realistic demo/sample data
+
+✅ V1 Smart Dashboard - Feature Set
+🟢 1. Live Occupancy & Environment Monitoring
+Interactive Floor Plan View:
+
+Show desks and rooms
+
+Occupancy status via NFC badge/wristband
+
+Color-coded zones (green/yellow/red)
+
+IAQ Display Per Room:
+
+Temperature (°C/°F)
+
+CO₂ (ppm)
+
+Humidity (%)
+
+Live Alerts Panel:
+
+High CO₂
+
+Over-occupancy
+
+No-show alerts
+
+📅 2. Room & Desk Booking
+Calendar-style view (day/week)
+
+Book or release rooms and desks
+
+Tap-in/Tap-out via NFC scan (mock log data)
+
+Auto-release desks if no-show after X mins
+
+📊 3. Essential Analytics Dashboard
+Occupancy trends (daily/weekly usage)
+
+Top 5 used rooms
+
+Reserved vs checked-in comparison
+
+IAQ trends per room
+
+AI-based room suggestions (sample output view)
+
+🎛️ Admin Panel Functions
+Device status monitor (online/offline)
+
+User list with wristband/NFC badge IDs
+
+Room setup (max capacity, labels)
+
+🧩 Suggested UI Components:
+Sidebar Navigation (with icons, active state, and collapsible behavior)
+
+Header Bar with profile, alerts icon, and settings
+
+Interactive Floor Plan Map with room/desk highlights
+
+Mini IAQ Widgets per room
+
+Live Alerts Center (top 3–5 alerts only)
+
+Booking Calendar Module (day/week switcher)
+
+Analytics Cards:
+
+Usage %
+
+Room ranking
+
+Trends (small charts)
+
+System Settings Page (admin only)
+
+User Profile & Badge Map (admin view of users + wristband ID)
+
+🧑‍💼 User Panel View:
+Can only view their own bookings and check-in history
+
+Can book/release rooms and desks
+
+View IAQ levels of currently booked space
+
+See top alerts affecting them
+
+Limited analytics (only their usage)
+
+👩‍💼 Admin Panel View:
+Can access all floor plans, all alerts
+
+Manage users and device statuses
+
+Edit room setups and monitor global IAQ
+
+See full analytics + generate reports
+
+💻 Tech Suggestion (Optional):
+Build using React.js + Tailwind CSS, use Firebase (or dummy backend) to simulate real data operations, including CRUD, filtering, and validation. Apply animation using Framer Motion or GSAP if needed.
+
+Please design and build this dashboard with sample data shown visually. The final output should look clean, modern, and production-ready, and reflect all the functionality and modules described above.
