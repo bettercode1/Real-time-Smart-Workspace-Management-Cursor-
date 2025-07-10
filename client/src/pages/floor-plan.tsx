@@ -79,14 +79,14 @@ const FloorControlsCard = () => {
   const currentFloor = floors.find(f => f.value === selectedFloor);
 
   return (
-    <Card elevation={0} sx={{ height: 'fit-content' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+    <Card elevation={0} sx={{ height: 'fit-content', width: '100%' }}>
+      <CardContent sx={{ p: 2.5 }}>
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
           Floor Plan Controls
         </Typography>
 
         {/* Floor Selection */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 2 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Select Floor</InputLabel>
             <Select
@@ -113,7 +113,7 @@ const FloorControlsCard = () => {
 
         {/* Current Floor Info */}
         {currentFloor && (
-          <Box sx={{ mb: 3, p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
+          <Box sx={{ mb: 2, p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
             <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
               {currentFloor.label}
             </Typography>
@@ -141,7 +141,7 @@ const FloorControlsCard = () => {
         )}
 
         {/* View Options */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2 }}>
             Display Options
           </Typography>
@@ -175,6 +175,7 @@ const FloorControlsCard = () => {
             variant="outlined" 
             startIcon={<Computer />} 
             fullWidth 
+            size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
             Find Available Desk
@@ -183,6 +184,7 @@ const FloorControlsCard = () => {
             variant="outlined" 
             startIcon={<People />} 
             fullWidth 
+            size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
             Book Meeting Room
@@ -191,6 +193,7 @@ const FloorControlsCard = () => {
             variant="outlined" 
             startIcon={<Phone />} 
             fullWidth 
+            size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
             Reserve Phone Booth
@@ -199,6 +202,7 @@ const FloorControlsCard = () => {
             variant="outlined" 
             startIcon={<Map />} 
             fullWidth 
+            size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
             Export Floor Plan
@@ -240,9 +244,9 @@ const SpaceStatsCard = () => {
   ];
 
   return (
-    <Card elevation={0} sx={{ height: 'fit-content' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Card elevation={0} sx={{ height: 'fit-content', width: '100%' }}>
+      <CardContent sx={{ p: 2.5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" fontWeight={700}>
             Space Statistics
           </Typography>
@@ -251,7 +255,7 @@ const SpaceStatsCard = () => {
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {spaceTypes.map((space, index) => {
             const utilizationRate = Math.round((space.occupied / space.total) * 100);
             
@@ -303,7 +307,7 @@ const SpaceStatsCard = () => {
           })}
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ my: 2 }} />
 
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="h4" fontWeight={700} color="primary.main" sx={{ mb: 1 }}>
@@ -353,9 +357,9 @@ const EnvironmentCard = () => {
   ];
 
   return (
-    <Card elevation={0} sx={{ height: 'fit-content' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+    <Card elevation={0} sx={{ height: 'fit-content', width: '100%' }}>
+      <CardContent sx={{ p: 2.5 }}>
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
           Environment Status
         </Typography>
 
@@ -472,8 +476,8 @@ export default function FloorPlanPage() {
       </Box>
 
       <Grid container spacing={3}>
-        {/* Main Floor Plan - Full Width */}
-        <Grid item xs={12}>
+        {/* Main Floor Plan */}
+        <Grid item xs={12} lg={8}>
           <Card elevation={0} sx={{ borderRadius: 3, minHeight: 600 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -505,29 +509,13 @@ export default function FloorPlanPage() {
           </Card>
         </Grid>
 
-        {/* Controls and Stats Sidebar */}
-        <Grid item xs={12} md={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FloorControlsCard />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <SpaceStatsCard />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <EnvironmentCard />
-            </Grid>
-          </Grid>
+        {/* Sidebar with Controls and Stats */}
+        <Grid item xs={12} lg={4}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: 'fit-content' }}>
+            <FloorControlsCard />
+            <SpaceStatsCard />
+            <EnvironmentCard />
+          </Box>
         </Grid>
       </Grid>
 
