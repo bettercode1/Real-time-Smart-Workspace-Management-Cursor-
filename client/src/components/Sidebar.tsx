@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSettings } from "@/contexts/SettingsContext";
+import { translations } from "@/lib/translations";
 import {
   Dashboard as DashboardIcon,
   Map as MapIcon,
@@ -33,28 +35,30 @@ import {
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
+  const { language } = useSettings();
   const [location] = useLocation();
   const theme = useTheme();
+  const t = translations[language];
 
   const adminMenuItems = [
-    { text: "Admin Panel", icon: <AdminIcon />, path: "/dashboard" },
-    { text: "Live Floor Plan", icon: <MapIcon />, path: "/floor-plan" },
-    { text: "Booking Management", icon: <BookingIcon />, path: "/bookings" },
-    { text: "Analytics & Reports", icon: <AnalyticsIcon />, path: "/analytics" },
-    { text: "Alert Manager", icon: <AlertIcon />, path: "/alerts" },
-    { text: "Device Status", icon: <DevicesIcon />, path: "/devices" },
-    { text: "User Management", icon: <UsersIcon />, path: "/users" },
-    { text: "Room Setup", icon: <RoomIcon />, path: "/rooms" },
-    { text: "IAQ Monitoring", icon: <IAQIcon />, path: "/iaq" },
-    { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+    { text: t.dashboard, icon: <AdminIcon />, path: "/dashboard" },
+    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan" },
+    { text: t.bookings, icon: <BookingIcon />, path: "/bookings" },
+    { text: t.analytics, icon: <AnalyticsIcon />, path: "/analytics" },
+    { text: t.alerts, icon: <AlertIcon />, path: "/alerts" },
+    { text: t.devices, icon: <DevicesIcon />, path: "/devices" },
+    { text: t.users, icon: <UsersIcon />, path: "/users" },
+    { text: t.rooms, icon: <RoomIcon />, path: "/rooms" },
+    { text: t.iaq, icon: <IAQIcon />, path: "/iaq" },
+    { text: t.settings, icon: <SettingsIcon />, path: "/settings" },
   ];
 
   const userMenuItems = [
-    { text: "User Panel", icon: <DashboardIcon />, path: "/dashboard" },
-    { text: "Floor Plan", icon: <MapIcon />, path: "/floor-plan" },
-    { text: "My Bookings", icon: <BookingIcon />, path: "/bookings" },
-    { text: "Alerts", icon: <AlertIcon />, path: "/alerts" },
-    { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+    { text: t.dashboard, icon: <DashboardIcon />, path: "/dashboard" },
+    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan" },
+    { text: t.bookings, icon: <BookingIcon />, path: "/bookings" },
+    { text: t.alerts, icon: <AlertIcon />, path: "/alerts" },
+    { text: t.settings, icon: <SettingsIcon />, path: "/settings" },
   ];
 
   const menuItems = user?.role === 'admin' ? adminMenuItems : userMenuItems;

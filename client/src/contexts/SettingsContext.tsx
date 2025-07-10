@@ -83,7 +83,17 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', themeMode);
+    document.body.setAttribute('data-theme', themeMode);
     localStorage.setItem('themeMode', themeMode);
+    
+    // Also add/remove dark class for additional compatibility
+    if (themeMode === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+    }
   }, [themeMode]);
 
   // Save language changes
