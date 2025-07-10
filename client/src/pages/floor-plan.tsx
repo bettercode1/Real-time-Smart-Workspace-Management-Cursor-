@@ -41,6 +41,7 @@ import {
 import FloorPlan from "@/components/FloorPlan";
 import IAQWidgets from "@/components/IAQWidgets";
 import PageContainer from "@/components/PageContainer";
+import LoadingSpinner, { LoadingStats, LoadingCard } from '@/components/LoadingSpinner';
 
 const OccupancyStatsCard = () => {
   const theme = useTheme();
@@ -275,6 +276,19 @@ export default function FloorPlanPage() {
   const [selectedView, setSelectedView] = useState('2D');
   const [selectedFloor, setSelectedFloor] = useState('Floor 1');
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Simulate initial loading
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 1000);
+  };
 
   return (
     <Box sx={{
@@ -311,6 +325,15 @@ export default function FloorPlanPage() {
             <Button variant="outlined" startIcon={<ViewComfy />} sx={{ borderRadius: 2 }}>
               {selectedView} View
             </Button>
+            <Button 
+              variant="outlined" 
+              startIcon={refreshing ? <LoadingSpinner size={16} variant="dots" /> : <Refresh />} 
+              sx={{ borderRadius: 2 }}
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh'}
+            </Button>
             <Button variant="contained" startIcon={<Fullscreen />} sx={{ borderRadius: 2 }}>
               Full Screen
             </Button>
@@ -318,26 +341,29 @@ export default function FloorPlanPage() {
         </Box>
 
         {/* Quick Stats */}
-        <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
-          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{
-              p: 3,
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
-              boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-              minHeight: 140,
-            }}>
-              <Box sx={{
-                bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        {loading ? (
+          <LoadingStats />
+        ) : (
+          <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
+            <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+              <Card elevation={0} sx={{
+                p: 3,
+                borderRadius: 4,
+                background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
+                boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                minHeight: 140,
               }}>
-                <People sx={{ fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" fontWeight={800} color="#3730a3">58</Typography>
-              <Typography fontWeight={600} color="#6366f1" fontSize={15}>Current Occupancy</Typography>
-              <Typography color="#818cf8" fontSize={13}>Out of 92 capacity</Typography>
-            </Card>
-          </Grid>
+                <Box sx={{
+                  bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <People sx={{ fontSize: 28 }} />
+                </Box>
+                <Typography variant="h5" fontWeight={800} color="#3730a3">58</Typography>
+                <Typography fontWeight={600} color="#6366f1" fontSize={15}>Current Occupancy</Typography>
+                <Typography color="#818cf8" fontSize={13}>Out of 92 capacity</Typography>
+              </Card>
+            </Grid>
           <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
             <Card elevation={0} sx={{
               p: 3,
@@ -396,8 +422,14 @@ export default function FloorPlanPage() {
             </Card>
           </Grid>
         </Grid>
+        )}
 
         {/* Main Content */}
+        {loading ? (
+          <Box sx={{ my: 4 }}>
+            <LoadingCard />
+          </Box>
+        ) : (
         <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
           {/* Floor Plan */}
           <Grid item xs={12} md={8} sx={{ width: '100%', maxWidth: '100%' }}>
@@ -445,6 +477,7 @@ export default function FloorPlanPage() {
             </Card>
           </Grid>
         </Grid>
+        )}
       </Box>
     </Box>
   );

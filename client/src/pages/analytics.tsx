@@ -45,6 +45,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
 import AnalyticsCards from "@/components/AnalyticsCards";
 import Analytics from "@/components/Analytics";
+import LoadingSpinner, { LoadingStats, LoadingCard } from "@/components/LoadingSpinner";
 
 const TopRoomsCard = () => {
   const theme = useTheme();
@@ -268,6 +269,19 @@ export default function AnalyticsPage() {
   const theme = useTheme();
   const [timeRange, setTimeRange] = useState('week');
   const [viewType, setViewType] = useState('overview');
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Simulate loading
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 1000);
+  };
 
   // Sample data for charts
   const occupancyData = [
@@ -328,25 +342,39 @@ export default function AnalyticsPage() {
                 <MenuItem value="quarter">This Quarter</MenuItem>
               </Select>
             </FormControl>
-            <Button variant="outlined" startIcon={<Download />} sx={{ borderRadius: 2 }}>
+            <Button 
+              variant="outlined" 
+              startIcon={<Download />} 
+              sx={{ borderRadius: 2 }}
+              onClick={() => console.log('Export clicked')}
+            >
               Export
             </Button>
-            <Button variant="contained" startIcon={<Refresh />} sx={{ borderRadius: 2 }}>
-              Refresh
+            <Button 
+              variant="contained" 
+              startIcon={refreshing ? <LoadingSpinner size={16} variant="dots" /> : <Refresh />} 
+              sx={{ borderRadius: 2 }}
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh'}
             </Button>
           </Box>
         </Box>
 
         {/* Analytics Cards */}
-        <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
-          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{
-              p: 3,
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
-              boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-              minHeight: 140,
+        {loading ? (
+          <LoadingStats />
+        ) : (
+          <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
+            <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+              <Card elevation={0} sx={{
+                p: 3,
+                borderRadius: 4,
+                background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
+                boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                minHeight: 140,
             }}>
               <Box sx={{
                 bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -416,116 +444,78 @@ export default function AnalyticsPage() {
             </Card>
           </Grid>
         </Grid>
+        )}
 
         {/* Charts Section */}
-        <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
-          {/* Occupancy Trends */}
-          <Grid item xs={12} md={8} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
-              minHeight: 400
-            }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6" fontWeight={600}>
-                  Occupancy Trends - Today
+        {loading ? (
+          <Box sx={{ my: 4 }}>
+            <LoadingCard />
+          </Box>
+        ) : (
+          <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
+            {/* Occupancy Chart */}
+            <Grid item xs={12} md={8} sx={{ width: '100%', maxWidth: '100%' }}>
+              <Card elevation={0} sx={{ 
+                p: 3, 
+                borderRadius: 4, 
+                background: '#fff',
+                boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
+                minHeight: 400
+              }}>
+                <Typography variant="h6" fontWeight={600} mb={3}>
+                  Today's Occupancy Trend
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton size="small"><FilterList /></IconButton>
-                  <IconButton size="small"><ShowChart /></IconButton>
-                </Box>
-              </Box>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={occupancyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="time" stroke="#64748b" />
-                  <YAxis stroke="#64748b" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#fff', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }} 
-                  />
-                  <Line type="monotone" dataKey="occupancy" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', strokeWidth: 2, r: 4 }} />
-                  <Line type="monotone" dataKey="capacity" stroke="#e2e8f0" strokeWidth={2} strokeDasharray="5 5" />
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
-          </Grid>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={occupancyData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="time" stroke="#64748b" />
+                    <YAxis stroke="#64748b" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#fff', 
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                      }} 
+                    />
+                    <Line type="monotone" dataKey="occupancy" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', strokeWidth: 2, r: 4 }} />
+                    <Line type="monotone" dataKey="capacity" stroke="#e2e8f0" strokeWidth={2} strokeDasharray="5 5" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+            </Grid>
 
-          {/* Top Rooms */}
-          <Grid item xs={12} md={4} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
-              height: '100%',
-              minHeight: 400
-            }}>
-              <Typography variant="h6" fontWeight={600} mb={2}>
-                Top 5 Most Utilized Spaces
-              </Typography>
+            {/* Top Rooms */}
+            <Grid item xs={12} md={4} sx={{ width: '100%', maxWidth: '100%' }}>
               <TopRoomsCard />
-            </Card>
-          </Grid>
+            </Grid>
 
-          {/* Booking vs Check-in */}
-          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
-              minHeight: 350
-            }}>
-              <Typography variant="h6" fontWeight={600} mb={3}>
-                Weekly Booking vs Check-in
-              </Typography>
-              <ResponsiveContainer width="100%" height={250}>
-                <RechartsBarChart data={utilizationData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" />
-                  <YAxis stroke="#64748b" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#fff', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }} 
-                  />
-                  <Bar dataKey="bookings" fill="#6366f1" name="Bookings" />
-                  <Bar dataKey="checkins" fill="#22c55e" name="Check-ins" />
-                </RechartsBarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Grid>
+            {/* Booking vs Check-in */}
+            <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
+              <BookingComparisonCard />
+            </Grid>
 
-          {/* Booking Comparison */}
-          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
-            <BookingComparisonCard />
-          </Grid>
+            {/* Usage Trends */}
+            <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
+              <UsageTrendsCard />
+            </Grid>
 
-          {/* Detailed Analytics */}
-          <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)'
-            }}>
-              <Typography variant="h6" fontWeight={600} mb={2}>
-                Detailed Analytics & Insights
-              </Typography>
-              <Analytics />
-            </Card>
+            {/* Detailed Analytics */}
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
+              <Card elevation={0} sx={{ 
+                p: 3, 
+                borderRadius: 4, 
+                background: '#fff',
+                boxShadow: '0 2px 12px rgba(99,102,241,0.06)'
+              }}>
+                <Typography variant="h6" fontWeight={600} mb={2}>
+                  Detailed Analytics & Insights
+                </Typography>
+                <Analytics />
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Box>
     </Box>
   );
