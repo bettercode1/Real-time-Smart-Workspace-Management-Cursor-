@@ -59,7 +59,8 @@ import {
   Save,
   Cancel,
   Visibility,
-  VisibilityOff
+  VisibilityOff,
+  Group
 } from '@mui/icons-material';
 import PageContainer from '@/components/PageContainer';
 
@@ -492,142 +493,242 @@ export default function UserManagementPage() {
   };
 
   return (
-    <PageContainer
-      title="User Management"
-      description="Manage user accounts, roles, and permissions"
-    >
-      <Grid container spacing={3}>
+    <Box sx={{
+      minHeight: '100%',
+      width: '100%',
+      maxWidth: '100%',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+      position: 'relative',
+      pb: 6,
+      overflowX: 'hidden'
+    }}>
+      <Box sx={{ 
+        maxWidth: '1200px', 
+        mx: 'auto', 
+        px: { xs: 2, md: 3 }, 
+        pt: { xs: 4, md: 6 },
+        width: '100%',
+        overflowX: 'hidden'
+      }}>
+        {/* Header */}
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
+              User Management
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Manage workspace users, roles, permissions, and badge assignments
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Filter Role</InputLabel>
+              <Select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} label="Filter Role">
+                <MenuItem value="all">All Users</MenuItem>
+                <MenuItem value="admin">Admins</MenuItem>
+                <MenuItem value="manager">Managers</MenuItem>
+                <MenuItem value="user">Users</MenuItem>
+              </Select>
+            </FormControl>
+            <Button variant="outlined" startIcon={<Search />} sx={{ borderRadius: 2 }}>
+              Search
+            </Button>
+            <Button variant="contained" startIcon={<PersonAdd />} sx={{ borderRadius: 2 }} onClick={handleAddUser}>
+              Add User
+            </Button>
+          </Box>
+        </Box>
+
         {/* User Statistics */}
-        <Grid item xs={12}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
-                User Overview
-              </Typography>
-              <Button variant="contained" startIcon={<PersonAdd />} onClick={handleAddUser}>
-                Add User
-              </Button>
-            </Box>
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={2.4}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'primary.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{userStats.total}</Typography>
-                  <Typography variant="caption">Total Users</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={2.4}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'success.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{userStats.active}</Typography>
-                  <Typography variant="caption">Active</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={2.4}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'error.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{userStats.admins}</Typography>
-                  <Typography variant="caption">Admins</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={2.4}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'warning.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{userStats.managers}</Typography>
-                  <Typography variant="caption">Managers</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={2.4}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'info.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{userStats.users}</Typography>
-                  <Typography variant="caption">Users</Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
+        <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
+          <Grid item xs={12} sm={6} md={2.4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
+              boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Person sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#3730a3">{userStats.total}</Typography>
+              <Typography fontWeight={600} color="#6366f1" fontSize={15}>Total Users</Typography>
+              <Typography color="#818cf8" fontSize={13}>Registered accounts</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+              boxShadow: '0 2px 8px rgba(34,197,94,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#22c55e', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <CheckCircle sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#14532d">{userStats.active}</Typography>
+              <Typography fontWeight={600} color="#16a34a" fontSize={15}>Active Users</Typography>
+              <Typography color="#22c55e" fontSize={13}>Currently enabled</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)',
+              boxShadow: '0 2px 8px rgba(239,68,68,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#ef4444', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <SupervisorAccount sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#7f1d1d">{userStats.admins}</Typography>
+              <Typography fontWeight={600} color="#dc2626" fontSize={15}>Administrators</Typography>
+              <Typography color="#ef4444" fontSize={13}>Admin privileges</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              boxShadow: '0 2px 8px rgba(245,158,11,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#f59e0b', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Security sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#92400e">{userStats.managers}</Typography>
+              <Typography fontWeight={600} color="#d97706" fontSize={15}>Managers</Typography>
+              <Typography color="#f59e0b" fontSize={13}>Management roles</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
+              boxShadow: '0 2px 8px rgba(139,92,246,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#8b5cf6', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Group sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#581c87">{userStats.users}</Typography>
+              <Typography fontWeight={600} color="#7c3aed" fontSize={15}>Standard Users</Typography>
+              <Typography color="#8b5cf6" fontSize={13}>Regular access</Typography>
+            </Card>
+          </Grid>
         </Grid>
 
         {/* Filters */}
-        <Grid item xs={12}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 3, mb: 3 }}>
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-              <TextField
-                size="small"
-                placeholder="Search users..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />
-                }}
-                sx={{ minWidth: 200 }}
-              />
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Role</InputLabel>
-                <Select
-                  value={roleFilter}
-                  label="Role"
-                  onChange={(e) => setRoleFilter(e.target.value)}
-                >
-                  <MenuItem value="all">All Roles</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="manager">Manager</MenuItem>
-                  <MenuItem value="user">User</MenuItem>
-                </Select>
-              </FormControl>
-              <Typography variant="body2" color="text.secondary">
-                {filteredUsers.length} users found
-              </Typography>
-            </Box>
-          </Paper>
-        </Grid>
+        <Card elevation={0} sx={{ 
+          p: 2, 
+          borderRadius: 4, 
+          background: '#fff',
+          boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
+          mb: 3 
+        }}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+            <TextField
+              size="small"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: <Search sx={{ color: 'text.secondary', mr: 1 }} />
+              }}
+              sx={{ minWidth: 200 }}
+            />
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Role</InputLabel>
+              <Select
+                value={roleFilter}
+                label="Role"
+                onChange={(e) => setRoleFilter(e.target.value)}
+              >
+                <MenuItem value="all">All Roles</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="manager">Manager</MenuItem>
+                <MenuItem value="user">User</MenuItem>
+              </Select>
+            </FormControl>
+            <Typography variant="body2" color="text.secondary">
+              {filteredUsers.length} users found
+            </Typography>
+          </Box>
+        </Card>
 
         {/* User Cards */}
-        {filteredUsers.map((user) => (
-          <Grid item xs={12} sm={6} md={4} key={user.id}>
-            <UserCard 
-              user={user} 
-              onEdit={() => handleEditUser(user)}
-              onDelete={() => handleDeleteUser(user.id)}
-            />
-          </Grid>
-        ))}
+        <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
+          {filteredUsers.map((user) => (
+            <Grid item xs={12} sm={6} md={4} key={user.id} sx={{ width: '100%', maxWidth: '100%' }}>
+              <UserCard 
+                user={user} 
+                onEdit={() => handleEditUser(user)}
+                onDelete={() => handleDeleteUser(user.id)}
+              />
+            </Grid>
+          ))}
 
-        {/* Empty State */}
-        {filteredUsers.length === 0 && (
-          <Grid item xs={12}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 6,
-                borderRadius: 4,
-                background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 320,
-                border: '2px dashed #90caf9'
-              }}
-            >
-              <Person sx={{ fontSize: 64, color: '#90caf9', mb: 2 }} />
-              <Typography variant="h5" fontWeight={700} color="primary" mb={1}>
-                No Users Found
-              </Typography>
-              <Typography variant="body1" color="text.secondary" mb={3}>
-                {searchTerm || roleFilter !== 'all' 
-                  ? 'No users match your current filters.' 
-                  : 'Start by adding your first user to the system.'}
-              </Typography>
-              <Button variant="contained" color="primary" startIcon={<PersonAdd />} onClick={handleAddUser}>
-                Add User
-              </Button>
-            </Paper>
-          </Grid>
-        )}
-      </Grid>
+          {/* Empty State */}
+          {filteredUsers.length === 0 && (
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
+              <Card
+                elevation={0}
+                sx={{
+                  p: 6,
+                  borderRadius: 4,
+                  background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 320,
+                  border: '2px dashed #90caf9'
+                }}
+              >
+                <Person sx={{ fontSize: 64, color: '#90caf9', mb: 2 }} />
+                <Typography variant="h5" fontWeight={700} color="primary" mb={1}>
+                  No Users Found
+                </Typography>
+                <Typography variant="body1" color="text.secondary" mb={3}>
+                  {searchTerm || roleFilter !== 'all' 
+                    ? 'No users match your current filters.' 
+                    : 'Start by adding your first user to the system.'}
+                </Typography>
+                <Button variant="contained" color="primary" startIcon={<PersonAdd />} onClick={handleAddUser}>
+                  Add User
+                </Button>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
 
-      <UserFormDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        user={selectedUser}
-        onSave={handleSaveUser}
-      />
-    </PageContainer>
+        <UserFormDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          user={selectedUser}
+          onSave={handleSaveUser}
+        />
+      </Box>
+    </Box>
   );
 }

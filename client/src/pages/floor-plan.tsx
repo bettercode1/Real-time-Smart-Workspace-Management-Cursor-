@@ -272,108 +272,180 @@ const FloorPlanControlsCard = () => {
 
 export default function FloorPlanPage() {
   const theme = useTheme();
+  const [selectedView, setSelectedView] = useState('2D');
+  const [selectedFloor, setSelectedFloor] = useState('Floor 1');
+  const [zoomLevel, setZoomLevel] = useState(100);
 
   return (
-    <PageContainer
-      title="Interactive Floor Plan"
-      description="Real-time view of workspace occupancy and environment status"
-    >
-      <Grid container spacing={3}>
-        {/* Floor Plan Statistics */}
-        <Grid item xs={12}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
-                Workspace Overview
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button variant="outlined" startIcon={<Visibility />} size="small">
-                  View Options
-                </Button>
-                <Button variant="contained" startIcon={<EventAvailable />} size="small">
-                  Quick Book
-                </Button>
-              </Box>
-            </Box>
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'primary.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>15</Typography>
-                  <Typography variant="caption">Total Spaces</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'success.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>8</Typography>
-                  <Typography variant="caption">Available</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'warning.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>6</Typography>
-                  <Typography variant="caption">Occupied</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'info.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>72%</Typography>
-                  <Typography variant="caption">Utilization</Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Main Floor Plan */}
-        <Grid item xs={12} lg={8}>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              p: 3, 
-              borderRadius: 3,
-              backgroundColor: 'background.paper',
-              minHeight: '600px'
-            }}
-          >
-            <Typography variant="h6" fontWeight={600} mb={2}>
+    <Box sx={{
+      minHeight: '100%',
+      width: '100%',
+      maxWidth: '100%',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+      position: 'relative',
+      pb: 6,
+      overflowX: 'hidden'
+    }}>
+      <Box sx={{ 
+        maxWidth: '1400px', 
+        mx: 'auto', 
+        px: { xs: 2, md: 3 }, 
+        pt: { xs: 4, md: 6 },
+        width: '100%',
+        overflowX: 'hidden'
+      }}>
+        {/* Header */}
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
               Interactive Floor Plan
             </Typography>
-            <FloorPlan />
-          </Paper>
-        </Grid>
+            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Real-time floor plan with live occupancy status and booking controls
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Button variant="outlined" startIcon={<Layers />} sx={{ borderRadius: 2 }}>
+              {selectedFloor}
+            </Button>
+            <Button variant="outlined" startIcon={<ViewComfy />} sx={{ borderRadius: 2 }}>
+              {selectedView} View
+            </Button>
+            <Button variant="contained" startIcon={<Fullscreen />} sx={{ borderRadius: 2 }}>
+              Full Screen
+            </Button>
+          </Box>
+        </Box>
 
-        {/* Sidebar */}
-        <Grid item xs={12} lg={4}>
-          <Grid container spacing={3}>
-            {/* Floor Plan Controls */}
-            <Grid item xs={12}>
-              <FloorPlanControlsCard />
-            </Grid>
-
-            {/* IAQ Data */}
-            <Grid item xs={12}>
-              <Paper 
-                elevation={0} 
-                sx={{ 
-                  p: 3, 
-                  borderRadius: 3,
-                  backgroundColor: 'background.paper'
-                }}
-              >
-                <Typography variant="h6" fontWeight={600} mb={2}>
-                  Environment Data
-                </Typography>
-                <IAQWidgets />
-              </Paper>
-            </Grid>
+        {/* Quick Stats */}
+        <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
+              boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <People sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#3730a3">58</Typography>
+              <Typography fontWeight={600} color="#6366f1" fontSize={15}>Current Occupancy</Typography>
+              <Typography color="#818cf8" fontSize={13}>Out of 92 capacity</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+              boxShadow: '0 2px 8px rgba(34,197,94,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#22c55e', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <CheckCircle sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#14532d">12</Typography>
+              <Typography fontWeight={600} color="#16a34a" fontSize={15}>Available Rooms</Typography>
+              <Typography color="#22c55e" fontSize={13}>Ready for booking</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              boxShadow: '0 2px 8px rgba(245,158,11,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#f59e0b', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <EventAvailable sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#92400e">8</Typography>
+              <Typography fontWeight={600} color="#d97706" fontSize={15}>Active Bookings</Typography>
+              <Typography color="#f59e0b" fontSize={13}>Currently in use</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
+              boxShadow: '0 2px 8px rgba(236,72,153,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#ec4899', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Air sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#831843">Good</Typography>
+              <Typography fontWeight={600} color="#be185d" fontSize={15}>Air Quality</Typography>
+              <Typography color="#ec4899" fontSize={13}>All rooms optimal</Typography>
+            </Card>
           </Grid>
         </Grid>
 
-        {/* Occupancy Stats */}
-        <Grid item xs={12}>
-          <OccupancyStatsCard />
+        {/* Main Content */}
+        <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
+          {/* Floor Plan */}
+          <Grid item xs={12} md={8} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{ 
+              p: 3, 
+              borderRadius: 4, 
+              background: '#fff',
+              boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
+              minHeight: 600
+            }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" fontWeight={600}>
+                  Floor Plan - {selectedFloor}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <IconButton size="small" onClick={() => setZoomLevel(prev => Math.min(prev + 10, 200))}><ZoomIn /></IconButton>
+                  <Typography variant="caption" sx={{ px: 2, py: 1, bgcolor: 'grey.100', borderRadius: 1 }}>
+                    {zoomLevel}%
+                  </Typography>
+                  <IconButton size="small" onClick={() => setZoomLevel(prev => Math.max(prev - 10, 50))}><ZoomOut /></IconButton>
+                  <IconButton size="small"><Refresh /></IconButton>
+                </Box>
+              </Box>
+              <FloorPlan />
+            </Card>
+          </Grid>
+
+          {/* Occupancy Stats */}
+          <Grid item xs={12} md={4} sx={{ width: '100%', maxWidth: '100%' }}>
+            <OccupancyStatsCard />
+          </Grid>
+
+          {/* IAQ Overview */}
+          <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{ 
+              p: 3, 
+              borderRadius: 4, 
+              background: '#fff',
+              boxShadow: '0 2px 12px rgba(99,102,241,0.06)'
+            }}>
+              <Typography variant="h6" fontWeight={600} mb={3}>
+                Environmental Overview
+              </Typography>
+              <IAQWidgets />
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </Box>
+    </Box>
   );
 }

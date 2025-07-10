@@ -18,7 +18,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert
+  Alert,
+  useTheme,
+  alpha,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Avatar,
+  LinearProgress,
+  Fab
 } from '@mui/material';
 import {
   Add,
@@ -31,9 +40,19 @@ import {
   Battery4Bar,
   Thermostat,
   Speed,
-  WaterDrop
+  WaterDrop,
+  Wifi,
+  WifiOff,
+  Camera,
+  Monitor,
+  Sensors,
+  Settings,
+  CheckCircle,
+  Error,
+  Warning,
+  Search,
+  FilterList
 } from '@mui/icons-material';
-import PageContainer from '@/components/PageContainer';
 
 interface Device {
   id: string;
@@ -251,7 +270,9 @@ const EmptyDevicePlaceholder = () => (
 );
 
 export default function DevicesPage() {
+  const theme = useTheme();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState('all');
   
   const deviceStats = {
     total: mockDevices.length,
@@ -261,71 +282,184 @@ export default function DevicesPage() {
   };
 
   const hasDevices = mockDevices && mockDevices.length > 0;
+  const filteredDevices = filterStatus === 'all' ? mockDevices : mockDevices.filter(d => d.status === filterStatus);
 
   return (
-    <PageContainer
-      title="Device Status"
-      description="View and manage connected devices in your workspace"
-    >
-      <Grid container spacing={3}>
+    <Box sx={{
+      minHeight: '100%',
+      width: '100%',
+      maxWidth: '100%',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+      position: 'relative',
+      pb: 6,
+      overflowX: 'hidden'
+    }}>
+      <Box sx={{ 
+        maxWidth: '1200px', 
+        mx: 'auto', 
+        px: { xs: 2, md: 3 }, 
+        pt: { xs: 4, md: 6 },
+        width: '100%',
+        overflowX: 'hidden'
+      }}>
+        {/* Header */}
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+          <Box>
+            <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
+              Device Management
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Monitor and manage all connected IoT devices in your workspace
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Filter Status</InputLabel>
+              <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} label="Filter Status">
+                <MenuItem value="all">All Devices</MenuItem>
+                <MenuItem value="online">Online</MenuItem>
+                <MenuItem value="offline">Offline</MenuItem>
+                <MenuItem value="maintenance">Maintenance</MenuItem>
+              </Select>
+            </FormControl>
+            <Button variant="outlined" startIcon={<Refresh />} sx={{ borderRadius: 2 }}>
+              Refresh
+            </Button>
+            <Button variant="contained" startIcon={<Add />} sx={{ borderRadius: 2 }} onClick={() => setAddDialogOpen(true)}>
+              Add Device
+            </Button>
+          </Box>
+        </Box>
+
         {/* Device Statistics */}
-        <Grid item xs={12}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
-                Device Overview
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button variant="outlined" startIcon={<Refresh />} size="small">
-                  Refresh
-                </Button>
-                <Button variant="contained" startIcon={<Add />} size="small">
-                  Add Device
-                </Button>
+        <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
+              boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <DevicesOther sx={{ fontSize: 28 }} />
               </Box>
-            </Box>
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'primary.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{deviceStats.total}</Typography>
-                  <Typography variant="caption">Total Devices</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'success.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{deviceStats.online}</Typography>
-                  <Typography variant="caption">Online</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'error.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{deviceStats.offline}</Typography>
-                  <Typography variant="caption">Offline</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: 'warning.main', color: 'white' }}>
-                  <Typography variant="h4" fontWeight={700}>{deviceStats.maintenance}</Typography>
-                  <Typography variant="caption">Maintenance</Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
+              <Typography variant="h5" fontWeight={800} color="#3730a3">{deviceStats.total}</Typography>
+              <Typography fontWeight={600} color="#6366f1" fontSize={15}>Total Devices</Typography>
+              <Typography color="#818cf8" fontSize={13}>Connected sensors and devices</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+              boxShadow: '0 2px 8px rgba(34,197,94,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#22c55e', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <CheckCircle sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#14532d">{deviceStats.online}</Typography>
+              <Typography fontWeight={600} color="#16a34a" fontSize={15}>Online</Typography>
+              <Typography color="#22c55e" fontSize={13}>Active and responding</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)',
+              boxShadow: '0 2px 8px rgba(239,68,68,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#ef4444', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Error sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#7f1d1d">{deviceStats.offline}</Typography>
+              <Typography fontWeight={600} color="#dc2626" fontSize={15}>Offline</Typography>
+              <Typography color="#ef4444" fontSize={13}>Not responding</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
+            <Card elevation={0} sx={{
+              p: 3,
+              borderRadius: 4,
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              boxShadow: '0 2px 8px rgba(245,158,11,0.06)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              minHeight: 140,
+            }}>
+              <Box sx={{
+                bgcolor: '#f59e0b', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Warning sx={{ fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" fontWeight={800} color="#92400e">{deviceStats.maintenance}</Typography>
+              <Typography fontWeight={600} color="#d97706" fontSize={15}>Maintenance</Typography>
+              <Typography color="#f59e0b" fontSize={13}>Under maintenance</Typography>
+            </Card>
+          </Grid>
         </Grid>
 
         {/* Device Cards */}
-        {hasDevices ? (
-          mockDevices.map((device) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={device.id}>
-              <DeviceCard device={device} />
+        <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
+          {hasDevices ? (
+            filteredDevices.map((device) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={device.id} sx={{ width: '100%', maxWidth: '100%' }}>
+                <DeviceCard device={device} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
+              <EmptyDevicePlaceholder />
             </Grid>
-          ))
-        ) : (
-          <Grid item xs={12}>
-            <EmptyDevicePlaceholder />
-          </Grid>
-        )}
-      </Grid>
-    </PageContainer>
+          )}
+        </Grid>
+
+        {/* Floating Action Button */}
+        <Fab 
+          color="primary" 
+          sx={{ position: 'fixed', bottom: 24, right: 24 }}
+          onClick={() => setAddDialogOpen(true)}
+        >
+          <Add />
+        </Fab>
+
+        {/* Add Device Dialog */}
+        <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Add New Device</DialogTitle>
+          <DialogContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+              <TextField fullWidth label="Device Name" variant="outlined" />
+              <TextField fullWidth label="Location" variant="outlined" />
+              <FormControl fullWidth>
+                <InputLabel>Device Type</InputLabel>
+                <Select label="Device Type">
+                  <MenuItem value="sensor">Sensor</MenuItem>
+                  <MenuItem value="camera">Camera</MenuItem>
+                  <MenuItem value="controller">Controller</MenuItem>
+                  <MenuItem value="display">Display</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField fullWidth label="MAC Address" variant="outlined" />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setAddDialogOpen(false)}>Cancel</Button>
+            <Button variant="contained" onClick={() => setAddDialogOpen(false)}>Add Device</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </Box>
   );
 } 
