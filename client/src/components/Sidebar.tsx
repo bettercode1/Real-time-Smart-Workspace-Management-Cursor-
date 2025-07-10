@@ -79,12 +79,12 @@ const Sidebar = () => {
         flexShrink: 0,
         height: "100vh",
         background: theme.palette.mode === 'light'
-          ? 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'
-          : 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
-        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#334155'}`,
+          ? '#ffffff'
+          : '#1e293b',
+        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#f1f5f9' : '#334155'}`,
         boxShadow: theme.palette.mode === 'light' 
-          ? '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)'
-          : '0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)',
+          ? '0 0 0 1px rgba(0,0,0,0.05)'
+          : '0 0 0 1px rgba(255,255,255,0.05)',
         display: "flex",
         flexDirection: "column",
         position: "fixed",
@@ -102,15 +102,22 @@ const Sidebar = () => {
             sx={{
               width: 48,
               height: 48,
-              borderRadius: 12,
-              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+              borderRadius: 2,
+              background: theme.palette.mode === 'light'
+                ? '#f8fafc'
+                : '#334155',
+              border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,
             }}
           >
-            <BusinessCenter sx={{ color: "white", fontSize: 24 }} />
+            <BusinessCenter 
+              sx={{ 
+                color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
+                fontSize: 24,
+              }} 
+            />
           </Box>
           <Box>
         <Typography 
@@ -142,25 +149,22 @@ const Sidebar = () => {
             alignItems: "center",
             gap: 2,
             p: 2.5,
-            borderRadius: 3,
+            borderRadius: 2,
             background: theme.palette.mode === 'light' 
-              ? 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
-              : 'linear-gradient(135deg, #334155 0%, #475569 100%)',
+              ? '#f8fafc'
+              : '#334155',
             border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}`,
             transition: 'all 0.2s ease',
-            '&:hover': {
-              transform: 'translateY(-1px)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
-            }
           }}
         >
           <Avatar 
             sx={{ 
-              bgcolor: user?.role === 'admin' ? theme.palette.error.main : theme.palette.success.main,
+              bgcolor: theme.palette.mode === 'light' ? '#e2e8f0' : '#475569',
+              color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
               width: 40,
               height: 40,
               fontSize: 16,
-              fontWeight: 700,
+              fontWeight: 600,
             }}
           >
             {user?.displayName?.charAt(0) || <Person />}
@@ -178,23 +182,19 @@ const Sidebar = () => {
             >
               {user?.displayName || "Guest User"}
             </Typography>
-            <Chip
-              label={user?.role === 'admin' ? 'Administrator' : 'User'}
-              size="small"
-              sx={{
-                backgroundColor: user?.role === 'admin' 
-                  ? alpha(theme.palette.error.main, 0.1) 
-                  : alpha(theme.palette.success.main, 0.1),
-                color: user?.role === 'admin' 
-                  ? theme.palette.error.main 
-                  : theme.palette.success.main,
-                fontWeight: 600,
+            <Chip 
+              label={user?.role === 'admin' ? 'Admin' : 'User'} 
+              size="small" 
+              sx={{ 
+                bgcolor: theme.palette.mode === 'light' ? '#f1f5f9' : '#475569',
+                color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
+                fontWeight: 500,
                 fontSize: '0.7rem',
                 height: 20,
-                border: `1px solid ${user?.role === 'admin' 
-                  ? alpha(theme.palette.error.main, 0.2) 
-                  : alpha(theme.palette.success.main, 0.2)}`
-              }}
+                borderRadius: 1,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }} 
             />
           </Box>
         </Box>
@@ -220,26 +220,17 @@ const Sidebar = () => {
                   overflow: 'hidden',
                   background: active 
                     ? theme.palette.mode === 'light'
-                      ? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.primary.main, 0.04)} 100%)`
-                      : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.15)} 0%, ${alpha(theme.palette.primary.main, 0.08)} 100%)`
+                      ? '#f8fafc'
+                      : '#334155'
                     : 'transparent',
                   border: active 
-                    ? `1px solid ${alpha(theme.palette.primary.main, 0.2)}` 
+                    ? `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}` 
                     : `1px solid transparent`,
                       '&:hover': {
-                    background: active 
-                      ? theme.palette.mode === 'light'
-                        ? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.12)} 0%, ${alpha(theme.palette.primary.main, 0.06)} 100%)`
-                        : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.2)} 0%, ${alpha(theme.palette.primary.main, 0.12)} 100%)`
-                      : theme.palette.mode === 'light'
-                        ? `linear-gradient(135deg, ${alpha(theme.palette.grey[100], 0.8)} 0%, ${alpha(theme.palette.grey[50], 0.8)} 100%)`
-                        : `linear-gradient(135deg, ${alpha(theme.palette.grey[800], 0.8)} 0%, ${alpha(theme.palette.grey[700], 0.8)} 100%)`,
-                    transform: 'translateX(4px)',
-                    border: `1px solid ${active 
-                      ? alpha(theme.palette.primary.main, 0.3) 
-                      : theme.palette.mode === 'light' 
-                        ? '#cbd5e1' 
-                        : '#475569'}`,
+                    background: theme.palette.mode === 'light'
+                      ? '#f1f5f9'
+                      : '#475569',
+                    border: `1px solid ${theme.palette.mode === 'light' ? '#cbd5e1' : '#64748b'}`,
                   },
                   '&::before': active ? {
                     content: '""',
@@ -247,10 +238,10 @@ const Sidebar = () => {
                     left: 0,
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    width: 3,
-                    height: '60%',
-                    background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
-                    borderRadius: '0 2px 2px 0',
+                    width: 2,
+                    height: '50%',
+                    background: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
+                    borderRadius: '0 1px 1px 0',
                   } : {},
                   textDecoration: "none",
                   color: "inherit"
@@ -258,7 +249,9 @@ const Sidebar = () => {
                 >
                   <ListItemIcon 
                     sx={{ 
-                    color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+                    color: active 
+                      ? theme.palette.mode === 'light' ? '#475569' : '#cbd5e1'
+                      : theme.palette.text.secondary,
                       minWidth: 40,
                     transition: 'all 0.2s ease',
                     }}
@@ -270,7 +263,9 @@ const Sidebar = () => {
                     primaryTypographyProps={{
                     fontSize: "0.875rem",
                     fontWeight: active ? 600 : 500,
-                    color: active ? theme.palette.primary.main : theme.palette.text.primary,
+                    color: active 
+                      ? theme.palette.mode === 'light' ? '#334155' : '#e2e8f0'
+                      : theme.palette.text.primary,
                     }}
                   />
               </ListItem>
@@ -289,11 +284,10 @@ const Sidebar = () => {
             borderRadius: 2,
             cursor: "pointer",
             transition: 'all 0.2s ease',
-            background: alpha(theme.palette.error.main, 0.08),
-            border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
+            background: theme.palette.mode === 'light' ? '#fef2f2' : '#450a0a',
+            border: `1px solid ${theme.palette.mode === 'light' ? '#fecaca' : '#7f1d1d'}`,
             '&:hover': {
-              background: alpha(theme.palette.error.main, 0.12),
-              transform: 'translateY(-1px)',
+              background: theme.palette.mode === 'light' ? '#fee2e2' : '#7f1d1d',
               boxShadow: `0 4px 12px ${alpha(theme.palette.error.main, 0.2)}`
             },
             color: theme.palette.error.main,
