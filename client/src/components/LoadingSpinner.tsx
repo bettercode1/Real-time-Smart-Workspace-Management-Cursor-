@@ -184,7 +184,7 @@ const rotation3D = keyframes`
   }
 `;
 
-// Custom 3D Spinning Loader Animation
+// Custom 3D Spinning Loader Animation - Your Exact Design
 const customSpin = keyframes`
   0%, 100% {
     box-shadow: .2em 0px 0 0px currentcolor;
@@ -210,6 +210,13 @@ const customSpin = keyframes`
   87% {
     box-shadow: .2em -.2em 0 0 currentcolor;
   }
+}`;
+
+// BetterCode Logo Animation
+const logoSpin = keyframes`
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
 `;
 
 interface LoadingSpinnerProps {
@@ -222,7 +229,7 @@ interface LoadingSpinnerProps {
 export default function LoadingSpinner({ 
   size = 50, 
   message = 'Loading...', 
-  variant = 'modern',
+  variant = 'custom',
   color = 'primary' 
 }: LoadingSpinnerProps) {
   const theme = useTheme();
@@ -596,7 +603,26 @@ export default function LoadingSpinner({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-      <LoadingSpinner variant="custom" size={size} message="" color={color} />
+      <Box
+        sx={{
+          width: size,
+          height: size,
+          background: `linear-gradient(45deg, ${colorValue}, ${alpha(colorValue, 0.7)})`,
+          borderRadius: '50%',
+          animation: `${ultraFloat} 2s ease-in-out infinite`,
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '10%',
+            left: '10%',
+            width: '80%',
+            height: '80%',
+            background: `linear-gradient(135deg, ${alpha('#ffffff', 0.4)}, transparent)`,
+            borderRadius: '50%',
+          }
+        }}
+      />
       {message && (
         <Typography variant="body2" color="text.secondary" fontWeight={600}>
           {message}
