@@ -15,7 +15,16 @@ import {
   IconButton,
   Divider,
   useTheme,
-  alpha
+  alpha,
+  Badge,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Switch,
+  FormControlLabel,
+  Tooltip,
+  Fab
 } from "@mui/material";
 import {
   Visibility,
@@ -36,235 +45,359 @@ import {
   FloorPlan as FloorIcon,
   Layers,
   ViewComfy,
-  Fullscreen
+  Fullscreen,
+  Computer,
+  Phone,
+  AccessTime,
+  TrendingUp,
+  Business,
+  Wifi,
+  PowerSettingsNew,
+  Monitor,
+  Add,
+  FilterList,
+  Map
 } from "@mui/icons-material";
-import FloorPlan from "@/components/FloorPlan";
-import IAQWidgets from "@/components/IAQWidgets";
+import InteractiveFloorPlan from "@/components/InteractiveFloorPlan";
 import PageContainer from "@/components/PageContainer";
-import LoadingSpinner, { LoadingStats, LoadingCard } from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-const OccupancyStatsCard = () => {
+const FloorControlsCard = () => {
   const theme = useTheme();
-  const occupancyData = [
-    { space: 'Meeting Room 1', current: 6, capacity: 8, status: 'occupied' },
-    { space: 'Meeting Room 2', current: 0, capacity: 12, status: 'available' },
-    { space: 'Open Space Central', current: 24, capacity: 30, status: 'busy' },
-    { space: 'Conference Room A', current: 8, capacity: 15, status: 'occupied' },
-    { space: 'Phone Booth 1', current: 1, capacity: 1, status: 'occupied' },
-    { space: 'Phone Booth 2', current: 0, capacity: 1, status: 'available' },
-    { space: 'Training Room', current: 0, capacity: 25, status: 'maintenance' }
+  const [selectedFloor, setSelectedFloor] = useState('floor-2');
+  const [viewMode, setViewMode] = useState('interactive');
+  const [showLabels, setShowLabels] = useState(true);
+  const [showOccupancy, setShowOccupancy] = useState(true);
+
+  const floors = [
+    { value: 'floor-1', label: 'Floor 1 - Lobby & Reception', rooms: 8, available: 5 },
+    { value: 'floor-2', label: 'Floor 2 - Open Workspace', rooms: 25, available: 18 },
+    { value: 'floor-3', label: 'Floor 3 - Meeting Rooms', rooms: 12, available: 7 },
+    { value: 'floor-4', label: 'Floor 4 - Executive Floor', rooms: 6, available: 4 }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available': return theme.palette.success.main;
-      case 'occupied': return theme.palette.info.main;
-      case 'busy': return theme.palette.warning.main;
-      case 'maintenance': return theme.palette.error.main;
-      default: return theme.palette.grey[500];
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'available': return <CheckCircle />;
-      case 'occupied': return <People />;
-      case 'busy': return <Warning />;
-      case 'maintenance': return <Settings />;
-      default: return <LocationOn />;
-    }
-  };
-
-  const totalCapacity = occupancyData.reduce((sum, item) => sum + item.capacity, 0);
-  const currentOccupancy = occupancyData.reduce((sum, item) => sum + item.current, 0);
-  const utilizationRate = Math.round((currentOccupancy / totalCapacity) * 100);
+  const currentFloor = floors.find(f => f.value === selectedFloor);
 
   return (
-    <Card elevation={0} sx={{ height: '100%' }}>
+    <Card elevation={0} sx={{ height: 'fit-content' }}>
       <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" fontWeight={600}>
-            Real-time Occupancy
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+          Floor Plan Controls
+        </Typography>
+
+        {/* Floor Selection */}
+        <Box sx={{ mb: 3 }}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Select Floor</InputLabel>
+            <Select
+              value={selectedFloor}
+              label="Select Floor"
+              onChange={(e) => setSelectedFloor(e.target.value)}
+            >
+              {floors.map((floor) => (
+                <MenuItem key={floor.value} value={floor.value}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                    <span>{floor.label}</span>
+                    <Chip 
+                      size="small" 
+                      label={`${floor.available}/${floor.rooms}`}
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {/* Current Floor Info */}
+        {currentFloor && (
+          <Box sx={{ mb: 3, p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
+            <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
+              {currentFloor.label}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="body2" color="text.secondary">Available Spaces</Typography>
+              <Typography variant="body2" fontWeight={600} color="success.main">
+                {currentFloor.available} of {currentFloor.rooms}
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              height: 6, 
+              borderRadius: 3, 
+              backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              overflow: 'hidden'
+            }}>
+              <Box sx={{ 
+                height: '100%', 
+                width: `${(currentFloor.available / currentFloor.rooms) * 100}%`, 
+                backgroundColor: theme.palette.success.main,
+                borderRadius: 3,
+                transition: 'width 0.3s ease'
+              }} />
+            </Box>
+          </Box>
+        )}
+
+        {/* View Options */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2 }}>
+            Display Options
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <FormControlLabel
+              control={
+                <Switch 
+                  checked={showLabels} 
+                  onChange={(e) => setShowLabels(e.target.checked)}
+                  size="small"
+                />
+              }
+              label="Show Labels"
+            />
+            <FormControlLabel
+              control={
+                <Switch 
+                  checked={showOccupancy} 
+                  onChange={(e) => setShowOccupancy(e.target.checked)}
+                  size="small"
+                />
+              }
+              label="Show Occupancy"
+            />
+          </Box>
+        </Box>
+
+        {/* Quick Actions */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Button 
+            variant="outlined" 
+            startIcon={<Computer />} 
+            fullWidth 
+            sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
+          >
+            Find Available Desk
+          </Button>
+          <Button 
+            variant="outlined" 
+            startIcon={<People />} 
+            fullWidth 
+            sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
+          >
+            Book Meeting Room
+          </Button>
+          <Button 
+            variant="outlined" 
+            startIcon={<Phone />} 
+            fullWidth 
+            sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
+          >
+            Reserve Phone Booth
+          </Button>
+          <Button 
+            variant="outlined" 
+            startIcon={<Map />} 
+            fullWidth 
+            sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
+          >
+            Export Floor Plan
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+
+const SpaceStatsCard = () => {
+  const theme = useTheme();
+  
+  const spaceTypes = [
+    { 
+      type: 'Desks', 
+      total: 45, 
+      available: 32, 
+      occupied: 13, 
+      icon: <Computer />,
+      color: theme.palette.primary.main
+    },
+    { 
+      type: 'Meeting Rooms', 
+      total: 8, 
+      available: 5, 
+      occupied: 3, 
+      icon: <People />,
+      color: theme.palette.success.main
+    },
+    { 
+      type: 'Phone Booths', 
+      total: 6, 
+      available: 4, 
+      occupied: 2, 
+      icon: <Phone />,
+      color: theme.palette.warning.main
+    }
+  ];
+
+  return (
+    <Card elevation={0} sx={{ height: 'fit-content' }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h6" fontWeight={700}>
+            Space Statistics
           </Typography>
           <Button size="small" startIcon={<Refresh />}>
             Refresh
           </Button>
         </Box>
 
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography variant="subtitle2">Overall Utilization</Typography>
-            <Typography variant="subtitle2" color="primary.main">
-              {currentOccupancy}/{totalCapacity} ({utilizationRate}%)
-            </Typography>
-          </Box>
-          <Box sx={{ 
-            height: 8, 
-            borderRadius: 4, 
-            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-            overflow: 'hidden'
-          }}>
-            <Box sx={{ 
-              height: '100%', 
-              width: `${utilizationRate}%`, 
-              backgroundColor: theme.palette.primary.main,
-              borderRadius: 4,
-              transition: 'width 0.3s ease'
-            }} />
-          </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {spaceTypes.map((space, index) => {
+            const utilizationRate = Math.round((space.occupied / space.total) * 100);
+            
+            return (
+              <Box key={index}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    backgroundColor: alpha(space.color, 0.1),
+                    color: space.color,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mr: 2
+                  }}>
+                    {space.icon}
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      {space.type}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {space.available} available of {space.total}
+                    </Typography>
+                  </Box>
+                  <Typography variant="h6" fontWeight={700} color={space.color}>
+                    {utilizationRate}%
+                  </Typography>
+                </Box>
+                
+                <Box sx={{ 
+                  height: 6, 
+                  borderRadius: 3, 
+                  backgroundColor: alpha(space.color, 0.1),
+                  overflow: 'hidden'
+                }}>
+                  <Box sx={{ 
+                    height: '100%', 
+                    width: `${utilizationRate}%`, 
+                    backgroundColor: space.color,
+                    borderRadius: 3,
+                    transition: 'width 0.3s ease'
+                  }} />
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
 
-        <List sx={{ p: 0, maxHeight: 300, overflow: 'auto' }}>
-          {occupancyData.map((item, index) => (
-            <ListItem key={index} sx={{ px: 0, py: 1 }}>
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Box sx={{ color: getStatusColor(item.status) }}>
-                  {getStatusIcon(item.status)}
-                </Box>
-              </ListItemIcon>
-              <ListItemText
-                primary={
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {item.space}
-                    </Typography>
-                    <Chip 
-                      label={item.status}
-                      size="small"
-                      sx={{ 
-                        backgroundColor: alpha(getStatusColor(item.status), 0.1),
-                        color: getStatusColor(item.status),
-                        fontWeight: 600
-                      }}
-                    />
-                  </Box>
-                }
-                secondary={
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {item.current} / {item.capacity} people
-                    </Typography>
-                    <Box sx={{ 
-                      width: 60, 
-                      height: 4, 
-                      borderRadius: 2, 
-                      backgroundColor: alpha(getStatusColor(item.status), 0.2),
-                      overflow: 'hidden'
-                    }}>
-                      <Box sx={{ 
-                        height: '100%', 
-                        width: `${(item.current / item.capacity) * 100}%`, 
-                        backgroundColor: getStatusColor(item.status),
-                        borderRadius: 2
-                      }} />
-                    </Box>
-                  </Box>
-                }
-              />
-            </ListItem>
-          ))}
-        </List>
+        <Divider sx={{ my: 3 }} />
+
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="h4" fontWeight={700} color="primary.main" sx={{ mb: 1 }}>
+            72%
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Overall Space Utilization
+          </Typography>
+          <Chip 
+            icon={<TrendingUp />}
+            label="+8% from yesterday"
+            color="success"
+            variant="outlined"
+            size="small"
+          />
+        </Box>
       </CardContent>
     </Card>
   );
 };
 
-const FloorPlanControlsCard = () => {
+const EnvironmentCard = () => {
   const theme = useTheme();
-  const [viewMode, setViewMode] = useState('occupancy');
-  const [zoomLevel, setZoomLevel] = useState(100);
-
-  const viewModes = [
-    { value: 'occupancy', label: 'Occupancy', icon: <People /> },
-    { value: 'bookings', label: 'Bookings', icon: <EventAvailable /> },
-    { value: 'environment', label: 'Environment', icon: <Air /> },
-    { value: 'layout', label: 'Layout', icon: <ViewComfy /> }
+  
+  const environmentData = [
+    {
+      metric: 'Temperature',
+      value: '72°F',
+      status: 'optimal',
+      icon: <Thermostat />,
+      color: theme.palette.info.main
+    },
+    {
+      metric: 'Air Quality',
+      value: '420 ppm',
+      status: 'good',
+      icon: <Air />,
+      color: theme.palette.success.main
+    },
+    {
+      metric: 'Humidity',
+      value: '45%',
+      status: 'optimal',
+      icon: <WaterDrop />,
+      color: theme.palette.primary.main
+    }
   ];
 
   return (
-    <Card elevation={0} sx={{ height: '100%' }}>
+    <Card elevation={0} sx={{ height: 'fit-content' }}>
       <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-          Floor Plan Controls
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+          Environment Status
         </Typography>
 
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            View Mode
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {viewModes.map((mode) => (
-              <Chip
-                key={mode.value}
-                icon={mode.icon}
-                label={mode.label}
-                clickable
-                color={viewMode === mode.value ? 'primary' : 'default'}
-                onClick={() => setViewMode(mode.value)}
-                sx={{ mb: 1 }}
-              />
-            ))}
-          </Box>
-        </Box>
-
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Zoom Level: {zoomLevel}%
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton 
-              size="small" 
-              onClick={() => setZoomLevel(Math.max(50, zoomLevel - 10))}
-              disabled={zoomLevel <= 50}
-            >
-              <ZoomOut />
-            </IconButton>
-            <Box sx={{ 
-              flex: 1, 
-              height: 4, 
-              borderRadius: 2, 
-              backgroundColor: alpha(theme.palette.primary.main, 0.2),
-              position: 'relative'
-            }}>
-              <Box sx={{ 
-                height: '100%', 
-                width: `${(zoomLevel - 50) / 1.5}%`, 
-                backgroundColor: theme.palette.primary.main,
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {environmentData.map((item, index) => (
+            <Box 
+              key={index}
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                p: 2, 
                 borderRadius: 2,
-                transition: 'width 0.3s ease'
-              }} />
-            </Box>
-            <IconButton 
-              size="small" 
-              onClick={() => setZoomLevel(Math.min(200, zoomLevel + 10))}
-              disabled={zoomLevel >= 200}
+                backgroundColor: alpha(item.color, 0.05),
+                border: `1px solid ${alpha(item.color, 0.1)}`
+              }}
             >
-              <ZoomIn />
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
-          <Button variant="outlined" startIcon={<Layers />} size="small">
-            Toggle Layers
-          </Button>
-          <Button variant="outlined" startIcon={<Fullscreen />} size="small">
-            Fullscreen
-          </Button>
-          <Button variant="outlined" startIcon={<Settings />} size="small">
-            Settings
-          </Button>
-        </Box>
-
-        <Box sx={{ mt: 3, p: 2, borderRadius: 2, backgroundColor: alpha(theme.palette.info.main, 0.1) }}>
-          <Typography variant="caption" color="info.main" fontWeight={600}>
-            💡 Tips:
-          </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-            Click on any room to view details or make a booking. Use the view modes to see different data overlays.
-          </Typography>
+              <Box sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                backgroundColor: alpha(item.color, 0.1),
+                color: item.color,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2
+              }}>
+                {item.icon}
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="body2" fontWeight={600}>
+                  {item.metric}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Status: {item.status}
+                </Typography>
+              </Box>
+              <Typography variant="h6" fontWeight={700} color={item.color}>
+                {item.value}
+              </Typography>
+            </Box>
+          ))}
         </Box>
       </CardContent>
     </Card>
@@ -273,212 +406,147 @@ const FloorPlanControlsCard = () => {
 
 export default function FloorPlanPage() {
   const theme = useTheme();
-  const [selectedView, setSelectedView] = useState('2D');
-  const [selectedFloor, setSelectedFloor] = useState('Floor 1');
-  const [zoomLevel, setZoomLevel] = useState(100);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  // Simulate initial loading
-  React.useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
+    setTimeout(() => setRefreshing(false), 2000);
   };
 
   return (
-    <Box sx={{
-      minHeight: '100%',
-      width: '100%',
-      maxWidth: '100%',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
-      position: 'relative',
-      pb: 6,
-      overflowX: 'hidden'
-    }}>
+    <PageContainer
+      title="Interactive Floor Plan"
+      description="View real-time occupancy, book available spaces, and monitor environment conditions"
+    >
+      {/* Header Actions */}
       <Box sx={{ 
-        maxWidth: '1400px', 
-        mx: 'auto', 
-        px: { xs: 2, md: 3 }, 
-        pt: { xs: 4, md: 6 },
-        width: '100%',
-        overflowX: 'hidden'
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        mb: 3,
+        flexWrap: 'wrap',
+        gap: 2
       }}>
-        {/* Header */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
-          <Box>
-            <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
-              Interactive Floor Plan
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-              Real-time floor plan with live occupancy status and booking controls
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="outlined" startIcon={<Layers />} sx={{ borderRadius: 2 }}>
-              {selectedFloor}
-            </Button>
-            <Button variant="outlined" startIcon={<ViewComfy />} sx={{ borderRadius: 2 }}>
-              {selectedView} View
-            </Button>
-            <Button 
-              variant="outlined" 
-              startIcon={refreshing ? <LoadingSpinner size={16} variant="wave" /> : <Refresh />} 
-              sx={{ borderRadius: 2 }}
-              onClick={handleRefresh}
-              disabled={refreshing}
-            >
-              {refreshing ? 'Refreshing...' : 'Refresh'}
-            </Button>
-            <Button variant="contained" startIcon={<Fullscreen />} sx={{ borderRadius: 2 }}>
-              Full Screen
-            </Button>
-          </Box>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Chip 
+            icon={<CheckCircle />} 
+            label="32 Available" 
+            color="success" 
+            variant="outlined"
+          />
+          <Chip 
+            icon={<AccessTime />} 
+            label="13 Occupied" 
+            color="warning" 
+            variant="outlined"
+          />
+          <Chip 
+            icon={<Warning />} 
+            label="2 Maintenance" 
+            color="error" 
+            variant="outlined"
+          />
         </Box>
 
-        {/* Quick Stats */}
-        {loading ? (
-          <LoadingStats />
-        ) : (
-          <Grid container spacing={3} sx={{ mb: 4, width: '100%', mx: 0 }}>
-            <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-              <Card elevation={0} sx={{
-                p: 3,
-                borderRadius: 4,
-                background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
-                boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
-                display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                minHeight: 140,
-              }}>
-                <Box sx={{
-                  bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <People sx={{ fontSize: 28 }} />
-                </Box>
-                <Typography variant="h5" fontWeight={800} color="#3730a3">58</Typography>
-                <Typography fontWeight={600} color="#6366f1" fontSize={15}>Current Occupancy</Typography>
-                <Typography color="#818cf8" fontSize={13}>Out of 92 capacity</Typography>
-              </Card>
-            </Grid>
-          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{
-              p: 3,
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-              boxShadow: '0 2px 8px rgba(34,197,94,0.06)',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-              minHeight: 140,
-            }}>
-              <Box sx={{
-                bgcolor: '#22c55e', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <CheckCircle sx={{ fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" fontWeight={800} color="#14532d">12</Typography>
-              <Typography fontWeight={600} color="#16a34a" fontSize={15}>Available Rooms</Typography>
-              <Typography color="#22c55e" fontSize={13}>Ready for booking</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{
-              p: 3,
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-              boxShadow: '0 2px 8px rgba(245,158,11,0.06)',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-              minHeight: 140,
-            }}>
-              <Box sx={{
-                bgcolor: '#f59e0b', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <EventAvailable sx={{ fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" fontWeight={800} color="#92400e">8</Typography>
-              <Typography fontWeight={600} color="#d97706" fontSize={15}>Active Bookings</Typography>
-              <Typography color="#f59e0b" fontSize={13}>Currently in use</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{
-              p: 3,
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
-              boxShadow: '0 2px 8px rgba(236,72,153,0.06)',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-              minHeight: 140,
-            }}>
-              <Box sx={{
-                bgcolor: '#ec4899', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Air sx={{ fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" fontWeight={800} color="#831843">Good</Typography>
-              <Typography fontWeight={600} color="#be185d" fontSize={15}>Air Quality</Typography>
-              <Typography color="#ec4899" fontSize={13}>All rooms optimal</Typography>
-            </Card>
-          </Grid>
-        </Grid>
-        )}
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Button
+            variant="outlined"
+            startIcon={refreshing ? <LoadingSpinner size={16} variant="modern" /> : <Refresh />}
+            onClick={handleRefresh}
+            disabled={refreshing}
+            sx={{ borderRadius: 2 }}
+          >
+            {refreshing ? 'Refreshing...' : 'Refresh'}
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            sx={{ 
+              borderRadius: 2,
+              background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`
+            }}
+          >
+            Quick Book
+          </Button>
+        </Box>
+      </Box>
 
-        {/* Main Content */}
-        {loading ? (
-          <Box sx={{ my: 4 }}>
-            <LoadingCard />
-          </Box>
-        ) : (
-        <Grid container spacing={3} sx={{ width: '100%', mx: 0 }}>
-          {/* Floor Plan */}
-          <Grid item xs={12} md={8} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
-              minHeight: 600
-            }}>
+      <Grid container spacing={3}>
+        {/* Main Floor Plan - Full Width */}
+        <Grid item xs={12}>
+          <Card elevation={0} sx={{ borderRadius: 3, minHeight: 600 }}>
+            <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6" fontWeight={600}>
-                  Floor Plan - {selectedFloor}
+                <Typography variant="h6" fontWeight={700}>
+                  Floor Plan - Click Available Seats to Book
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton size="small" onClick={() => setZoomLevel(prev => Math.min(prev + 10, 200))}><ZoomIn /></IconButton>
-                  <Typography variant="caption" sx={{ px: 2, py: 1, bgcolor: 'grey.100', borderRadius: 1 }}>
-                    {zoomLevel}%
-                  </Typography>
-                  <IconButton size="small" onClick={() => setZoomLevel(prev => Math.max(prev - 10, 50))}><ZoomOut /></IconButton>
-                  <IconButton size="small"><Refresh /></IconButton>
+                  <Tooltip title="Zoom In">
+                    <IconButton size="small" color="primary">
+                      <ZoomIn />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Zoom Out">
+                    <IconButton size="small" color="primary">
+                      <ZoomOut />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Fullscreen">
+                    <IconButton size="small" color="primary">
+                      <Fullscreen />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               </Box>
-              <FloorPlan />
-            </Card>
-          </Grid>
+              
+              {/* Interactive Floor Plan Component */}
+              <InteractiveFloorPlan />
+            </CardContent>
+          </Card>
+        </Grid>
 
-          {/* Occupancy Stats */}
-          <Grid item xs={12} md={4} sx={{ width: '100%', maxWidth: '100%' }}>
-            <OccupancyStatsCard />
-          </Grid>
-
-          {/* IAQ Overview */}
-          <Grid item xs={12} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Card elevation={0} sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              background: '#fff',
-              boxShadow: '0 2px 12px rgba(99,102,241,0.06)'
-            }}>
-              <Typography variant="h6" fontWeight={600} mb={3}>
-                Environmental Overview
-              </Typography>
-              <IAQWidgets />
-            </Card>
+        {/* Controls and Stats Sidebar */}
+        <Grid item xs={12} md={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FloorControlsCard />
+            </Grid>
           </Grid>
         </Grid>
-        )}
-      </Box>
-    </Box>
+
+        <Grid item xs={12} md={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <SpaceStatsCard />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <EnvironmentCard />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      {/* Floating Action Button for Quick Booking */}
+      <Fab
+        color="primary"
+        aria-label="quick book"
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+          '&:hover': {
+            background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
+          }
+        }}
+      >
+        <Add />
+      </Fab>
+    </PageContainer>
   );
 }
