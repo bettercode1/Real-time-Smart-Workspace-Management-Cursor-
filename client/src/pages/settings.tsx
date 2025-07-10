@@ -27,7 +27,9 @@ import {
   DialogContent,
   DialogActions,
   useTheme,
-  alpha
+  alpha,
+  Snackbar,
+  FormControlLabel
 } from "@mui/material";
 import {
   Person,
@@ -60,626 +62,587 @@ import {
   Storage,
   Update,
   BugReport,
-  QuestionAnswer
+  QuestionAnswer,
+  DarkMode,
+  LightMode,
+  Translate,
+  Download,
+  Upload,
+  DeleteForever,
+  ContactSupport
 } from "@mui/icons-material";
 import PageContainer from '@/components/PageContainer';
+import { useSettings } from '@/contexts/SettingsContext';
 
-const SystemStatusCard = () => {
-  const theme = useTheme();
-  const systemStatus = {
-    version: 'v2.1.0',
-    uptime: '15 days, 8 hours',
-    lastUpdate: '2024-01-10',
-    storage: {
-      used: 2.4,
-      total: 10,
-      percentage: 24
-    },
-    performance: 'Excellent',
-    backup: {
-      lastBackup: '2024-01-15 03:00',
-      status: 'Success',
-      size: '1.2 GB'
-    }
-  };
-
-  return (
-    <Card elevation={0} sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-          System Status
-        </Typography>
-
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={6}>
-            <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.primary.main, 0.1) }}>
-              <Typography variant="h6" fontWeight={700} color="primary.main">
-                {systemStatus.version}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">Version</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
-            <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.success.main, 0.1) }}>
-              <Typography variant="h6" fontWeight={700} color="success.main">
-                {systemStatus.performance}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">Performance</Typography>
-            </Box>
-          </Grid>
-        </Grid>
-
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography variant="subtitle2">Storage Usage</Typography>
-            <Typography variant="subtitle2" color="text.secondary">
-              {systemStatus.storage.used}GB / {systemStatus.storage.total}GB
-            </Typography>
-          </Box>
-          <Box sx={{ 
-            height: 8, 
-            borderRadius: 4, 
-            backgroundColor: alpha(theme.palette.warning.main, 0.1),
-            overflow: 'hidden'
-          }}>
-            <Box sx={{ 
-              height: '100%', 
-              width: `${systemStatus.storage.percentage}%`, 
-              backgroundColor: theme.palette.warning.main,
-              borderRadius: 4,
-              transition: 'width 0.3s ease'
-            }} />
-          </Box>
-        </Box>
-
-        <List sx={{ p: 0 }}>
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon>
-              <Schedule />
-            </ListItemIcon>
-            <ListItemText
-              primary="Uptime"
-              secondary={systemStatus.uptime}
-            />
-          </ListItem>
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon>
-              <Backup />
-            </ListItemIcon>
-            <ListItemText
-              primary="Last Backup"
-              secondary={`${systemStatus.backup.lastBackup} (${systemStatus.backup.size})`}
-            />
-          </ListItem>
-          <ListItem sx={{ px: 0 }}>
-            <ListItemIcon>
-              <Update />
-            </ListItemIcon>
-            <ListItemText
-              primary="Last Update"
-              secondary={systemStatus.lastUpdate}
-            />
-          </ListItem>
-        </List>
-
-        <Button variant="outlined" fullWidth startIcon={<Update />} sx={{ mt: 2 }}>
-          Check for Updates
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const AppearanceSettingsCard = () => {
-  const theme = useTheme();
-  const [themeMode, setThemeMode] = useState('light');
-  const [compactMode, setCompactMode] = useState(false);
-  const [language, setLanguage] = useState('en');
-  const [fontSize, setFontSize] = useState(14);
-
-  return (
-    <Card elevation={0} sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={600} sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-          <Palette sx={{ mr: 1 }} />
-          Appearance
-        </Typography>
-
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Theme
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Chip
-              label="Light"
-              clickable
-              color={themeMode === 'light' ? 'primary' : 'default'}
-              onClick={() => setThemeMode('light')}
-            />
-            <Chip
-              label="Dark"
-              clickable
-              color={themeMode === 'dark' ? 'primary' : 'default'}
-              onClick={() => setThemeMode('dark')}
-            />
-            <Chip
-              label="Auto"
-              clickable
-              color={themeMode === 'auto' ? 'primary' : 'default'}
-              onClick={() => setThemeMode('auto')}
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Font Size: {fontSize}px
-          </Typography>
-          <Slider
-            value={fontSize}
-            onChange={(e, newValue) => setFontSize(newValue as number)}
-            min={12}
-            max={18}
-            step={1}
-            marks
-            valueLabelDisplay="auto"
-          />
-        </Box>
-
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>Language</InputLabel>
-          <Select
-            value={language}
-            label="Language"
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="es">Spanish</MenuItem>
-            <MenuItem value="fr">French</MenuItem>
-            <MenuItem value="de">German</MenuItem>
-            <MenuItem value="zh">Chinese</MenuItem>
-            <MenuItem value="ja">Japanese</MenuItem>
-          </Select>
-        </FormControl>
-
-        <List sx={{ p: 0 }}>
-          <ListItem sx={{ px: 0 }}>
-            <ListItemText
-              primary="Compact Mode"
-              secondary="Show more content in less space"
-            />
-            <Switch
-              checked={compactMode}
-              onChange={(e) => setCompactMode(e.target.checked)}
-            />
-          </ListItem>
-        </List>
-
-        <Button variant="contained" fullWidth startIcon={<Save />} sx={{ mt: 2 }}>
-          Save Preferences
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const DataPrivacyCard = () => {
-  const theme = useTheme();
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const privacySettings = [
-    { 
-      title: 'Data Collection', 
-      description: 'Allow usage analytics to improve the service',
-      enabled: true,
-      icon: <DataUsage />
-    },
-    { 
-      title: 'Location Tracking', 
-      description: 'Track your location for better workspace recommendations',
-      enabled: false,
-      icon: <Storage />
-    },
-    { 
-      title: 'Third-party Sharing', 
-      description: 'Share anonymized data with partners',
-      enabled: false,
-      icon: <CloudDownload />
-    }
-  ];
-
-  return (
-    <Card elevation={0} sx={{ height: '100%' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={600} sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-          <Security sx={{ mr: 1 }} />
-          Security & Privacy
-        </Typography>
-
-        <Box sx={{ mb: 3 }}>
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<Key />}
-            onClick={() => setShowPasswordDialog(true)}
-            sx={{ mb: 2 }}
-          >
-            Change Password
-          </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<Lock />}
-            sx={{ mb: 2 }}
-          >
-            Enable Two-Factor Authentication
-          </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<Badge />}
-          >
-            Manage Badge Access
-          </Button>
-        </Box>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Typography variant="subtitle2" sx={{ mb: 2 }}>
-          Privacy Settings
-        </Typography>
-
-        <List sx={{ p: 0 }}>
-          {privacySettings.map((setting, index) => (
-            <ListItem key={index} sx={{ px: 0 }}>
-              <ListItemIcon>
-                {setting.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={setting.title}
-                secondary={setting.description}
-              />
-              <Switch
-                checked={setting.enabled}
-                onChange={() => {}}
-              />
-            </ListItem>
-          ))}
-        </List>
-
-        <Alert severity="info" sx={{ mt: 2 }}>
-          Your data is encrypted and stored securely. We never share personal information without your consent.
-        </Alert>
-
-        <Dialog open={showPasswordDialog} onClose={() => setShowPasswordDialog(false)}>
-          <DialogTitle>Change Password</DialogTitle>
-          <DialogContent>
-            <Box sx={{ pt: 2 }}>
-              <TextField
-                fullWidth
-                label="Current Password"
-                type={showPassword ? 'text' : 'password'}
-                sx={{ mb: 2 }}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  )
-                }}
-              />
-              <TextField
-                fullWidth
-                label="New Password"
-                type={showPassword ? 'text' : 'password'}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Confirm New Password"
-                type={showPassword ? 'text' : 'password'}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
-            <Button variant="contained">Change Password</Button>
-          </DialogActions>
-        </Dialog>
-      </CardContent>
-    </Card>
-  );
+const translations = {
+  en: {
+    title: "Settings",
+    subtitle: "Manage your preferences and account settings",
+    profile: "Profile Settings",
+    notifications: "Notification Preferences", 
+    security: "Security & Privacy",
+    appearance: "Appearance & Language",
+    system: "System Information",
+    help: "Help & Support",
+    save: "Save Changes",
+    cancel: "Cancel",
+    edit: "Edit",
+    name: "Full Name",
+    email: "Email Address", 
+    badgeId: "Badge ID",
+    department: "Department",
+    darkMode: "Dark Mode",
+    language: "Language",
+    english: "English",
+    arabic: "Arabic",
+    emailNotifications: "Email Notifications",
+    smsNotifications: "SMS Notifications", 
+    pushNotifications: "Push Notifications",
+    soundNotifications: "Sound Notifications",
+    vibrationNotifications: "Vibration",
+    twoFactor: "Two-Factor Authentication",
+    changePassword: "Change Password",
+    exportData: "Export Data",
+    deleteAccount: "Delete Account",
+    userGuide: "User Guide",
+    faq: "FAQ",
+    reportIssue: "Report Issue",
+    contactSupport: "Contact Support",
+    version: "Version",
+    uptime: "Uptime", 
+    lastUpdate: "Last Update",
+    storage: "Storage",
+    performance: "Performance",
+    backup: "Backup"
+  },
+  ar: {
+    title: "الإعدادات",
+    subtitle: "إدارة تفضيلاتك وإعدادات الحساب",
+    profile: "إعدادات الملف الشخصي",
+    notifications: "تفضيلات الإشعارات",
+    security: "الأمان والخصوصية", 
+    appearance: "المظهر واللغة",
+    system: "معلومات النظام",
+    help: "المساعدة والدعم",
+    save: "حفظ التغييرات",
+    cancel: "إلغاء",
+    edit: "تعديل",
+    name: "الاسم الكامل",
+    email: "عنوان البريد الإلكتروني",
+    badgeId: "رقم الشارة", 
+    department: "القسم",
+    darkMode: "الوضع المظلم",
+    language: "اللغة",
+    english: "الإنجليزية",
+    arabic: "العربية",
+    emailNotifications: "إشعارات البريد الإلكتروني",
+    smsNotifications: "إشعارات الرسائل النصية",
+    pushNotifications: "الإشعارات المدفوعة",
+    soundNotifications: "إشعارات الصوت",
+    vibrationNotifications: "الاهتزاز",
+    twoFactor: "المصادقة الثنائية",
+    changePassword: "تغيير كلمة المرور",
+    exportData: "تصدير البيانات",
+    deleteAccount: "حذف الحساب",
+    userGuide: "دليل المستخدم",
+    faq: "الأسئلة الشائعة",
+    reportIssue: "الإبلاغ عن مشكلة",
+    contactSupport: "اتصل بالدعم",
+    version: "النسخة",
+    uptime: "وقت التشغيل",
+    lastUpdate: "آخر تحديث",
+    storage: "التخزين",
+    performance: "الأداء",
+    backup: "النسخ الاحتياطي"
+  }
 };
 
 export default function SettingsPage() {
   const theme = useTheme();
-  const [profileData, setProfileData] = useState({
-    displayName: 'John Doe',
-    email: 'john.doe@company.com',
-    department: 'Engineering',
-    badgeId: 'BADGE001',
-    phone: '+1 (555) 123-4567'
-  });
+  const {
+    themeMode, 
+    toggleTheme, 
+    language, 
+    setLanguage, 
+    notifications,
+    updateNotificationSetting,
+    twoFactorEnabled,
+    setTwoFactorEnabled,
+    profile,
+    updateProfile
+  } = useSettings();
 
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    sms: false,
-    bookingReminders: true,
-    iaqAlerts: true,
-    systemUpdates: false
-  });
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [tempProfile, setTempProfile] = useState(profile);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
+
+  const t = translations[language];
+
+  const showSnackbar = (message: string, severity: 'success' | 'error' = 'success') => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   const handleProfileSave = () => {
-    // Save profile logic here
-    console.log('Saving profile:', profileData);
+    updateProfile(tempProfile);
+    setEditingProfile(false);
+    showSnackbar('Profile updated successfully!');
+  };
+
+  const handleExportData = () => {
+    const data = {
+      profile,
+      settings: { themeMode, language, notifications, twoFactorEnabled },
+      exportDate: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `smartspace-settings-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportDialog(false);
+    showSnackbar('Settings exported successfully!');
+  };
+
+  const handleChangePassword = () => {
+    setShowPasswordDialog(false);
+    showSnackbar('Password change email sent!');
+  };
+
+  const systemStatus = {
+    version: 'v2.1.0',
+    uptime: '15 days, 8 hours',
+    lastUpdate: '2024-01-10',
+    storage: { used: 2.4, total: 10, percentage: 24 },
+    performance: 'Excellent',
+    backup: { lastBackup: '2024-01-15 03:00', status: 'Success', size: '1.2 GB' }
   };
 
   return (
-    <PageContainer
-      title="Settings"
-      description="Manage your preferences and system configuration"
-    >
+    <PageContainer title={t.title} description={t.subtitle}>
       <Grid container spacing={3}>
         {/* Profile Settings */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-            <Typography variant="h6" fontWeight={600} mb={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Person sx={{ mr: 1 }} />
-              Profile Settings
-            </Typography>
-            
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-              <Box sx={{ position: 'relative' }}>
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    backgroundColor: theme.palette.primary.main,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: 24,
-                    fontWeight: 700
-                  }}
-                >
-                  JD
-                </Box>
-                <IconButton
-                  size="small"
-                  sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    boxShadow: 1,
-                    '&:hover': { backgroundColor: 'grey.100' }
-                  }}
-                >
-                  <Edit fontSize="small" />
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" fontWeight={600} sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Person sx={{ mr: 1 }} />
+                  {t.profile}
+                </Typography>
+                <IconButton onClick={() => setEditingProfile(!editingProfile)} color="primary">
+                  <Edit />
                 </IconButton>
               </Box>
-            </Box>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Display Name"
-                  value={profileData.displayName}
-                  onChange={(e) => setProfileData({...profileData, displayName: e.target.value})}
-                  variant="outlined"
-                  size="small"
-                />
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label={t.name}
+                    value={editingProfile ? tempProfile.name : profile.name}
+                    onChange={(e) => setTempProfile({ ...tempProfile, name: e.target.value })}
+                    disabled={!editingProfile}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label={t.email}
+                    value={editingProfile ? tempProfile.email : profile.email}
+                    onChange={(e) => setTempProfile({ ...tempProfile, email: e.target.value })}
+                    disabled={!editingProfile}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label={t.badgeId}
+                    value={editingProfile ? tempProfile.badgeId : profile.badgeId}
+                    onChange={(e) => setTempProfile({ ...tempProfile, badgeId: e.target.value })}
+                    disabled={!editingProfile}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label={t.department}
+                    value={editingProfile ? tempProfile.department : profile.department}
+                    onChange={(e) => setTempProfile({ ...tempProfile, department: e.target.value })}
+                    disabled={!editingProfile}
+                    variant="outlined"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                  variant="outlined"
-                  size="small"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Department"
-                  value={profileData.department}
-                  onChange={(e) => setProfileData({...profileData, department: e.target.value})}
-                  variant="outlined"
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Badge ID"
-                  value={profileData.badgeId}
-                  onChange={(e) => setProfileData({...profileData, badgeId: e.target.value})}
-                  variant="outlined"
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Phone"
-                  value={profileData.phone}
-                  onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                  variant="outlined"
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button 
-                  variant="contained" 
-                  startIcon={<Save />}
-                  onClick={handleProfileSave}
-                  fullWidth
-                >
-                  Save Changes
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
+
+              {editingProfile && (
+                <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                  <Button variant="contained" onClick={handleProfileSave} startIcon={<Save />}>
+                    {t.save}
+                  </Button>
+                  <Button variant="outlined" onClick={() => setEditingProfile(false)}>
+                    {t.cancel}
+                  </Button>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Appearance & Language */}
+        <Grid item xs={12} md={6}>
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Palette sx={{ mr: 1 }} />
+                {t.appearance}
+              </Typography>
+
+              <List>
+                <ListItem>
+                  <ListItemIcon>
+                    {themeMode === 'dark' ? <DarkMode /> : <LightMode />}
+                  </ListItemIcon>
+                  <ListItemText primary={t.darkMode} />
+                  <Switch
+                    checked={themeMode === 'dark'}
+                    onChange={toggleTheme}
+                    color="primary"
+                  />
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemIcon>
+                    <Translate />
+                  </ListItemIcon>
+                  <ListItemText primary={t.language} />
+                  <FormControl size="small" sx={{ minWidth: 120 }}>
+                    <Select
+                      value={language}
+                      onChange={(e) => setLanguage(e.target.value as 'en' | 'ar')}
+                      displayEmpty
+                    >
+                      <MenuItem value="en">{t.english}</MenuItem>
+                      <MenuItem value="ar">{t.arabic}</MenuItem>
+                    </Select>
+                  </FormControl>
+                </ListItem>
+              </List>
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Notification Settings */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-            <Typography variant="h6" fontWeight={600} mb={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Notifications sx={{ mr: 1 }} />
-              Notification Preferences
-            </Typography>
-            
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Notification Methods
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Notifications sx={{ mr: 1 }} />
+                {t.notifications}
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <Chip
-                  icon={<Email />}
-                  label="Email"
-                  color={notifications.email ? 'primary' : 'default'}
-                  clickable
-                  onClick={() => setNotifications({...notifications, email: !notifications.email})}
-                />
-                <Chip
-                  icon={<Notifications />}
-                  label="Push"
-                  color={notifications.push ? 'primary' : 'default'}
-                  clickable
-                  onClick={() => setNotifications({...notifications, push: !notifications.push})}
-                />
-                <Chip
-                  icon={<Sms />}
-                  label="SMS"
-                  color={notifications.sms ? 'primary' : 'default'}
-                  clickable
-                  onClick={() => setNotifications({...notifications, sms: !notifications.sms})}
-                />
-              </Box>
-            </Box>
 
-            <List sx={{ p: 0 }}>
-              <ListItem sx={{ px: 0 }}>
-                <ListItemText
-                  primary="Booking Reminders"
-                  secondary="Get reminded about upcoming bookings"
-                />
-                <Switch
-                  checked={notifications.bookingReminders}
-                  onChange={(e) => setNotifications({...notifications, bookingReminders: e.target.checked})}
-                />
-              </ListItem>
-              <ListItem sx={{ px: 0 }}>
-                <ListItemText
-                  primary="IAQ Alerts"
-                  secondary="Environmental quality notifications"
-                />
-                <Switch
-                  checked={notifications.iaqAlerts}
-                  onChange={(e) => setNotifications({...notifications, iaqAlerts: e.target.checked})}
-                />
-              </ListItem>
-              <ListItem sx={{ px: 0 }}>
-                <ListItemText
-                  primary="System Updates"
-                  secondary="Notifications about system maintenance"
-                />
-                <Switch
-                  checked={notifications.systemUpdates}
-                  onChange={(e) => setNotifications({...notifications, systemUpdates: e.target.checked})}
-                />
-              </ListItem>
-            </List>
-          </Paper>
+              <List>
+                <ListItem>
+                  <ListItemIcon><Email /></ListItemIcon>
+                  <ListItemText primary={t.emailNotifications} />
+                  <Switch
+                    checked={notifications.email}
+                    onChange={(e) => updateNotificationSetting('email', e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemIcon><Sms /></ListItemIcon>
+                  <ListItemText primary={t.smsNotifications} />
+                  <Switch
+                    checked={notifications.sms}
+                    onChange={(e) => updateNotificationSetting('sms', e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemIcon><Notifications /></ListItemIcon>
+                  <ListItemText primary={t.pushNotifications} />
+                  <Switch
+                    checked={notifications.push}
+                    onChange={(e) => updateNotificationSetting('push', e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemIcon><VolumeUp /></ListItemIcon>
+                  <ListItemText primary={t.soundNotifications} />
+                  <Switch
+                    checked={notifications.sound}
+                    onChange={(e) => updateNotificationSetting('sound', e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+                
+                <ListItem>
+                  <ListItemIcon><Vibration /></ListItemIcon>
+                  <ListItemText primary={t.vibrationNotifications} />
+                  <Switch
+                    checked={notifications.vibration}
+                    onChange={(e) => updateNotificationSetting('vibration', e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+              </List>
+            </CardContent>
+          </Card>
         </Grid>
 
-        {/* Appearance Settings */}
+        {/* Security Settings */}
         <Grid item xs={12} md={6}>
-          <AppearanceSettingsCard />
-        </Grid>
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Security sx={{ mr: 1 }} />
+                {t.security}
+              </Typography>
 
-        {/* Security & Privacy */}
-        <Grid item xs={12} md={6}>
-          <DataPrivacyCard />
+              <List>
+                <ListItem>
+                  <ListItemIcon><Lock /></ListItemIcon>
+                  <ListItemText primary={t.twoFactor} />
+                  <Switch
+                    checked={twoFactorEnabled}
+                    onChange={(e) => setTwoFactorEnabled(e.target.checked)}
+                    color="primary"
+                  />
+                </ListItem>
+              </List>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    startIcon={<Key />}
+                    onClick={() => setShowPasswordDialog(true)}
+                  >
+                    {t.changePassword}
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    startIcon={<Download />}
+                    onClick={() => setShowExportDialog(true)}
+                  >
+                    {t.exportData}
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteForever />}
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    {t.deleteAccount}
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* System Status */}
         <Grid item xs={12} md={6}>
-          <SystemStatusCard />
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Monitor sx={{ mr: 1 }} />
+                {t.system}
+              </Typography>
+
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={6}>
+                  <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.primary.main, 0.1) }}>
+                    <Typography variant="h6" fontWeight={700} color="primary.main">
+                      {systemStatus.version}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">{t.version}</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={6}>
+                  <Box sx={{ textAlign: 'center', p: 2, borderRadius: 2, bgcolor: alpha(theme.palette.success.main, 0.1) }}>
+                    <Typography variant="h6" fontWeight={700} color="success.main">
+                      {systemStatus.performance}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">{t.performance}</Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
+                  {t.storage}: {systemStatus.storage.used}GB / {systemStatus.storage.total}GB
+                </Typography>
+                <Box sx={{ 
+                  width: '100%', 
+                  height: 8, 
+                  backgroundColor: alpha(theme.palette.grey[500], 0.1), 
+                  borderRadius: 4,
+                  overflow: 'hidden'
+                }}>
+                  <Box sx={{ 
+                    width: `${systemStatus.storage.percentage}%`, 
+                    height: '100%', 
+                    backgroundColor: theme.palette.primary.main,
+                    transition: 'width 0.3s ease'
+                  }} />
+                </Box>
+              </Box>
+
+              <Typography variant="body2" color="text.secondary">
+                {t.uptime}: {systemStatus.uptime}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t.lastUpdate}: {systemStatus.lastUpdate}
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Help & Support */}
         <Grid item xs={12} md={6}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-            <Typography variant="h6" fontWeight={600} mb={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Help sx={{ mr: 1 }} />
-              Help & Support
-            </Typography>
-            
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<QuestionAnswer />}
-                  sx={{ mb: 2 }}
-                >
-                  User Guide
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<Help />}
-                  sx={{ mb: 2 }}
-                >
-                  FAQ
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<BugReport />}
-                  sx={{ mb: 2 }}
-                >
-                  Report Issue
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<Email />}
-                  sx={{ mb: 2 }}
-                >
-                  Contact Support
-                </Button>
-              </Grid>
-            </Grid>
-
-            <Box sx={{ mt: 3, p: 2, borderRadius: 2, backgroundColor: alpha(theme.palette.success.main, 0.1) }}>
-              <Typography variant="subtitle2" color="success.main" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <CheckCircle sx={{ mr: 1, fontSize: 20 }} />
-                System Health: All Good
+          <Card elevation={0} sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Help sx={{ mr: 1 }} />
+                {t.help}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                All systems are running smoothly. Last checked: 2 minutes ago
-              </Typography>
-            </Box>
-          </Paper>
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    startIcon={<QuestionAnswer />}
+                    onClick={() => showSnackbar('Opening user guide...')}
+                  >
+                    {t.userGuide}
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    startIcon={<Help />}
+                    onClick={() => showSnackbar('Opening FAQ...')}
+                  >
+                    {t.faq}
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    startIcon={<BugReport />}
+                    onClick={() => showSnackbar('Opening issue reporter...')}
+                  >
+                    {t.reportIssue}
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    startIcon={<ContactSupport />}
+                    onClick={() => showSnackbar('Contacting support...')}
+                  >
+                    {t.contactSupport}
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
+
+      {/* Dialogs */}
+      <Dialog open={showPasswordDialog} onClose={() => setShowPasswordDialog(false)}>
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            We'll send you an email with instructions to reset your password.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
+          <Button onClick={handleChangePassword} variant="contained">Send Email</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={showExportDialog} onClose={() => setShowExportDialog(false)}>
+        <DialogTitle>Export Settings</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            This will download a JSON file containing your profile and settings.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowExportDialog(false)}>Cancel</Button>
+          <Button onClick={handleExportData} variant="contained">Export</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
+        <DialogTitle>Delete Account</DialogTitle>
+        <DialogContent>
+          <Alert severity="error" sx={{ mb: 2 }}>
+            This action cannot be undone. All your data will be permanently deleted.
+          </Alert>
+          <Typography variant="body2">
+            Are you sure you want to delete your account?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              setShowDeleteDialog(false);
+              showSnackbar('Account deletion request submitted', 'error');
+            }} 
+            variant="contained" 
+            color="error"
+          >
+            Delete Account
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert 
+          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </PageContainer>
   );
 }

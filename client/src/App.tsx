@@ -3,6 +3,7 @@ import { Router, Route, Switch, Redirect } from "wouter";
 import { ThemeProvider, CssBaseline, Box, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import { lightTheme, darkTheme } from "@/lib/theme";
 import Layout from "@/components/Layout";
 import AdminRoute from "@/components/AdminRoute";
@@ -33,7 +34,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDarkMode: () => void }) => {
+const AppRoutes = () => {
   const { isAuthenticated, loading, user } = useAuth();
   
   if (loading) {
@@ -104,7 +105,9 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
         <Route path="/floor-plan" component={FloorPlanPage} />
         <Route path="/bookings" component={BookingsPage} />
         <Route path="/alerts" component={AlertsPage} />
-        <Route path="/settings" component={SettingsPage} />
+        <Route path="/settings">
+          <SettingsPage />
+        </Route>
         
         {/* Redirects */}
         <Route path="/">
@@ -118,23 +121,27 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
   );
 };
 
-export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
+const ThemedApp = () => {
+  const { themeMode } = useSettings();
+  
   return (
     <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Router>
-          <AppRoutes darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+      <ThemeProvider theme={themeMode === 'dark' ? darkTheme : lightTheme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
+  );
+};
+
+export default function App() {
+  return (
+    <SettingsProvider>
+      <ThemedApp />
+    </SettingsProvider>
   );
 }
