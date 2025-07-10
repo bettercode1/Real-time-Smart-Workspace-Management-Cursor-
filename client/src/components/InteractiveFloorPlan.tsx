@@ -55,20 +55,20 @@ interface Seat {
 
 const mockSeats: Seat[] = [
   // Desk area
-  { id: '1', number: 'D01', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 100, y: 150 },
-  { id: '2', number: 'D02', type: 'desk', status: 'booked', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power'], bookedBy: 'John Doe', bookedUntil: '2:00 PM', x: 200, y: 150 },
-  { id: '3', number: 'D03', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 300, y: 150 },
-  { id: '4', number: 'D04', type: 'desk', status: 'occupied', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power'], x: 400, y: 150 },
-  { id: '5', number: 'D05', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 500, y: 150 },
+  { id: '1', number: 'D01', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 100, y: 60 },
+  { id: '2', number: 'D02', type: 'desk', status: 'booked', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power'], bookedBy: 'John Doe', bookedUntil: '2:00 PM', x: 200, y: 60 },
+  { id: '3', number: 'D03', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 300, y: 60 },
+  { id: '4', number: 'D04', type: 'desk', status: 'occupied', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power'], x: 400, y: 60 },
+  { id: '5', number: 'D05', type: 'desk', status: 'available', floor: 'Floor 2', zone: 'Open Workspace', amenities: ['WiFi', 'Power', 'Monitor'], x: 500, y: 60 },
   
   // Meeting rooms
-  { id: '6', number: 'M01', type: 'meeting', status: 'available', floor: 'Floor 2', zone: 'Meeting Area', amenities: ['WiFi', 'Projector', 'Whiteboard'], x: 150, y: 300 },
-  { id: '7', number: 'M02', type: 'meeting', status: 'booked', floor: 'Floor 2', zone: 'Meeting Area', amenities: ['WiFi', 'Projector'], bookedBy: 'Sarah Team', bookedUntil: '3:30 PM', x: 350, y: 300 },
+  { id: '6', number: 'M01', type: 'meeting', status: 'available', floor: 'Floor 2', zone: 'Meeting Area', amenities: ['WiFi', 'Projector', 'Whiteboard'], x: 150, y: 180 },
+  { id: '7', number: 'M02', type: 'meeting', status: 'booked', floor: 'Floor 2', zone: 'Meeting Area', amenities: ['WiFi', 'Projector'], bookedBy: 'Sarah Team', bookedUntil: '3:30 PM', x: 350, y: 180 },
   
   // Phone booths
-  { id: '8', number: 'P01', type: 'phone', status: 'available', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 100, y: 450 },
-  { id: '9', number: 'P02', type: 'phone', status: 'available', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 200, y: 450 },
-  { id: '10', number: 'P03', type: 'phone', status: 'occupied', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 300, y: 450 },
+  { id: '8', number: 'P01', type: 'phone', status: 'available', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 100, y: 300 },
+  { id: '9', number: 'P02', type: 'phone', status: 'available', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 200, y: 300 },
+  { id: '10', number: 'P03', type: 'phone', status: 'occupied', floor: 'Floor 2', zone: 'Quiet Zone', amenities: ['WiFi', 'Power'], x: 300, y: 300 },
 ];
 
 export default function InteractiveFloorPlan() {
@@ -130,272 +130,201 @@ export default function InteractiveFloorPlan() {
   const occupiedSeats = seats.filter(seat => seat.status === 'occupied').length;
 
   return (
-    <Box>
-      {/* Stats Overview */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{
-            p: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.main, 0.05)})`,
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.primary.main,
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <CheckCircle />
-              </Box>
-              <Box>
-                <Typography variant="h6" fontWeight={700}>{availableSeats}</Typography>
-                <Typography variant="body2" color="text.secondary">Available</Typography>
-              </Box>
-            </Box>
-          </Card>
-        </Grid>
-        
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{
-            p: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.1)}, ${alpha(theme.palette.warning.main, 0.05)})`,
-            border: `1px solid ${alpha(theme.palette.warning.main, 0.2)}`,
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.warning.main,
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <AccessTime />
-              </Box>
-              <Box>
-                <Typography variant="h6" fontWeight={700}>{bookedSeats}</Typography>
-                <Typography variant="body2" color="text.secondary">Booked</Typography>
-              </Box>
-            </Box>
-          </Card>
-        </Grid>
-        
-        <Grid item xs={12} sm={4}>
-          <Card elevation={0} sx={{
-            p: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.error.main, 0.1)}, ${alpha(theme.palette.error.main, 0.05)})`,
-            border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.error.main,
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <Person />
-              </Box>
-              <Box>
-                <Typography variant="h6" fontWeight={700}>{occupiedSeats}</Typography>
-                <Typography variant="body2" color="text.secondary">Occupied</Typography>
-              </Box>
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Floor Plan */}
-      <Card elevation={0} sx={{ 
-        p: 3, 
-        borderRadius: 4,
-        background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
-        border: `1px solid ${alpha(theme.palette.grey[300], 0.5)}`,
-        minHeight: 600,
-        position: 'relative',
+    <Box sx={{ width: '100%', height: '100%' }}>
+      {/* Interactive Floor Plan Visualization */}
+      <Box sx={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '400px',
+        backgroundColor: '#f8fafc',
+        borderRadius: 2,
+        border: `2px solid ${theme.palette.divider}`,
         overflow: 'hidden'
       }}>
-        <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
-          Floor Plan - Click Available Seats to Book
+        {/* Floor Plan Background */}
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundImage: `
+            repeating-linear-gradient(
+              0deg,
+              ${alpha(theme.palette.grey[300], 0.1)},
+              ${alpha(theme.palette.grey[300], 0.1)} 1px,
+              transparent 1px,
+              transparent 20px
+            ),
+            repeating-linear-gradient(
+              90deg,
+              ${alpha(theme.palette.grey[300], 0.1)},
+              ${alpha(theme.palette.grey[300], 0.1)} 1px,
+              transparent 1px,
+              transparent 20px
+            )
+          `,
+        }} />
+
+        {/* Zone Labels */}
+        <Typography 
+          variant="h6" 
+          fontWeight={600} 
+          sx={{ 
+            position: 'absolute',
+            top: 20,
+            left: 20,
+            color: theme.palette.text.secondary
+          }}
+        >
+          Open Workspace
         </Typography>
 
-        {/* Legend */}
-        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-          <Chip 
-            icon={<CheckCircle />} 
-            label="Available" 
-            size="small" 
-            sx={{ 
-              backgroundColor: alpha(theme.palette.primary.main, 0.1),
-              color: 'primary.main',
-              fontWeight: 600
-            }} 
-          />
-          <Chip 
-            icon={<AccessTime />} 
-            label="Booked" 
-            size="small" 
-            sx={{ 
-              backgroundColor: alpha(theme.palette.warning.main, 0.1),
-              color: 'warning.main',
-              fontWeight: 600
-            }} 
-          />
-          <Chip 
-            icon={<Person />} 
-            label="Occupied" 
-            size="small" 
-            sx={{ 
-              backgroundColor: alpha(theme.palette.error.main, 0.1),
-              color: 'error.main',
-              fontWeight: 600
-            }} 
-          />
-        </Box>
+        <Typography 
+          variant="h6" 
+          fontWeight={600} 
+          sx={{ 
+            position: 'absolute',
+            top: 140,
+            left: 20,
+            color: theme.palette.text.secondary
+          }}
+        >
+          Meeting Rooms
+        </Typography>
 
-        {/* Interactive Floor Plan */}
-        <Box sx={{ 
-          position: 'relative', 
-          width: '100%', 
-          height: 500,
-          background: `linear-gradient(135deg, ${alpha(theme.palette.grey[100], 0.5)}, ${alpha(theme.palette.grey[50], 0.8)})`,
-          borderRadius: 2,
-          border: `1px solid ${alpha(theme.palette.grey[300], 0.3)}`,
-          overflow: 'hidden'
-        }}>
-          {/* Zone Labels */}
-          <Typography 
-            variant="subtitle2" 
-            sx={{ 
-              position: 'absolute', 
-              top: 120, 
-              left: 20, 
-              fontWeight: 700,
-              color: 'text.secondary',
-              backgroundColor: 'rgba(255,255,255,0.8)',
-              px: 1,
-              py: 0.5,
-              borderRadius: 1
-            }}
-          >
-            Open Workspace
-          </Typography>
-          
-          <Typography 
-            variant="subtitle2" 
-            sx={{ 
-              position: 'absolute', 
-              top: 270, 
-              left: 20, 
-              fontWeight: 700,
-              color: 'text.secondary',
-              backgroundColor: 'rgba(255,255,255,0.8)',
-              px: 1,
-              py: 0.5,
-              borderRadius: 1
-            }}
-          >
-            Meeting Rooms
-          </Typography>
-          
-          <Typography 
-            variant="subtitle2" 
-            sx={{ 
-              position: 'absolute', 
-              top: 420, 
-              left: 20, 
-              fontWeight: 700,
-              color: 'text.secondary',
-              backgroundColor: 'rgba(255,255,255,0.8)',
-              px: 1,
-              py: 0.5,
-              borderRadius: 1
-            }}
-          >
-            Phone Booths
-          </Typography>
+        <Typography 
+          variant="h6" 
+          fontWeight={600} 
+          sx={{ 
+            position: 'absolute',
+            top: 260,
+            left: 20,
+            color: theme.palette.text.secondary
+          }}
+        >
+          Phone Booths
+        </Typography>
 
-          {/* Seats */}
-          {seats.map((seat) => (
-            <Tooltip
-              key={seat.id}
-              title={
-                <Box>
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {seat.type === 'desk' ? 'Desk' : seat.type === 'meeting' ? 'Meeting Room' : 'Phone Booth'} {seat.number}
+        {/* Render seats */}
+        {seats.map((seat) => (
+          <Tooltip 
+            key={seat.id}
+            title={
+              <Box sx={{ p: 1 }}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {seat.number} - {seat.type.charAt(0).toUpperCase() + seat.type.slice(1)}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Status: {seat.status.charAt(0).toUpperCase() + seat.status.slice(1)}
+                </Typography>
+                {seat.status === 'available' && (
+                  <Typography variant="body2" color="success.main" fontWeight={600}>
+                    Click to book!
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 1 }}>
-                    Status: {seat.status === 'available' ? 'Available' : seat.status === 'booked' ? 'Booked' : 'Occupied'}
-                  </Typography>
-                  {seat.bookedBy && (
-                    <Typography variant="body2">
-                      Booked by: {seat.bookedBy} until {seat.bookedUntil}
-                    </Typography>
-                  )}
+                )}
+                {seat.bookedBy && (
                   <Typography variant="body2">
-                    Amenities: {seat.amenities.join(', ')}
+                    Booked by: {seat.bookedBy} until {seat.bookedUntil}
                   </Typography>
-                  {seat.status === 'available' && (
-                    <Typography variant="body2" sx={{ mt: 1, fontWeight: 600, color: 'primary.main' }}>
-                      Click to book!
-                    </Typography>
-                  )}
-                </Box>
-              }
-              TransitionComponent={Zoom}
-              arrow
+                )}
+                <Typography variant="caption" color="text.secondary">
+                  Amenities: {seat.amenities.join(', ')}
+                </Typography>
+              </Box>
+            }
+            placement="top"
+            arrow
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                left: seat.x,
+                top: seat.y,
+                width: seat.type === 'meeting' ? 80 : 60,
+                height: seat.type === 'meeting' ? 50 : 40,
+                backgroundColor: getSeatColor(seat),
+                borderRadius: seat.type === 'meeting' ? 3 : 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '0.8rem',
+                cursor: seat.status === 'available' ? 'pointer' : 'default',
+                transition: 'all 0.3s ease',
+                animation: seat.status === 'available' 
+                  ? `${pulse} 2s infinite` 
+                  : seat.justBooked 
+                  ? `${successPulse} 2s ease-out` 
+                  : 'none',
+                '&:hover': seat.status === 'available' ? {
+                  transform: 'scale(1.1)',
+                  boxShadow: `0 4px 20px ${alpha(getSeatColor(seat), 0.4)}`,
+                  zIndex: 10
+                } : {},
+                border: `2px solid ${alpha(getSeatColor(seat), 0.3)}`,
+                boxShadow: `0 2px 8px ${alpha(getSeatColor(seat), 0.2)}`
+              }}
+              onClick={() => handleSeatClick(seat)}
             >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  left: seat.x,
-                  top: seat.y,
-                  width: seat.type === 'meeting' ? 120 : 60,
-                  height: seat.type === 'meeting' ? 80 : 40,
-                  backgroundColor: getSeatColor(seat),
-                  color: 'white',
-                  borderRadius: seat.type === 'meeting' ? 2 : 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  cursor: seat.status === 'available' ? 'pointer' : 'default',
-                  transition: 'all 0.3s ease',
-                  animation: seat.status === 'available' 
-                    ? `${pulse} 2s infinite`
-                    : seat.justBooked 
-                    ? `${successPulse} 1s ease-in-out 3`
-                    : 'none',
-                  '&:hover': seat.status === 'available' ? {
-                    transform: 'scale(1.1)',
-                    boxShadow: `0 4px 12px ${alpha(getSeatColor(seat), 0.4)}`,
-                  } : {},
-                  boxShadow: `0 2px 8px ${alpha(getSeatColor(seat), 0.3)}`,
-                }}
-                onClick={() => handleSeatClick(seat)}
-              >
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                 {getSeatIcon(seat.type)}
-                <Typography variant="caption" fontWeight={600} sx={{ fontSize: 10, mt: 0.5 }}>
+                <Typography variant="caption" fontWeight={700}>
                   {seat.number}
                 </Typography>
               </Box>
-            </Tooltip>
-          ))}
+            </Box>
+          </Tooltip>
+        ))}
+      </Box>
+
+      {/* Real-time Statistics */}
+      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: theme.palette.primary.main
+            }} />
+            <Typography variant="body2" fontWeight={600}>
+              {availableSeats} Available
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: theme.palette.warning.main
+            }} />
+            <Typography variant="body2" fontWeight={600}>
+              {bookedSeats} Booked
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: theme.palette.error.main
+            }} />
+            <Typography variant="body2" fontWeight={600}>
+              {occupiedSeats} Occupied
+            </Typography>
+          </Box>
         </Box>
-      </Card>
+        
+        <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />
+          Live updates every 30 seconds
+        </Typography>
+      </Box>
 
       {/* Booking Modal */}
-      <SeatBookingModal
+      <SeatBookingModal 
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         seat={selectedSeat}

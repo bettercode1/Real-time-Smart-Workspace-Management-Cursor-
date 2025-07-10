@@ -478,34 +478,120 @@ export default function FloorPlanPage() {
       <Grid container spacing={3}>
         {/* Main Floor Plan */}
         <Grid item xs={12} lg={8}>
-          <Card elevation={0} sx={{ borderRadius: 3, minHeight: 600 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6" fontWeight={700}>
-                  Floor Plan - Click Available Seats to Book
+          <Card elevation={0} sx={{ borderRadius: 3, minHeight: 700, overflow: 'hidden' }}>
+            {/* Header Section */}
+            <Box sx={{ 
+              background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+              color: 'white',
+              p: 3,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <Box>
+                <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>
+                  Interactive Floor Plan
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Tooltip title="Zoom In">
-                    <IconButton size="small" color="primary">
-                      <ZoomIn />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Zoom Out">
-                    <IconButton size="small" color="primary">
-                      <ZoomOut />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Fullscreen">
-                    <IconButton size="small" color="primary">
-                      <Fullscreen />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                  Click available seats to book • Real-time occupancy updates
+                </Typography>
               </Box>
-              
-              {/* Interactive Floor Plan Component */}
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Tooltip title="Zoom In">
+                  <IconButton size="small" sx={{ color: 'white' }}>
+                    <ZoomIn />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Zoom Out">
+                  <IconButton size="small" sx={{ color: 'white' }}>
+                    <ZoomOut />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Fullscreen">
+                  <IconButton size="small" sx={{ color: 'white' }}>
+                    <Fullscreen />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
+
+            {/* Legend */}
+            <Box sx={{ 
+              p: 2, 
+              backgroundColor: alpha(theme.palette.primary.main, 0.02),
+              borderBottom: `1px solid ${theme.palette.divider}`,
+              display: 'flex',
+              gap: 3,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ 
+                  width: 12, 
+                  height: 12, 
+                  borderRadius: '50%', 
+                  backgroundColor: theme.palette.success.main 
+                }} />
+                <Typography variant="body2" fontWeight={600}>Available</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ 
+                  width: 12, 
+                  height: 12, 
+                  borderRadius: '50%', 
+                  backgroundColor: theme.palette.warning.main 
+                }} />
+                <Typography variant="body2" fontWeight={600}>Booked</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ 
+                  width: 12, 
+                  height: 12, 
+                  borderRadius: '50%', 
+                  backgroundColor: theme.palette.error.main 
+                }} />
+                <Typography variant="body2" fontWeight={600}>Occupied</Typography>
+              </Box>
+            </Box>
+            
+            {/* Floor Plan Content */}
+            <CardContent sx={{ p: 3, minHeight: 500 }}>
               <InteractiveFloorPlan />
             </CardContent>
+
+            {/* Quick Stats Footer */}
+            <Box sx={{ 
+              p: 2, 
+              backgroundColor: alpha(theme.palette.grey[500], 0.05),
+              borderTop: `1px solid ${theme.palette.divider}`,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <Typography variant="body2" color="text.secondary">
+                Floor 2 - Open Workspace • Last updated: 2 minutes ago
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Chip 
+                  label="32 Available" 
+                  color="success" 
+                  size="small" 
+                  variant="outlined"
+                />
+                <Chip 
+                  label="8 Booked" 
+                  color="warning" 
+                  size="small" 
+                  variant="outlined"
+                />
+                <Chip 
+                  label="5 Occupied" 
+                  color="error" 
+                  size="small" 
+                  variant="outlined"
+                />
+              </Box>
+            </Box>
           </Card>
         </Grid>
 
