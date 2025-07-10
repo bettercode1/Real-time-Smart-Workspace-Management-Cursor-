@@ -79,12 +79,10 @@ const Sidebar = () => {
         flexShrink: 0,
         height: "100vh",
         background: theme.palette.mode === 'light'
-          ? '#ffffff'
-          : '#1e293b',
-        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#f1f5f9' : '#334155'}`,
-        boxShadow: theme.palette.mode === 'light' 
-          ? '0 0 0 1px rgba(0,0,0,0.05)'
-          : '0 0 0 1px rgba(255,255,255,0.05)',
+          ? '#fafafa'
+          : '#1a1a1a',
+        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#e0e0e0' : '#333333'}`,
+        boxShadow: 'none',
         display: "flex",
         flexDirection: "column",
         position: "fixed",
