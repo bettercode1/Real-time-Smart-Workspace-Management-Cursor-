@@ -53,7 +53,6 @@ const Sidebar = () => {
     { text: "User Panel", icon: <DashboardIcon />, path: "/dashboard" },
     { text: "Floor Plan", icon: <MapIcon />, path: "/floor-plan" },
     { text: "My Bookings", icon: <BookingIcon />, path: "/bookings" },
-    { text: "Analytics", icon: <AnalyticsIcon />, path: "/analytics" },
     { text: "Alerts", icon: <AlertIcon />, path: "/alerts" },
     { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
   ];

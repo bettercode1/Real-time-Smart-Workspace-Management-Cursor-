@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { lightTheme, darkTheme } from "@/lib/theme";
 import Layout from "@/components/Layout";
+import AdminRoute from "@/components/AdminRoute";
 
 // Import pages
 import Dashboard from "@/pages/dashboard";
@@ -79,21 +80,29 @@ const AppRoutes = ({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDark
           {user?.role === 'admin' ? <AdminDashboard /> : <UserDashboard />}
         </Route>
         
-        {/* Admin-specific routes */}
-        {user?.role === 'admin' && (
-          <>
-            <Route path="/admin" component={AdminDashboard} />
-            <Route path="/devices" component={DevicesPage} />
-            <Route path="/users" component={UserManagementPage} />
-            <Route path="/rooms" component={RoomSetupPage} />
-            <Route path="/iaq" component={IAQMonitoringPage} />
-          </>
-        )}
+        {/* Admin-specific routes with protection */}
+        <Route path="/admin">
+          <AdminRoute><AdminDashboard /></AdminRoute>
+        </Route>
+        <Route path="/devices">
+          <AdminRoute><DevicesPage /></AdminRoute>
+        </Route>
+        <Route path="/users">
+          <AdminRoute><UserManagementPage /></AdminRoute>
+        </Route>
+        <Route path="/rooms">
+          <AdminRoute><RoomSetupPage /></AdminRoute>
+        </Route>
+        <Route path="/iaq">
+          <AdminRoute><IAQMonitoringPage /></AdminRoute>
+        </Route>
+        <Route path="/analytics">
+          <AdminRoute><AnalyticsPage /></AdminRoute>
+        </Route>
         
         {/* Common routes for both admin and users */}
         <Route path="/floor-plan" component={FloorPlanPage} />
         <Route path="/bookings" component={BookingsPage} />
-        <Route path="/analytics" component={AnalyticsPage} />
         <Route path="/alerts" component={AlertsPage} />
         <Route path="/settings" component={SettingsPage} />
         
