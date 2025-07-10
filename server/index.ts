@@ -67,5 +67,13 @@ app.use((req, res, next) => {
     log(`🚀 Server running on port ${port}`);
     log(`📱 Frontend: http://localhost:${port}`);
     log(`🔌 API: http://localhost:${port}/api`);
+    
+    // Show storage status
+    if (!process.env.DATABASE_URL) {
+      log(`💾 Storage: In-Memory (no database connected)`);
+      log(`⚠️  Note: Data will be lost on server restart`);
+    } else {
+      log(`💾 Storage: PostgreSQL Database`);
+    }
   });
 })();

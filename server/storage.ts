@@ -5,6 +5,9 @@ import {
   type Occupancy, type InsertOccupancy, type Alert, type InsertAlert, type Session, type InsertSession
 } from "@shared/schema";
 
+// Force in-memory storage only (no database connection)
+const USE_DATABASE = false;
+
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
@@ -464,4 +467,5 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Use in-memory storage only (no database connection)
 export const storage = new MemStorage();

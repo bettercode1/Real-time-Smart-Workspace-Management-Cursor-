@@ -83,6 +83,23 @@ export const translations = {
     confirmDelete: "Are you sure you want to delete this item?",
     noData: "No data available",
     loadingData: "Loading data...",
+
+    // Add keys for: systemSettings, securityPanel, activeUsers, currentlyOnline, alerts, requiresAttention, allOk, allSystemsOperational, quickActions, bookingCalendar, myBookings, upcomingThisWeek, notifications, unreadMessages, logout, admin, user, etc.
+    systemSettings: "System Settings",
+    securityPanel: "Security Panel",
+    activeUsers: "Active Users",
+    currentlyOnline: "Currently Online",
+    requiresAttention: "Requires Attention",
+    allOk: "All Systems Operational",
+    allSystemsOperational: "All Systems Operational",
+    quickActions: "Quick Actions",
+    bookingCalendar: "Booking Calendar",
+    myBookings: "My Bookings",
+    upcomingThisWeek: "Upcoming This Week",
+    unreadMessages: "Unread Messages",
+    logout: "Logout",
+    admin: "Admin",
+    user: "User",
   },
   ar: {
     // Navigation
@@ -168,6 +185,23 @@ export const translations = {
     confirmDelete: "هل أنت متأكد من حذف هذا العنصر؟",
     noData: "لا توجد بيانات متاحة",
     loadingData: "جاري تحميل البيانات...",
+
+    // Add keys for: systemSettings, securityPanel, activeUsers, currentlyOnline, alerts, requiresAttention, allOk, allSystemsOperational, quickActions, bookingCalendar, myBookings, upcomingThisWeek, notifications, unreadMessages, logout, admin, user, etc.
+    systemSettings: "إعدادات النظام",
+    securityPanel: "لوحة الأمان",
+    activeUsers: "المستخدمون النشطون",
+    currentlyOnline: "المستخدمون الآن على الشبكة",
+    requiresAttention: "التنبيهات التي تتطلب الاهتمام",
+    allOk: "جميع الأنظمة عملية",
+    allSystemsOperational: "جميع الأنظمة عملية",
+    quickActions: "الإجراءات السريعة",
+    bookingCalendar: "جلسة الحجز",
+    myBookings: "حجوزاتي",
+    upcomingThisWeek: "الحجوزات القادمة هذا الأسبوع",
+    unreadMessages: "رسائل غير قرائية",
+    logout: "تسجيل الخروج",
+    admin: "المدير",
+    user: "المستخدم",
   }
 };
 

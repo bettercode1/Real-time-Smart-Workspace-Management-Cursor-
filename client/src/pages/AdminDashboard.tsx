@@ -1,15 +1,17 @@
 import React from "react";
-import { Typography, Card, CardContent, Paper, Chip, List, ListItem, ListItemText, ListItemIcon, Button, IconButton, useTheme, alpha, Grid, Box, Avatar } from "@mui/material";
+import { Typography, Card, CardContent, Paper, Chip, List, ListItem, ListItemText, ListItemIcon, Button, IconButton, useTheme, alpha, Grid, Box, Avatar, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/contexts/SettingsContext";
 import { translations } from "@/lib/translations";
-import { AdminPanelSettings, Person, Dashboard, TrendingUp, Notifications, Settings, Security, People, EventAvailable, Warning } from "@mui/icons-material";
+import { AdminPanelSettings, Person, Dashboard, TrendingUp, Notifications, Settings, Security, People, EventAvailable, Warning, Add, Edit, Delete } from "@mui/icons-material";
 import FloorPlan from "@/components/FloorPlan";
 import IAQWidgets from "@/components/IAQWidgets";
 import NotificationCenter from "@/components/NotificationCenter";
 import AnalyticsCards from "@/components/AnalyticsCards";
 import DeviceModal from "@/components/DeviceModal";
 import PageContainer from "@/components/PageContainer";
+
+type Floor = { id: number; name: string; rooms: number };
 
 const QuickStatsCard = ({ title, value, subtitle, color, icon }: {
   title: string;
@@ -329,6 +331,42 @@ export default function AdminDashboard() {
   const { language } = useSettings();
   const t = translations[language];
 
+  // Floor management state
+  const [floors, setFloors] = React.useState<Floor[]>([
+    { id: 1, name: 'Floor 1', rooms: 8 },
+    { id: 2, name: 'Floor 2', rooms: 25 },
+    { id: 3, name: 'Floor 3', rooms: 12 },
+    { id: 4, name: 'Floor 4', rooms: 6 },
+  ]);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [editFloor, setEditFloor] = React.useState<Floor | null>(null);
+  const [floorName, setFloorName] = React.useState('');
+  const [floorRooms, setFloorRooms] = React.useState('');
+
+  const handleAddFloor = () => {
+    setEditFloor(null);
+    setFloorName('');
+    setFloorRooms('');
+    setModalOpen(true);
+  };
+  const handleEditFloor = (floor: Floor) => {
+    setEditFloor(floor);
+    setFloorName(floor.name);
+    setFloorRooms(floor.rooms.toString());
+    setModalOpen(true);
+  };
+  const handleDeleteFloor = (id: number) => {
+    setFloors(floors.filter(f => f.id !== id));
+  };
+  const handleSaveFloor = () => {
+    if (editFloor) {
+      setFloors(floors.map(f => f.id === editFloor.id ? { ...f, name: floorName, rooms: parseInt(floorRooms) } : f));
+    } else {
+      setFloors([...floors, { id: Date.now(), name: floorName, rooms: parseInt(floorRooms) }]);
+    }
+    setModalOpen(false);
+  };
+
   return (
     <Box sx={{
       minHeight: '100%',
@@ -545,6 +583,38 @@ export default function AdminDashboard() {
             </Paper>
           </Grid>
         </Grid>
+        {/* Floor Management Section */}
+        <Card elevation={0} sx={{ mt: 4, mb: 4, borderRadius: 4, background: theme.palette.mode === 'dark' ? alpha(theme.palette.primary.main, 0.08) : alpha(theme.palette.primary.main, 0.03) }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" fontWeight={700}>{t.floorManagement || 'Floor Management'}</Typography>
+              <Button variant="contained" startIcon={<Add />} onClick={handleAddFloor}>{t.addFloor || 'Add Floor'}</Button>
+            </Box>
+            <List>
+              {floors.map(floor => (
+                <ListItem key={floor.id} secondaryAction={
+                  <Box>
+                    <IconButton onClick={() => handleEditFloor(floor)} color="primary"><Edit /></IconButton>
+                    <IconButton onClick={() => handleDeleteFloor(floor.id)} color="error"><Delete /></IconButton>
+                  </Box>
+                }>
+                  <ListItemText primary={floor.name} secondary={`${t.rooms || 'Rooms'}: ${floor.rooms}`} />
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+        <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+          <DialogTitle>{editFloor ? (t.editFloor || 'Edit Floor') : (t.addFloor || 'Add Floor')}</DialogTitle>
+          <DialogContent>
+            <TextField label={t.floorName || 'Floor Name'} value={floorName} onChange={e => setFloorName(e.target.value)} fullWidth sx={{ mb: 2 }} />
+            <TextField label={t.rooms || 'Rooms'} value={floorRooms} onChange={e => setFloorRooms(e.target.value)} type="number" fullWidth />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setModalOpen(false)}>{t.cancel || 'Cancel'}</Button>
+            <Button onClick={handleSaveFloor} variant="contained">{t.save || 'Save'}</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   );

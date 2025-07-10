@@ -103,9 +103,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <img
             src={bettercodeLogo}
             alt="BetterCode logo"
-            style={{ height: 22, width: 'auto', display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}
+            style={{ height: 22, width: 'auto', display: 'inline-block', verticalAlign: 'middle' }}
           />
-          <span style={{ fontWeight: 700, fontSize: 14, color: '#222' }}>BetterCode</span>
         </Box>
         {/* Content Container */}
         <Box 

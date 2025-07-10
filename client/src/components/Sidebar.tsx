@@ -41,24 +41,24 @@ const Sidebar = () => {
   const t = translations[language];
 
   const adminMenuItems = [
-    { text: t.dashboard, icon: <AdminIcon />, path: "/dashboard" },
-    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan" },
-    { text: t.bookings, icon: <BookingIcon />, path: "/bookings" },
-    { text: t.analytics, icon: <AnalyticsIcon />, path: "/analytics" },
-    { text: t.alerts, icon: <AlertIcon />, path: "/alerts" },
-    { text: t.devices, icon: <DevicesIcon />, path: "/devices" },
-    { text: t.users, icon: <UsersIcon />, path: "/users" },
-    { text: t.rooms, icon: <RoomIcon />, path: "/rooms" },
-    { text: t.iaq, icon: <IAQIcon />, path: "/iaq" },
-    { text: t.settings, icon: <SettingsIcon />, path: "/settings" },
+    { text: t.dashboard, icon: <AdminIcon />, path: "/dashboard", color: "#667eea" },
+    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan", color: "#764ba2" },
+    { text: t.bookings, icon: <BookingIcon />, path: "/bookings", color: "#f093fb" },
+    { text: t.analytics, icon: <AnalyticsIcon />, path: "/analytics", color: "#4facfe" },
+    { text: t.alerts, icon: <AlertIcon />, path: "/alerts", color: "#ff6b6b" },
+    { text: t.devices, icon: <DevicesIcon />, path: "/devices", color: "#4ecdc4" },
+    { text: t.users, icon: <UsersIcon />, path: "/users", color: "#45b7d1" },
+    { text: t.rooms, icon: <RoomIcon />, path: "/rooms", color: "#96ceb4" },
+    { text: t.iaq, icon: <IAQIcon />, path: "/iaq", color: "#ffeaa7" },
+    { text: t.settings, icon: <SettingsIcon />, path: "/settings", color: "#dda0dd" },
   ];
 
   const userMenuItems = [
-    { text: t.dashboard, icon: <DashboardIcon />, path: "/dashboard" },
-    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan" },
-    { text: t.bookings, icon: <BookingIcon />, path: "/bookings" },
-    { text: t.alerts, icon: <AlertIcon />, path: "/alerts" },
-    { text: t.settings, icon: <SettingsIcon />, path: "/settings" },
+    { text: t.dashboard, icon: <DashboardIcon />, path: "/dashboard", color: "#667eea" },
+    { text: t.floorPlan, icon: <MapIcon />, path: "/floor-plan", color: "#764ba2" },
+    { text: t.bookings, icon: <BookingIcon />, path: "/bookings", color: "#f093fb" },
+    { text: t.alerts, icon: <AlertIcon />, path: "/alerts", color: "#ff6b6b" },
+    { text: t.settings, icon: <SettingsIcon />, path: "/settings", color: "#dda0dd" },
   ];
 
   const menuItems = user?.role === 'admin' ? adminMenuItems : userMenuItems;
@@ -79,10 +79,12 @@ const Sidebar = () => {
         flexShrink: 0,
         height: "100vh",
         background: theme.palette.mode === 'light'
-          ? '#fafafa'
-          : '#1a1a1a',
-        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#e0e0e0' : '#333333'}`,
-        boxShadow: 'none',
+          ? 'linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)'
+          : 'linear-gradient(180deg, #1a1a1a 0%, #0f172a 100%)',
+        borderRight: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#334155'}`,
+        boxShadow: theme.palette.mode === 'light' 
+          ? '2px 0 20px rgba(0, 0, 0, 0.05)'
+          : '2px 0 20px rgba(0, 0, 0, 0.3)',
         display: "flex",
         flexDirection: "column",
         position: "fixed",
@@ -91,6 +93,19 @@ const Sidebar = () => {
         zIndex: 1200,
         overflowY: 'auto',
         pb: 3,
+        '&::-webkit-scrollbar': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: theme.palette.mode === 'light' ? '#cbd5e1' : '#475569',
+          borderRadius: '3px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+          background: theme.palette.mode === 'light' ? '#94a3b8' : '#64748b',
+        },
       }}
     >
       {/* Header */}
@@ -98,47 +113,64 @@ const Sidebar = () => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
           <Box
             sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 2,
-              background: theme.palette.mode === 'light'
-                ? '#f8fafc'
-                : '#334155',
-              border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}`,
+              width: 56,
+              height: 56,
+              borderRadius: 3,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: '0 8px 25px rgba(102, 126, 234, 0.3)',
+              position: 'relative',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: 3,
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%)',
+              },
             }}
           >
             <BusinessCenter 
               sx={{ 
-                color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
-                fontSize: 24,
+                color: '#ffffff',
+                fontSize: 28,
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
               }} 
             />
           </Box>
           <Box>
-        <Typography 
-              variant="h6" 
-              fontWeight={700} 
-          sx={{ 
-                color: theme.palette.text.primary,
-                letterSpacing: '-0.01em'
-          }}
-        >
-          SmartSpace
-        </Typography>
+            <Typography 
+              variant="h5" 
+              fontWeight={800} 
+              sx={{ 
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '-0.02em',
+                mb: 0.5,
+              }}
+            >
+              SmartSpace
+            </Typography>
             <Typography 
               variant="caption" 
               sx={{ 
                 color: theme.palette.text.secondary,
-                fontWeight: 500
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
               }}
             >
               Workspace Management
-        </Typography>
+            </Typography>
           </Box>
-      </Box>
+        </Box>
 
         {/* User Info */}
         <Box
@@ -146,89 +178,105 @@ const Sidebar = () => {
             display: "flex",
             alignItems: "center",
             gap: 2,
-            p: 2.5,
-            borderRadius: 2,
+            p: 3,
+            borderRadius: 3,
             background: theme.palette.mode === 'light' 
-              ? '#f8fafc'
-              : '#334155',
+              ? 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+              : 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
             border: `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}`,
-            transition: 'all 0.2s ease',
+            boxShadow: theme.palette.mode === 'light'
+              ? '0 4px 20px rgba(0, 0, 0, 0.08)'
+              : '0 4px 20px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: theme.palette.mode === 'light'
+                ? '0 8px 30px rgba(0, 0, 0, 0.12)'
+                : '0 8px 30px rgba(0, 0, 0, 0.4)',
+            },
           }}
         >
           <Avatar 
             sx={{ 
-              bgcolor: theme.palette.mode === 'light' ? '#e2e8f0' : '#475569',
-              color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
-              width: 40,
-              height: 40,
-              fontSize: 16,
-              fontWeight: 600,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: '#ffffff',
+              width: 48,
+              height: 48,
+              fontSize: 18,
+              fontWeight: 700,
+              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
             }}
           >
             {user?.displayName?.charAt(0) || <Person />}
           </Avatar>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography 
-              variant="subtitle2" 
-              fontWeight={600} 
+              variant="subtitle1" 
+              fontWeight={700} 
               sx={{ 
                 color: theme.palette.text.primary,
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                mb: 0.5,
               }}
             >
               {user?.displayName || "Guest User"}
             </Typography>
             <Chip 
-              label={user?.role === 'admin' ? 'Admin' : 'User'} 
+              label={user?.role === 'admin' ? t.admin : t.user} 
               size="small" 
               sx={{ 
-                bgcolor: theme.palette.mode === 'light' ? '#f1f5f9' : '#475569',
-                color: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
-                fontWeight: 500,
+                background: user?.role === 'admin' 
+                  ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)'
+                  : 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                color: '#ffffff',
+                fontWeight: 700,
                 fontSize: '0.7rem',
-                height: 20,
-                borderRadius: 1,
+                height: 22,
+                borderRadius: 1.5,
                 textTransform: 'uppercase',
-                letterSpacing: '0.5px'
+                letterSpacing: '0.5px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
               }} 
             />
           </Box>
         </Box>
       </Box>
 
-      <Divider sx={{ borderColor: theme.palette.mode === 'light' ? '#e2e8f0' : '#334155', mx: 2 }} />
+      <Divider sx={{ 
+        borderColor: theme.palette.mode === 'light' ? '#e2e8f0' : '#334155', 
+        mx: 3,
+        borderWidth: '1px',
+      }} />
 
       {/* Navigation Menu */}
-      <Box sx={{ flex: 1, px: 2, py: 2, position: 'relative', zIndex: 1 }}>
+      <Box sx={{ flex: 1, px: 2, py: 3, position: 'relative', zIndex: 1 }}>
         <List sx={{ py: 1 }}>
           {menuItems.map((item) => {
             const active = isActive(item.path);
             return (
               <ListItem
                 key={item.text}
-                  component={Link}
+                component={Link}
                 to={item.path}
-                  sx={{
-                  borderRadius: 2,
-                    mb: 0.5,
-                  transition: 'all 0.2s ease',
+                sx={{
+                  borderRadius: 3,
+                  mb: 1,
+                  transition: 'all 0.3s ease',
                   position: 'relative',
                   overflow: 'hidden',
                   background: active 
-                    ? theme.palette.mode === 'light'
-                      ? '#f8fafc'
-                      : '#334155'
+                    ? `linear-gradient(135deg, ${alpha(item.color, 0.1)} 0%, ${alpha(item.color, 0.05)} 100%)`
                     : 'transparent',
                   border: active 
-                    ? `1px solid ${theme.palette.mode === 'light' ? '#e2e8f0' : '#475569'}` 
+                    ? `2px solid ${item.color}` 
                     : `1px solid transparent`,
-                      '&:hover': {
-                    background: theme.palette.mode === 'light'
-                      ? '#f1f5f9'
-                      : '#475569',
-                    border: `1px solid ${theme.palette.mode === 'light' ? '#cbd5e1' : '#64748b'}`,
+                  '&:hover': {
+                    background: `linear-gradient(135deg, ${alpha(item.color, 0.08)} 0%, ${alpha(item.color, 0.03)} 100%)`,
+                    border: `1px solid ${alpha(item.color, 0.3)}`,
+                    transform: 'translateX(4px)',
+                    boxShadow: `0 4px 15px ${alpha(item.color, 0.15)}`,
                   },
                   '&::before': active ? {
                     content: '""',
@@ -236,71 +284,105 @@ const Sidebar = () => {
                     left: 0,
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    width: 2,
-                    height: '50%',
-                    background: theme.palette.mode === 'light' ? '#64748b' : '#94a3b8',
-                    borderRadius: '0 1px 1px 0',
+                    width: 4,
+                    height: '60%',
+                    background: `linear-gradient(180deg, ${item.color} 0%, ${alpha(item.color, 0.7)} 100%)`,
+                    borderRadius: '0 2px 2px 0',
+                    boxShadow: `0 0 10px ${alpha(item.color, 0.5)}`,
                   } : {},
                   textDecoration: "none",
-                  color: "inherit"
+                  color: "inherit",
+                  p: 2,
+                }}
+              >
+                <ListItemIcon 
+                  sx={{ 
+                    color: active ? item.color : theme.palette.text.secondary,
+                    minWidth: 44,
+                    transition: 'all 0.3s ease',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: 22,
+                    },
                   }}
                 >
-                  <ListItemIcon 
-                    sx={{ 
-                    color: active 
-                      ? theme.palette.mode === 'light' ? '#475569' : '#cbd5e1'
-                      : theme.palette.text.secondary,
-                      minWidth: 40,
-                    transition: 'all 0.2s ease',
-                    }}
-                  >
                   {item.icon}
-                  </ListItemIcon>
-                  <ListItemText 
+                </ListItemIcon>
+                <ListItemText 
                   primary={item.text}
-                    primaryTypographyProps={{
-                    fontSize: "0.875rem",
-                    fontWeight: active ? 600 : 500,
+                  primaryTypographyProps={{
+                    fontSize: "0.9rem",
+                    fontWeight: active ? 700 : 600,
                     color: active 
-                      ? theme.palette.mode === 'light' ? '#334155' : '#e2e8f0'
+                      ? item.color
                       : theme.palette.text.primary,
-                    }}
-                  />
+                    letterSpacing: active ? '0.5px' : '0.2px',
+                  }}
+                />
               </ListItem>
             );
           })}
         </List>
       </Box>
 
-      <Divider sx={{ borderColor: theme.palette.mode === 'light' ? '#e2e8f0' : '#334155', mx: 2 }} />
+      <Divider sx={{ 
+        borderColor: theme.palette.mode === 'light' ? '#e2e8f0' : '#334155', 
+        mx: 3,
+        borderWidth: '1px',
+      }} />
 
       {/* Logout */}
       <Box sx={{ p: 2, pb: 3, position: 'relative', zIndex: 1 }}>
         <ListItem
           onClick={logout}
           sx={{
-            borderRadius: 2,
+            borderRadius: 3,
             cursor: "pointer",
-            transition: 'all 0.2s ease',
-            background: theme.palette.mode === 'light' ? '#fef2f2' : '#450a0a',
-            border: `1px solid ${theme.palette.mode === 'light' ? '#fecaca' : '#7f1d1d'}`,
+            transition: 'all 0.3s ease',
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+            border: '2px solid transparent',
+            p: 2,
             '&:hover': {
-              background: theme.palette.mode === 'light' ? '#fee2e2' : '#7f1d1d',
-              boxShadow: `0 4px 12px ${alpha(theme.palette.error.main, 0.2)}`
+              background: 'linear-gradient(135deg, #ff5252 0%, #d84315 100%)',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 25px rgba(255, 107, 107, 0.4)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
             },
-            color: theme.palette.error.main,
-            fontWeight: 600,
+            color: '#ffffff',
+            fontWeight: 700,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%)',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+            },
+            '&:hover::before': {
+              opacity: 1,
+            },
           }}
         >
-          <ListItemIcon sx={{ color: theme.palette.error.main, minWidth: 40 }}>
+          <ListItemIcon sx={{ 
+            color: '#ffffff', 
+            minWidth: 44,
+            '& .MuiSvgIcon-root': {
+              fontSize: 22,
+            },
+          }}>
             <LogoutIcon />
           </ListItemIcon>
           <ListItemText 
-            primary="Logout"
+            primary={t.logout}
             primaryTypographyProps={{
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              color: theme.palette.error.main
+              fontSize: "0.9rem",
+              fontWeight: 700,
+              color: '#ffffff',
+              letterSpacing: '0.5px',
             }}
           />
         </ListItem>

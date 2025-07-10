@@ -15,7 +15,11 @@ import {
   DialogActions,
   Button,
   useTheme,
-  alpha
+  alpha,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 import { 
   Air, 
@@ -72,6 +76,15 @@ const generateHistoricalData = (): IAQData[] => {
   return data;
 };
 
+// 1. Add a mockRooms array at the top of the component
+const mockRooms = [
+  { id: 'room1', name: 'Meeting Room 1', temperature: 22.5, humidity: 45, co2: 680 },
+  { id: 'room2', name: 'Open Space Central', temperature: 23.8, humidity: 52, co2: 890 },
+  { id: 'room3', name: 'Conference Room A', temperature: 25.2, humidity: 38, co2: 1100 },
+  { id: 'room4', name: 'Phone Booth 1', temperature: 24.1, humidity: 41, co2: 750 },
+  { id: 'room5', name: 'Kitchen Area', temperature: 26.8, humidity: 58, co2: 1250 },
+];
+
 const IAQWidgets = () => {
   const theme = useTheme();
   const [currentData, setCurrentData] = useState<IAQData>({
@@ -84,6 +97,14 @@ const IAQWidgets = () => {
   const [historicalData, setHistoricalData] = useState<IAQData[]>(generateHistoricalData());
   const [selectedMetric, setSelectedMetric] = useState<IAQMetric | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedRoomId, setSelectedRoomId] = useState<string>('');
+  const [showFahrenheit, setShowFahrenheit] = useState(false);
+  const selectedRoom = mockRooms.find(r => r.id === selectedRoomId);
+  const displayData = selectedRoom || currentData;
+  const displayTemp = showFahrenheit && displayData.temperature !== undefined
+    ? Math.round((displayData.temperature * 9/5 + 32) * 10) / 10
+    : displayData.temperature;
+  const tempUnit = showFahrenheit ? '°F' : '°C';
 
   // Simulate real-time updates
   useEffect(() => {
@@ -251,6 +272,54 @@ const IAQWidgets = () => {
 
   return (
     <Box>
+      <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel>Room</InputLabel>
+          <Select
+            value={selectedRoomId}
+            label="Room"
+            onChange={e => setSelectedRoomId(e.target.value)}
+          >
+            <MenuItem value="">All / Live</MenuItem>
+            {mockRooms.map(room => (
+              <MenuItem key={room.id} value={room.id}>{room.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button variant={showFahrenheit ? 'contained' : 'outlined'} onClick={() => setShowFahrenheit(!showFahrenheit)}>
+          {showFahrenheit ? '°F' : '°C'}
+        </Button>
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <Card elevation={0} sx={{ p: 2, borderRadius: 3, background: alpha(theme.palette.primary.main, 0.08) }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Thermostat sx={{ color: theme.palette.primary.main }} />
+              <Typography variant="h6" fontWeight={700}>{displayTemp}{tempUnit}</Typography>
+            </Box>
+            <Typography variant="caption" color="text.secondary">Temperature</Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={4}>
+          <Card elevation={0} sx={{ p: 2, borderRadius: 3, background: alpha(theme.palette.info.main, 0.08) }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <WaterDrop sx={{ color: theme.palette.info.main }} />
+              <Typography variant="h6" fontWeight={700}>{displayData.humidity}%</Typography>
+            </Box>
+            <Typography variant="caption" color="text.secondary">Humidity</Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={4}>
+          <Card elevation={0} sx={{ p: 2, borderRadius: 3, background: alpha(theme.palette.warning.main, 0.08) }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Air sx={{ color: theme.palette.warning.main }} />
+              <Typography variant="h6" fontWeight={700}>{displayData.co2} ppm</Typography>
+            </Box>
+            <Typography variant="caption" color="text.secondary">CO₂</Typography>
+          </Card>
+        </Grid>
+      </Grid>
+      
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" fontWeight={600} color="text.primary" mb={1}>
           IAQ Monitoring

@@ -61,37 +61,29 @@ import {
 import InteractiveFloorPlan from "@/components/InteractiveFloorPlan";
 import PageContainer from "@/components/PageContainer";
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
-const FloorControlsCard = () => {
+const FloorControlsCard = ({ selectedFloor, setSelectedFloor, floors, currentFloor }) => {
   const theme = useTheme();
-  const [selectedFloor, setSelectedFloor] = useState('floor-2');
   const [viewMode, setViewMode] = useState('interactive');
   const [showLabels, setShowLabels] = useState(true);
   const [showOccupancy, setShowOccupancy] = useState(true);
-
-  const floors = [
-    { value: 'floor-1', label: 'Floor 1 - Lobby & Reception', rooms: 8, available: 5 },
-    { value: 'floor-2', label: 'Floor 2 - Open Workspace', rooms: 25, available: 18 },
-    { value: 'floor-3', label: 'Floor 3 - Meeting Rooms', rooms: 12, available: 7 },
-    { value: 'floor-4', label: 'Floor 4 - Executive Floor', rooms: 6, available: 4 }
-  ];
-
-  const currentFloor = floors.find(f => f.value === selectedFloor);
+  const { t } = useTranslation();
 
   return (
     <Card elevation={0} sx={{ height: 'fit-content', width: '100%' }}>
       <CardContent sx={{ p: 2.5 }}>
         <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
-          Floor Plan Controls
+          {t('floorPlanControls')}
         </Typography>
 
         {/* Floor Selection */}
         <Box sx={{ mb: 2 }}>
           <FormControl fullWidth size="small">
-            <InputLabel>Select Floor</InputLabel>
+            <InputLabel>{t('selectFloor')}</InputLabel>
             <Select
               value={selectedFloor}
-              label="Select Floor"
+              label={t('selectFloor')}
               onChange={(e) => setSelectedFloor(e.target.value)}
             >
               {floors.map((floor) => (
@@ -118,9 +110,9 @@ const FloorControlsCard = () => {
               {currentFloor.label}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">Available Spaces</Typography>
+              <Typography variant="body2" color="text.secondary">{t('availableSpaces')}</Typography>
               <Typography variant="body2" fontWeight={600} color="success.main">
-                {currentFloor.available} of {currentFloor.rooms}
+                {currentFloor.available} {t('of')} {currentFloor.rooms}
               </Typography>
             </Box>
             <Box sx={{ 
@@ -143,7 +135,7 @@ const FloorControlsCard = () => {
         {/* View Options */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2 }}>
-            Display Options
+            {t('displayOptions')}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <FormControlLabel
@@ -154,7 +146,7 @@ const FloorControlsCard = () => {
                   size="small"
                 />
               }
-              label="Show Labels"
+              label={t('showLabels')}
             />
             <FormControlLabel
               control={
@@ -164,7 +156,7 @@ const FloorControlsCard = () => {
                   size="small"
                 />
               }
-              label="Show Occupancy"
+              label={t('showOccupancy')}
             />
           </Box>
         </Box>
@@ -178,7 +170,7 @@ const FloorControlsCard = () => {
             size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
-            Find Available Desk
+            {t('findAvailableDesk')}
           </Button>
           <Button 
             variant="outlined" 
@@ -187,7 +179,7 @@ const FloorControlsCard = () => {
             size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
-            Book Meeting Room
+            {t('bookMeetingRoom')}
           </Button>
           <Button 
             variant="outlined" 
@@ -196,7 +188,7 @@ const FloorControlsCard = () => {
             size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
-            Reserve Phone Booth
+            {t('reservePhoneBooth')}
           </Button>
           <Button 
             variant="outlined" 
@@ -205,7 +197,7 @@ const FloorControlsCard = () => {
             size="small"
             sx={{ borderRadius: 2, justifyContent: 'flex-start' }}
           >
-            Export Floor Plan
+            {t('exportFloorPlan')}
           </Button>
         </Box>
       </CardContent>
@@ -215,10 +207,11 @@ const FloorControlsCard = () => {
 
 const SpaceStatsCard = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   
   const spaceTypes = [
     { 
-      type: 'Desks', 
+      type: t('desks'), 
       total: 45, 
       available: 32, 
       occupied: 13, 
@@ -226,7 +219,7 @@ const SpaceStatsCard = () => {
       color: theme.palette.primary.main
     },
     { 
-      type: 'Meeting Rooms', 
+      type: t('meetingRooms'), 
       total: 8, 
       available: 5, 
       occupied: 3, 
@@ -234,7 +227,7 @@ const SpaceStatsCard = () => {
       color: theme.palette.success.main
     },
     { 
-      type: 'Phone Booths', 
+      type: t('phoneBooths'), 
       total: 6, 
       available: 4, 
       occupied: 2, 
@@ -248,10 +241,10 @@ const SpaceStatsCard = () => {
       <CardContent sx={{ p: 2.5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" fontWeight={700}>
-            Space Statistics
+            {t('spaceStatistics')}
           </Typography>
           <Button size="small" startIcon={<Refresh />}>
-            Refresh
+            {t('refresh')}
           </Button>
         </Box>
 
@@ -280,7 +273,7 @@ const SpaceStatsCard = () => {
                       {space.type}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {space.available} available of {space.total}
+                      {space.available} {t('availableOf')} {space.total}
                     </Typography>
                   </Box>
                   <Typography variant="h6" fontWeight={700} color={space.color}>
@@ -314,11 +307,11 @@ const SpaceStatsCard = () => {
             72%
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Overall Space Utilization
+            {t('overallSpaceUtilization')}
           </Typography>
           <Chip 
             icon={<TrendingUp />}
-            label="+8% from yesterday"
+            label={`${t('plus8FromYesterday')}`}
             color="success"
             variant="outlined"
             size="small"
@@ -331,24 +324,25 @@ const SpaceStatsCard = () => {
 
 const EnvironmentCard = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   
   const environmentData = [
     {
-      metric: 'Temperature',
+      metric: t('temperature'),
       value: '72°F',
       status: 'optimal',
       icon: <Thermostat />,
       color: theme.palette.info.main
     },
     {
-      metric: 'Air Quality',
+      metric: t('airQuality'),
       value: '420 ppm',
       status: 'good',
       icon: <Air />,
       color: theme.palette.success.main
     },
     {
-      metric: 'Humidity',
+      metric: t('humidity'),
       value: '45%',
       status: 'optimal',
       icon: <WaterDrop />,
@@ -360,7 +354,7 @@ const EnvironmentCard = () => {
     <Card elevation={0} sx={{ height: 'fit-content', width: '100%' }}>
       <CardContent sx={{ p: 2.5 }}>
         <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
-          Environment Status
+          {t('environmentStatus')}
         </Typography>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -394,7 +388,7 @@ const EnvironmentCard = () => {
                   {item.metric}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Status: {item.status}
+                  {t('status')}: {item.status}
                 </Typography>
               </Box>
               <Typography variant="h6" fontWeight={700} color={item.color}>
@@ -410,7 +404,17 @@ const EnvironmentCard = () => {
 
 export default function FloorPlanPage() {
   const theme = useTheme();
+  const { t } = useTranslation();
+  // Move floors array here so it can be shared
+  const floors = [
+    { value: 'floor-1', label: t('floor1'), rooms: 8, available: 5 },
+    { value: 'floor-2', label: t('floor2'), rooms: 25, available: 18 },
+    { value: 'floor-3', label: t('floor3'), rooms: 12, available: 7 },
+    { value: 'floor-4', label: t('floor4'), rooms: 6, available: 4 }
+  ];
+  const [selectedFloor, setSelectedFloor] = useState('floor-2');
   const [refreshing, setRefreshing] = useState(false);
+  const currentFloor = floors.find(f => f.value === selectedFloor);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -419,8 +423,8 @@ export default function FloorPlanPage() {
 
   return (
     <PageContainer
-      title="Interactive Floor Plan"
-      description="View real-time occupancy, book available spaces, and monitor environment conditions"
+      title={t('interactiveFloorPlan')}
+      description={t('viewRealTimeOccupancyBookSpacesMonitorConditions')}
     >
       {/* Header Actions */}
       <Box sx={{ 
@@ -434,19 +438,19 @@ export default function FloorPlanPage() {
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <Chip 
             icon={<CheckCircle />} 
-            label="32 Available" 
+            label={`${t('available')} 32`} 
             color="success" 
             variant="outlined"
           />
           <Chip 
             icon={<AccessTime />} 
-            label="13 Occupied" 
+            label={`${t('occupied')} 13`} 
             color="warning" 
             variant="outlined"
           />
           <Chip 
             icon={<Warning />} 
-            label="2 Maintenance" 
+            label={`${t('maintenance')} 2`} 
             color="error" 
             variant="outlined"
           />
@@ -460,7 +464,7 @@ export default function FloorPlanPage() {
             disabled={refreshing}
             sx={{ borderRadius: 2 }}
           >
-            {refreshing ? 'Refreshing...' : 'Refresh'}
+            {refreshing ? t('refreshing') : t('refresh')}
           </Button>
           <Button
             variant="contained"
@@ -470,7 +474,7 @@ export default function FloorPlanPage() {
               background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`
             }}
           >
-            Quick Book
+            {t('quickBook')}
           </Button>
         </Box>
       </Box>
@@ -490,24 +494,24 @@ export default function FloorPlanPage() {
             }}>
               <Box>
                 <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>
-                  Interactive Floor Plan
+                  {t('interactiveFloorPlan')}
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Click available seats to book • Real-time occupancy updates
+                  {t('clickAvailableSeatsToBook')} • {t('realTimeOccupancyUpdates')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', gap: 1 }}>
-                <Tooltip title="Zoom In">
+                <Tooltip title={t('zoomIn')}>
                   <IconButton size="small" sx={{ color: 'white' }}>
                     <ZoomIn />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Zoom Out">
+                <Tooltip title={t('zoomOut')}>
                   <IconButton size="small" sx={{ color: 'white' }}>
                     <ZoomOut />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Fullscreen">
+                <Tooltip title={t('fullscreen')}>
                   <IconButton size="small" sx={{ color: 'white' }}>
                     <Fullscreen />
                   </IconButton>
@@ -532,7 +536,7 @@ export default function FloorPlanPage() {
                   borderRadius: '50%', 
                   backgroundColor: theme.palette.success.main 
                 }} />
-                <Typography variant="body2" fontWeight={600}>Available</Typography>
+                <Typography variant="body2" fontWeight={600}>{t('available')}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box sx={{ 
@@ -541,7 +545,7 @@ export default function FloorPlanPage() {
                   borderRadius: '50%', 
                   backgroundColor: theme.palette.warning.main 
                 }} />
-                <Typography variant="body2" fontWeight={600}>Booked</Typography>
+                <Typography variant="body2" fontWeight={600}>{t('booked')}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box sx={{ 
@@ -550,13 +554,13 @@ export default function FloorPlanPage() {
                   borderRadius: '50%', 
                   backgroundColor: theme.palette.error.main 
                 }} />
-                <Typography variant="body2" fontWeight={600}>Occupied</Typography>
+                <Typography variant="body2" fontWeight={600}>{t('occupied')}</Typography>
               </Box>
             </Box>
             
             {/* Floor Plan Content */}
             <CardContent sx={{ p: 3, minHeight: 500 }}>
-              <InteractiveFloorPlan />
+              <InteractiveFloorPlan selectedFloor={selectedFloor} currentFloor={currentFloor} floors={floors} />
             </CardContent>
 
             {/* Quick Stats Footer */}
@@ -569,23 +573,24 @@ export default function FloorPlanPage() {
               alignItems: 'center'
             }}>
               <Typography variant="body2" color="text.secondary">
-                Floor 2 - Open Workspace • Last updated: 2 minutes ago
+                {/* Localize floor name */}
+                {/* Localize last updated time */}
               </Typography>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Chip 
-                  label="32 Available" 
+                  label={`${t('available')} 32`} 
                   color="success" 
                   size="small" 
                   variant="outlined"
                 />
                 <Chip 
-                  label="8 Booked" 
+                  label={`${t('booked')} 8`} 
                   color="warning" 
                   size="small" 
                   variant="outlined"
                 />
                 <Chip 
-                  label="5 Occupied" 
+                  label={`${t('occupied')} 5`} 
                   color="error" 
                   size="small" 
                   variant="outlined"
@@ -598,7 +603,7 @@ export default function FloorPlanPage() {
         {/* Sidebar with Controls and Stats */}
         <Grid item xs={12} lg={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: 'fit-content' }}>
-            <FloorControlsCard />
+            <FloorControlsCard selectedFloor={selectedFloor} setSelectedFloor={setSelectedFloor} floors={floors} currentFloor={currentFloor} />
             <SpaceStatsCard />
             <EnvironmentCard />
           </Box>

@@ -52,6 +52,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import IAQWidgets from '@/components/IAQWidgets';
 import PageContainer from '@/components/PageContainer';
+import { useTranslation } from 'react-i18next';
 
 interface IAQReading {
   id: string;
@@ -461,6 +462,7 @@ const HistoricalChartCard = () => {
 
 export default function IAQMonitoringPage() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [selectedTimeRange, setSelectedTimeRange] = useState('today');
 
   const alertCount = mockIAQReadings.filter(r => r.status === 'poor' || r.status === 'hazardous').length;
@@ -471,12 +473,12 @@ export default function IAQMonitoringPage() {
       description="Monitor indoor air quality and environmental conditions across all spaces"
     >
       <Grid container spacing={3}>
-        {/* IAQ Statistics */}
+        {/* Environmental Overview */}
         <Grid item xs={12}>
           <Paper elevation={0} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" fontWeight={600}>
-                Environmental Overview
+                {t('environmentalOverview')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button variant="outlined" startIcon={<FilterList />} size="small">
@@ -530,7 +532,7 @@ export default function IAQMonitoringPage() {
           <HistoricalChartCard />
         </Grid>
 
-        {/* Main IAQ Widgets */}
+        {/* Real-time Environmental Data */}
         <Grid item xs={12}>
           <Paper 
             elevation={0} 
@@ -541,7 +543,7 @@ export default function IAQMonitoringPage() {
             }}
           >
             <Typography variant="h6" fontWeight={600} mb={2}>
-              Real-time Environmental Data
+              {t('realTimeEnvironmentalData')}
             </Typography>
             <IAQWidgets />
           </Paper>
@@ -550,7 +552,7 @@ export default function IAQMonitoringPage() {
         {/* Room IAQ Cards */}
         <Grid item xs={12}>
           <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-            Room-by-Room Analysis
+            {t('roomByRoomAnalysis')}
           </Typography>
         </Grid>
 
