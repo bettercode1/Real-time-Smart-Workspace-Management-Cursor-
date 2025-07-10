@@ -1,125 +1,216 @@
 import React from 'react';
-import { Box, CircularProgress, Typography, Fade, Skeleton } from '@mui/material';
+import { Box, Typography, Fade, Skeleton, useTheme, alpha } from '@mui/material';
 import { keyframes } from '@mui/system';
 
-// Modern floating animation with easing
-const float = keyframes`
+// Ultra-modern floating animation with elastic easing
+const ultraFloat = keyframes`
   0% { 
-    transform: translateY(0px) scale(1); 
-    opacity: 0.8;
-  }
-  50% { 
-    transform: translateY(-15px) scale(1.02); 
-    opacity: 1;
-  }
-  100% { 
-    transform: translateY(0px) scale(1); 
-    opacity: 0.8;
-  }
-`;
-
-// Smooth pulse with scaling
-const pulse = keyframes`
-  0% { 
-    transform: scale(0.8); 
-    opacity: 0.6; 
-  }
-  50% { 
-    transform: scale(1.2); 
-    opacity: 1; 
-  }
-  100% { 
-    transform: scale(0.8); 
-    opacity: 0.6; 
-  }
-`;
-
-// Enhanced gradient animation
-const gradientShift = keyframes`
-  0% { 
-    background-position: 0% 50%; 
-    transform: rotate(0deg);
+    transform: translateY(0px) scale(1) rotateZ(0deg); 
+    opacity: 0.9;
+    filter: blur(0px);
   }
   25% { 
-    background-position: 100% 0%; 
-    transform: rotate(90deg);
+    transform: translateY(-8px) scale(1.05) rotateZ(2deg); 
+    opacity: 1;
+    filter: blur(0.5px);
   }
   50% { 
-    background-position: 100% 50%; 
-    transform: rotate(180deg);
+    transform: translateY(-12px) scale(1.08) rotateZ(0deg); 
+    opacity: 1;
+    filter: blur(0px);
   }
   75% { 
-    background-position: 0% 100%; 
-    transform: rotate(270deg);
+    transform: translateY(-8px) scale(1.05) rotateZ(-2deg); 
+    opacity: 1;
+    filter: blur(0.5px);
   }
   100% { 
-    background-position: 0% 50%; 
-    transform: rotate(360deg);
+    transform: translateY(0px) scale(1) rotateZ(0deg); 
+    opacity: 0.9;
+    filter: blur(0px);
   }
 `;
 
-// Wave animation for dots
-const wave = keyframes`
-  0%, 60%, 100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.7;
+// Dynamic gradient rotation with color shifting
+const dynamicGradient = keyframes`
+  0% { 
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    background-position: 0% 50%; 
+    transform: rotate(0deg) scale(1);
+    filter: hue-rotate(0deg);
   }
-  30% {
-    transform: translateY(-20px) scale(1.3);
+  25% { 
+    background: linear-gradient(135deg, #764ba2, #f093fb, #667eea);
+    background-position: 100% 0%; 
+    transform: rotate(90deg) scale(1.1);
+    filter: hue-rotate(90deg);
+  }
+  50% { 
+    background: linear-gradient(225deg, #f093fb, #667eea, #764ba2);
+    background-position: 100% 100%; 
+    transform: rotate(180deg) scale(1);
+    filter: hue-rotate(180deg);
+  }
+  75% { 
+    background: linear-gradient(315deg, #667eea, #764ba2, #f093fb);
+    background-position: 0% 100%; 
+    transform: rotate(270deg) scale(1.1);
+    filter: hue-rotate(270deg);
+  }
+  100% { 
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    background-position: 0% 50%; 
+    transform: rotate(360deg) scale(1);
+    filter: hue-rotate(360deg);
+  }
+`;
+
+// Elastic wave animation for dots
+const elasticWave = keyframes`
+  0%, 80%, 100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translateY(-25px) scaleY(1.4) scaleX(0.8);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-15px) scaleY(1.2) scaleX(0.9);
     opacity: 1;
   }
 `;
 
-// Morphing shape animation
-const morph = keyframes`
+// Liquid morphing animation
+const liquidMorph = keyframes`
   0% { 
-    border-radius: 50% 50% 50% 50%;
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
     transform: rotate(0deg) scale(1);
   }
-  25% { 
-    border-radius: 60% 40% 60% 40%;
-    transform: rotate(90deg) scale(1.1);
+  20% { 
+    border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
+    transform: rotate(72deg) scale(1.1);
   }
-  50% { 
-    border-radius: 40% 60% 40% 60%;
-    transform: rotate(180deg) scale(1);
+  40% { 
+    border-radius: 40% 60% 70% 30% / 60% 40% 50% 50%;
+    transform: rotate(144deg) scale(0.9);
   }
-  75% { 
-    border-radius: 60% 40% 60% 40%;
-    transform: rotate(270deg) scale(1.1);
+  60% { 
+    border-radius: 60% 40% 30% 70% / 40% 50% 60% 50%;
+    transform: rotate(216deg) scale(1.2);
+  }
+  80% { 
+    border-radius: 30% 70% 50% 50% / 50% 40% 60% 50%;
+    transform: rotate(288deg) scale(0.8);
   }
   100% { 
-    border-radius: 50% 50% 50% 50%;
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
     transform: rotate(360deg) scale(1);
   }
 `;
 
-// Glow effect
-const glow = keyframes`
+// Advanced glow with multiple layers
+const advancedGlow = keyframes`
   0% { 
-    box-shadow: 0 0 5px rgba(99,102,241,0.3), 0 0 10px rgba(99,102,241,0.2), 0 0 15px rgba(99,102,241,0.1);
+    box-shadow: 
+      0 0 10px rgba(99,102,241,0.4), 
+      0 0 20px rgba(99,102,241,0.3),
+      0 0 30px rgba(99,102,241,0.2),
+      inset 0 0 10px rgba(99,102,241,0.1);
+    filter: brightness(1);
   }
-  50% { 
-    box-shadow: 0 0 20px rgba(99,102,241,0.6), 0 0 30px rgba(99,102,241,0.4), 0 0 40px rgba(99,102,241,0.3);
+  33% { 
+    box-shadow: 
+      0 0 20px rgba(118,75,162,0.6), 
+      0 0 35px rgba(118,75,162,0.4),
+      0 0 50px rgba(118,75,162,0.3),
+      inset 0 0 15px rgba(118,75,162,0.2);
+    filter: brightness(1.2);
+  }
+  66% { 
+    box-shadow: 
+      0 0 25px rgba(240,147,251,0.7), 
+      0 0 40px rgba(240,147,251,0.5),
+      0 0 60px rgba(240,147,251,0.3),
+      inset 0 0 20px rgba(240,147,251,0.2);
+    filter: brightness(1.4);
   }
   100% { 
-    box-shadow: 0 0 5px rgba(99,102,241,0.3), 0 0 10px rgba(99,102,241,0.2), 0 0 15px rgba(99,102,241,0.1);
+    box-shadow: 
+      0 0 10px rgba(99,102,241,0.4), 
+      0 0 20px rgba(99,102,241,0.3),
+      0 0 30px rgba(99,102,241,0.2),
+      inset 0 0 10px rgba(99,102,241,0.1);
+    filter: brightness(1);
+  }
+`;
+
+// Particle explosion effect
+const particleFloat = keyframes`
+  0% { 
+    transform: translateY(0) translateX(0) scale(0.8); 
+    opacity: 0; 
+  }
+  20% { 
+    transform: translateY(-10px) translateX(5px) scale(1); 
+    opacity: 1; 
+  }
+  80% { 
+    transform: translateY(-30px) translateX(-5px) scale(1.2); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(-50px) translateX(10px) scale(0.6); 
+    opacity: 0; 
+  }
+`;
+
+// 3D rotation with perspective
+const rotation3D = keyframes`
+  0% { 
+    transform: perspective(200px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  25% { 
+    transform: perspective(200px) rotateX(90deg) rotateY(45deg) rotateZ(90deg);
+  }
+  50% { 
+    transform: perspective(200px) rotateX(180deg) rotateY(90deg) rotateZ(180deg);
+  }
+  75% { 
+    transform: perspective(200px) rotateX(270deg) rotateY(135deg) rotateZ(270deg);
+  }
+  100% { 
+    transform: perspective(200px) rotateX(360deg) rotateY(180deg) rotateZ(360deg);
   }
 `;
 
 interface LoadingSpinnerProps {
   size?: number;
   message?: string;
-  variant?: 'circular' | 'linear' | 'dots' | 'card' | 'fullscreen' | 'modern' | 'wave' | 'morph' | 'glow';
+  variant?: 'modern' | 'liquid' | 'particle' | 'wave' | 'glow' | '3d' | 'fullscreen' | 'card';
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 }
 
 export default function LoadingSpinner({ 
-  size = 40, 
+  size = 50, 
   message = 'Loading...', 
   variant = 'modern',
   color = 'primary' 
 }: LoadingSpinnerProps) {
+  const theme = useTheme();
+  
+  const getColorValue = (colorName: string) => {
+    switch(colorName) {
+      case 'primary': return theme.palette.primary.main;
+      case 'secondary': return theme.palette.secondary.main;
+      case 'success': return theme.palette.success.main;
+      case 'warning': return theme.palette.warning.main;
+      case 'error': return theme.palette.error.main;
+      default: return theme.palette.primary.main;
+    }
+  };
+
+  const colorValue = getColorValue(color);
   
   if (variant === 'fullscreen') {
     return (
@@ -131,9 +222,14 @@ export default function LoadingSpinner({
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-            backgroundSize: '400% 400%',
-            animation: `${gradientShift} 6s ease infinite`,
+            background: `
+              linear-gradient(45deg, 
+                ${alpha(theme.palette.primary.main, 0.1)}, 
+                ${alpha(theme.palette.secondary.main, 0.1)}, 
+                ${alpha(theme.palette.primary.light, 0.1)}
+              )
+            `,
+            backdropFilter: 'blur(10px)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -143,65 +239,24 @@ export default function LoadingSpinner({
         >
           <Box
             sx={{
-              animation: `${float} 4s ease-in-out infinite`,
+              animation: `${ultraFloat} 3s ease-in-out infinite`,
               mb: 4,
               position: 'relative',
             }}
           >
-            <Box
-              sx={{
-                width: 100,
-                height: 100,
-                background: 'linear-gradient(45deg, #ffffff, #f8fafc, #e0e7ff)',
-                backgroundSize: '200% 200%',
-                animation: `${morph} 4s ease-in-out infinite, ${glow} 2s ease-in-out infinite`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255,255,255,0.3)',
-              }}
-            >
-              <Box
-                sx={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#6366f1',
-                  borderRadius: '50%',
-                  animation: `${pulse} 1s ease-in-out infinite`,
-                }}
-              />
-            </Box>
+            <LoadingSpinner variant="modern" size={80} message="" />
           </Box>
-          
           <Typography 
             variant="h5" 
+            fontWeight={600}
             sx={{ 
-              fontWeight: 700, 
-              color: '#ffffff',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-              animation: `${float} 3s ease-in-out infinite`,
-              mb: 2,
+              color: theme.palette.primary.main,
+              animation: `${ultraFloat} 3s ease-in-out infinite`,
+              animationDelay: '0.5s'
             }}
           >
             {message}
           </Typography>
-          
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Box
-                key={i}
-                sx={{
-                  width: 3,
-                  height: 16,
-                  borderRadius: 2,
-                  background: 'rgba(255,255,255,0.8)',
-                  animation: `${wave} 1.2s ease-in-out infinite`,
-                  animationDelay: `${i * 0.1}s`,
-                }}
-              />
-            ))}
-          </Box>
         </Box>
       </Fade>
     );
@@ -209,35 +264,71 @@ export default function LoadingSpinner({
 
   if (variant === 'modern') {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <Box
           sx={{
             width: size,
             height: size,
-            background: 'linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #6366f1)',
+            background: `linear-gradient(45deg, ${colorValue}, ${alpha(colorValue, 0.6)}, ${theme.palette.secondary.main})`,
             backgroundSize: '300% 300%',
-            animation: `${morph} 3s ease-in-out infinite, ${gradientShift} 4s ease infinite`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              width: size * 0.6,
-              height: size * 0.6,
-              backgroundColor: 'rgba(255,255,255,0.9)',
+            borderRadius: '50%',
+            animation: `${dynamicGradient} 3s ease-in-out infinite, ${ultraFloat} 2s ease-in-out infinite`,
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: '10%',
+              left: '10%',
+              width: '80%',
+              height: '80%',
+              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.3)}, transparent)`,
               borderRadius: '50%',
-              animation: `${pulse} 2s ease-in-out infinite`,
-            }}
-          />
-        </Box>
+              animation: `${rotation3D} 4s linear infinite`,
+            }
+          }}
+        />
         {message && (
           <Typography 
             variant="body2" 
             color="text.secondary"
-            sx={{ fontWeight: 600 }}
+            sx={{ 
+              fontWeight: 600,
+              animation: `${ultraFloat} 2s ease-in-out infinite`,
+              animationDelay: '0.3s'
+            }}
           >
+            {message}
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
+  if (variant === 'liquid') {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            width: size,
+            height: size,
+            background: `linear-gradient(45deg, ${colorValue}, ${theme.palette.secondary.main})`,
+            animation: `${liquidMorph} 4s ease-in-out infinite`,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: `linear-gradient(45deg, transparent, ${alpha('#ffffff', 0.3)}, transparent)`,
+              animation: `${dynamicGradient} 2s linear infinite`,
+            }
+          }}
+        />
+        {message && (
+          <Typography variant="body2" color="text.secondary" fontWeight={600}>
             {message}
           </Typography>
         )}
@@ -247,24 +338,25 @@ export default function LoadingSpinner({
 
   if (variant === 'wave') {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'end', gap: 0.5 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'end' }}>
           {[0, 1, 2, 3, 4].map((i) => (
             <Box
               key={i}
               sx={{
-                width: 4,
-                height: 20,
+                width: size / 5,
+                height: size / 3,
+                backgroundColor: colorValue,
                 borderRadius: 2,
-                background: `linear-gradient(180deg, #6366f1, #8b5cf6)`,
-                animation: `${wave} 1.5s ease-in-out infinite`,
-                animationDelay: `${i * 0.1}s`,
+                animation: `${elasticWave} 1.5s ease-in-out infinite`,
+                animationDelay: `${i * 0.2}s`,
+                transformOrigin: 'bottom',
               }}
             />
           ))}
         </Box>
         {message && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+          <Typography variant="body2" color="text.secondary" fontWeight={600}>
             {message}
           </Typography>
         )}
@@ -274,31 +366,19 @@ export default function LoadingSpinner({
 
   if (variant === 'glow') {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <Box
           sx={{
             width: size,
             height: size,
+            background: `radial-gradient(circle, ${colorValue}, ${alpha(colorValue, 0.3)})`,
             borderRadius: '50%',
-            background: 'linear-gradient(45deg, #6366f1, #8b5cf6)',
-            animation: `${glow} 2s ease-in-out infinite, ${float} 3s ease-in-out infinite`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            animation: `${advancedGlow} 2s ease-in-out infinite, ${ultraFloat} 3s ease-in-out infinite`,
+            position: 'relative',
           }}
-        >
-          <Box
-            sx={{
-              width: size * 0.5,
-              height: size * 0.5,
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255,255,255,0.9)',
-              animation: `${pulse} 1.5s ease-in-out infinite`,
-            }}
-          />
-        </Box>
+        />
         {message && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+          <Typography variant="body2" color="text.secondary" fontWeight={600}>
             {message}
           </Typography>
         )}
@@ -306,27 +386,44 @@ export default function LoadingSpinner({
     );
   }
 
-  if (variant === 'dots') {
+  if (variant === 'particle') {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          {[0, 1, 2].map((i) => (
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ position: 'relative', width: size, height: size }}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: size * 0.6,
+              height: size * 0.6,
+              backgroundColor: colorValue,
+              borderRadius: '50%',
+              animation: `${rotation3D} 3s linear infinite`,
+            }}
+          />
+          {[...Array(8)].map((_, i) => (
             <Box
               key={i}
               sx={{
-                width: 14,
-                height: 14,
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: 6,
+                height: 6,
+                backgroundColor: alpha(colorValue, 0.7),
                 borderRadius: '50%',
-                background: `linear-gradient(45deg, #6366f1, #8b5cf6)`,
-                animation: `${wave} 1.8s ease-in-out infinite`,
-                animationDelay: `${i * 0.2}s`,
-                boxShadow: '0 2px 8px rgba(99,102,241,0.3)',
+                animation: `${particleFloat} 2s ease-in-out infinite`,
+                animationDelay: `${i * 0.25}s`,
+                transform: `translate(-50%, -50%) rotate(${i * 45}deg) translateY(-${size/2}px)`,
+                transformOrigin: '50% 50%',
               }}
             />
           ))}
         </Box>
         {message && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+          <Typography variant="body2" color="text.secondary" fontWeight={600}>
             {message}
           </Typography>
         )}
@@ -334,77 +431,32 @@ export default function LoadingSpinner({
     );
   }
 
-  if (variant === 'card') {
+  if (variant === '3d') {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          p: 4,
-          borderRadius: 4,
-          background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-          border: '1px solid rgba(99,102,241,0.1)',
-        }}
-      >
-        <CircularProgress 
-          size={size} 
-          thickness={4}
-          sx={{ 
-            color: `${color}.main`,
-            mb: 2,
-            animation: `${float} 2s ease-in-out infinite`,
-          }} 
-        />
-        <Typography 
-          variant="body1" 
-          color="text.secondary"
-          sx={{ fontWeight: 500 }}
-        >
-          {message}
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (variant === 'linear') {
-    return (
-      <Box sx={{ width: '100%', mb: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <Box
           sx={{
-            height: 6,
-            borderRadius: 3,
-            background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #f59e0b, #6366f1)',
-            backgroundSize: '400% 100%',
-            animation: `${gradientShift} 3s ease infinite`,
-            boxShadow: '0 2px 8px rgba(99,102,241,0.3)',
+            width: size,
+            height: size,
+            background: `linear-gradient(45deg, ${colorValue}, ${theme.palette.secondary.main})`,
+            animation: `${rotation3D} 3s linear infinite`,
+            borderRadius: 2,
+            transformStyle: 'preserve-3d',
             position: 'relative',
-            overflow: 'hidden',
-            '&::after': {
+            '&::before': {
               content: '""',
               position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
-              animation: `${gradientShift} 1.5s ease infinite`,
+              top: '10%',
+              left: '10%',
+              width: '80%',
+              height: '80%',
+              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.4)}, transparent)`,
+              borderRadius: 2,
             }
           }}
         />
         {message && (
-          <Typography 
-            variant="caption" 
-            color="text.secondary"
-            sx={{ 
-              display: 'block', 
-              textAlign: 'center', 
-              mt: 1,
-              fontWeight: 500 
-            }}
-          >
+          <Typography variant="body2" color="text.secondary" fontWeight={600}>
             {message}
           </Typography>
         )}
@@ -412,32 +464,11 @@ export default function LoadingSpinner({
     );
   }
 
-  // Default circular variant with modern styling
   return (
-    <Box 
-      sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 2 
-      }}
-    >
-      <Box
-        sx={{
-          width: size,
-          height: size,
-          borderRadius: '50%',
-          border: `3px solid rgba(99,102,241,0.2)`,
-          borderTop: `3px solid #6366f1`,
-          animation: `${gradientShift} 1s linear infinite, ${glow} 2s ease-in-out infinite`,
-          position: 'relative',
-        }}
-      />
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      <LoadingSpinner variant="modern" size={size} message="" color={color} />
       {message && (
-        <Typography 
-          variant="body2" 
-          color="text.secondary"
-          sx={{ fontWeight: 600 }}
-        >
+        <Typography variant="body2" color="text.secondary" fontWeight={600}>
           {message}
         </Typography>
       )}
@@ -445,34 +476,39 @@ export default function LoadingSpinner({
   );
 }
 
-// Skeleton loading components for specific use cases
+// Card loading skeleton
 export const LoadingCard = () => (
-  <Box sx={{ p: 3, borderRadius: 4 }}>
-    <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2, mb: 2 }} />
-    <Skeleton variant="text" height={32} width="60%" sx={{ mb: 1 }} />
-    <Skeleton variant="text" height={24} width="40%" />
+  <Box sx={{ p: 3, borderRadius: 3, bgcolor: 'background.paper' }}>
+    <Skeleton variant="rectangular" width="100%" height={140} sx={{ borderRadius: 2, mb: 2 }} />
+    <Skeleton variant="text" width="80%" height={24} sx={{ mb: 1 }} />
+    <Skeleton variant="text" width="60%" height={20} />
   </Box>
 );
 
+// Table loading skeleton
 export const LoadingTable = ({ rows = 5 }: { rows?: number }) => (
   <Box>
-    {Array.from({ length: rows }).map((_, index) => (
-      <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+    {[...Array(rows)].map((_, i) => (
+      <Box key={i} sx={{ display: 'flex', gap: 2, py: 2, alignItems: 'center' }}>
         <Skeleton variant="circular" width={40} height={40} />
         <Box sx={{ flex: 1 }}>
-          <Skeleton variant="text" height={24} width="80%" />
-          <Skeleton variant="text" height={20} width="50%" />
+          <Skeleton variant="text" width="70%" height={20} sx={{ mb: 1 }} />
+          <Skeleton variant="text" width="50%" height={16} />
         </Box>
+        <Skeleton variant="rectangular" width={80} height={32} sx={{ borderRadius: 1 }} />
       </Box>
     ))}
   </Box>
 );
 
+// Stats loading skeleton
 export const LoadingStats = () => (
-  <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-    {Array.from({ length: 4 }).map((_, index) => (
-      <Box key={index} sx={{ flex: 1, minWidth: 200 }}>
-        <Skeleton variant="rectangular" height={140} sx={{ borderRadius: 4, mb: 1 }} />
+  <Box sx={{ display: 'flex', gap: 3 }}>
+    {[...Array(4)].map((_, i) => (
+      <Box key={i} sx={{ flex: 1, p: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+        <Skeleton variant="circular" width={40} height={40} sx={{ mb: 2 }} />
+        <Skeleton variant="text" width="60%" height={32} sx={{ mb: 1 }} />
+        <Skeleton variant="text" width="40%" height={20} />
       </Box>
     ))}
   </Box>

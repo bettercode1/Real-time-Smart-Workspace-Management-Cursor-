@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 import { lightTheme, darkTheme } from "@/lib/theme";
 import Layout from "@/components/Layout";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import AdminRoute from "@/components/AdminRoute";
 
 // Import pages
@@ -38,35 +39,7 @@ const AppRoutes = () => {
   const { isAuthenticated, loading, user } = useAuth();
   
   if (loading) {
-    return (
-      <Box sx={{ 
-        minHeight: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-      }}>
-        <Box sx={{ 
-          textAlign: 'center',
-          p: 4,
-          backgroundColor: 'white',
-          borderRadius: 3,
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
-        }}>
-          <Typography variant="h5" fontWeight={700} color="primary.main" mb={2}>
-            SmartSpace Loading...
-          </Typography>
-          <Box sx={{ 
-            width: 40, 
-            height: 4, 
-            backgroundColor: 'primary.main', 
-            borderRadius: 2,
-            mx: 'auto',
-            animation: 'pulse 2s ease-in-out infinite alternate'
-          }} />
-        </Box>
-      </Box>
-    );
+    return <LoadingSpinner variant="fullscreen" message="SmartSpace Loading..." size={80} />;
   }
 
   if (!isAuthenticated) {
