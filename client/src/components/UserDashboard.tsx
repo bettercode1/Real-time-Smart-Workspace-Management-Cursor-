@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarCheck, Clock, MapPin, Users, Thermometer, Building } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
+import InteractiveFloorPlan from "./InteractiveFloorPlan";
 
 export default function UserDashboard() {
   const { user } = useAuth();
