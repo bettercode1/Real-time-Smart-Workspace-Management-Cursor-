@@ -70,6 +70,13 @@ export const translations = {
     thisWeek: "This Week",
     thisMonth: "This Month",
     
+    // User Dashboard
+    personalizedWorkspace: "Your personalized workspace overview and quick actions",
+    welcomeBack: "Welcome back",
+    readyToWork: "Ready to make the most of your workspace today?",
+    quickBook: "Quick Book",
+    viewAnalytics: "View Analytics",
+    
     // Messages
     successSave: "Settings saved successfully!",
     errorSave: "Failed to save settings. Please try again.",
@@ -147,6 +154,13 @@ export const translations = {
     tomorrow: "غداً",
     thisWeek: "هذا الأسبوع",
     thisMonth: "هذا الشهر",
+    
+    // User Dashboard
+    personalizedWorkspace: "نظرة عامة شخصية على مساحة العمل والإجراءات السريعة",
+    welcomeBack: "مرحباً بعودتك",
+    readyToWork: "هل أنت مستعد لتحقيق أقصى استفادة من مساحة العمل اليوم؟",
+    quickBook: "حجز سريع",
+    viewAnalytics: "عرض التحليلات",
     
     // Messages
     successSave: "تم حفظ الإعدادات بنجاح!",

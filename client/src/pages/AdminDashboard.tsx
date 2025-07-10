@@ -1,6 +1,8 @@
 import React from "react";
 import { Typography, Card, CardContent, Paper, Chip, List, ListItem, ListItemText, ListItemIcon, Button, IconButton, useTheme, alpha, Grid, Box, Avatar } from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSettings } from "@/contexts/SettingsContext";
+import { translations } from "@/lib/translations";
 import { AdminPanelSettings, Person, Dashboard, TrendingUp, Notifications, Settings, Security, People, EventAvailable, Warning } from "@mui/icons-material";
 import FloorPlan from "@/components/FloorPlan";
 import IAQWidgets from "@/components/IAQWidgets";
@@ -89,8 +91,10 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
       sx={{ 
         p: 4, 
         borderRadius: 3,
-        background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-        color: 'white',
+        background: theme.palette.mode === 'light'
+          ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+          : `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+        color: theme.palette.primary.contrastText,
         position: 'relative',
         overflow: 'hidden',
         border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
@@ -322,13 +326,17 @@ const RecentActivityCard = () => {
 export default function AdminDashboard() {
   const { user } = useAuth();
   const theme = useTheme();
+  const { language } = useSettings();
+  const t = translations[language];
 
   return (
     <Box sx={{
       minHeight: '100%',
       width: '100%',
       maxWidth: '100%',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+      background: theme.palette.mode === 'light' 
+        ? 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)'
+        : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${alpha(theme.palette.background.paper, 0.5)} 100%)`,
       position: 'relative',
       pb: 6,
       overflowX: 'hidden'
@@ -343,8 +351,8 @@ export default function AdminDashboard() {
       }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
-            Admin Dashboard
+          <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1, color: 'text.primary' }}>
+            {t.dashboard} - Admin
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
             Monitor, manage, and optimize your workspace in real time
@@ -359,8 +367,10 @@ export default function AdminDashboard() {
               sx={{
                 p: { xs: 3, md: 4 },
                 borderRadius: 5,
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                color: 'white',
+                background: theme.palette.mode === 'light'
+                  ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
+                  : `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+                color: theme.palette.primary.contrastText,
                 position: 'relative',
                 overflow: 'hidden',
                 minHeight: 180,

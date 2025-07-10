@@ -184,10 +184,38 @@ const rotation3D = keyframes`
   }
 `;
 
+// Custom 3D Spinning Loader Animation
+const customSpin = keyframes`
+  0%, 100% {
+    box-shadow: .2em 0px 0 0px currentcolor;
+  }
+  12% {
+    box-shadow: .2em .2em 0 0 currentcolor;
+  }
+  25% {
+    box-shadow: 0 .2em 0 0px currentcolor;
+  }
+  37% {
+    box-shadow: -.2em .2em 0 0 currentcolor;
+  }
+  50% {
+    box-shadow: -.2em 0 0 0 currentcolor;
+  }
+  62% {
+    box-shadow: -.2em -.2em 0 0 currentcolor;
+  }
+  75% {
+    box-shadow: 0px -.2em 0 0 currentcolor;
+  }
+  87% {
+    box-shadow: .2em -.2em 0 0 currentcolor;
+  }
+`;
+
 interface LoadingSpinnerProps {
   size?: number;
   message?: string;
-  variant?: 'modern' | 'liquid' | 'particle' | 'wave' | 'glow' | '3d' | 'fullscreen' | 'card';
+  variant?: 'modern' | 'liquid' | 'particle' | 'wave' | 'glow' | '3d' | 'fullscreen' | 'card' | 'custom';
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 }
 
@@ -464,9 +492,111 @@ export default function LoadingSpinner({
     );
   }
 
+  if (variant === 'custom') {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        gap: 3,
+        position: 'relative',
+        minHeight: 120,
+        justifyContent: 'center'
+      }}>
+        {/* Custom 3D Spinning Loader */}
+        <Box
+          sx={{
+            transform: 'rotateZ(45deg)',
+            perspective: '1000px',
+            borderRadius: '50%',
+            width: 48,
+            height: 48,
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: 'inherit',
+              height: 'inherit',
+              borderRadius: '50%',
+              transform: 'rotateX(70deg)',
+              animation: `${customSpin} 1s linear infinite`,
+              color: theme.palette.mode === 'light' ? theme.palette.primary.main : '#f8fafc',
+            },
+            '&::after': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: 'inherit',
+              height: 'inherit',
+              borderRadius: '50%',
+              transform: 'rotateY(70deg)',
+              animation: `${customSpin} 1s linear infinite 0.4s`,
+              color: theme.palette.mode === 'light' ? '#FF3D00' : '#ff6b35',
+            }
+          }}
+        />
+        
+        {/* Powered by BetterCode */}
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1.5,
+          mt: 2,
+          opacity: 0.8,
+          transition: 'opacity 0.3s ease',
+          '&:hover': { opacity: 1 }
+        }}>
+          {/* BetterCode Logo */}
+          <Box
+            sx={{
+              width: 24,
+              height: 24,
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              '&::before': {
+                content: '"BC"',
+                color: 'white',
+                fontSize: '8px',
+                fontWeight: 'bold',
+                fontFamily: 'monospace',
+              }
+            }}
+          />
+          
+          <Typography 
+            variant="caption" 
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              letterSpacing: '0.5px'
+            }}
+          >
+            Powered by BetterCode
+          </Typography>
+        </Box>
+        
+        {message && (
+          <Typography variant="body2" color="text.secondary" fontWeight={500} sx={{ mt: 1 }}>
+            {message}
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-      <LoadingSpinner variant="modern" size={size} message="" color={color} />
+      <LoadingSpinner variant="custom" size={size} message="" color={color} />
       {message && (
         <Typography variant="body2" color="text.secondary" fontWeight={600}>
           {message}

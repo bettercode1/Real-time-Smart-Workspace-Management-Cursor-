@@ -1,6 +1,8 @@
 import React from "react";
 import { Typography, Card, CardContent, Paper, Button, IconButton, Chip, useTheme, alpha, Grid, Box, Avatar, List, ListItem, ListItemText, ListItemIcon } from "@mui/material";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSettings } from "@/contexts/SettingsContext";
+import { translations } from "@/lib/translations";
 import { Person, Bookmark, TrendingUp, Notifications, Dashboard, EventAvailable, AccessTime, LocationOn, Air, Thermostat, Schedule } from "@mui/icons-material";
 import FloorPlan from "@/components/FloorPlan";
 import IAQWidgets from "@/components/IAQWidgets";
@@ -12,6 +14,8 @@ import Suggestions from "@/components/Suggestions";
 
 const UpcomingBookingsCard = () => {
   const theme = useTheme();
+  const { language } = useSettings();
+  const t = translations[language];
   
   const bookings = [
     { 
@@ -50,13 +54,16 @@ const UpcomingBookingsCard = () => {
     <Card elevation={0} sx={{ 
       p: 3, 
       borderRadius: 4, 
-      background: '#fff',
-      boxShadow: '0 2px 12px rgba(99,102,241,0.06)',
+      background: theme.palette.background.paper,
+      boxShadow: theme.palette.mode === 'light' 
+        ? '0 2px 12px rgba(99,102,241,0.06)'
+        : '0 2px 12px rgba(0,0,0,0.3)',
       height: '100%',
-      minHeight: 400
+      minHeight: 400,
+      border: `1px solid ${theme.palette.divider}`,
     }}>
-      <Typography variant="h6" fontWeight={600} mb={2}>
-        Upcoming Bookings
+      <Typography variant="h6" fontWeight={600} mb={2} color="text.primary">
+        {t.bookings}
       </Typography>
       <List sx={{ p: 0 }}>
         {bookings.map((booking, index) => (
@@ -81,11 +88,11 @@ const UpcomingBookingsCard = () => {
             <ListItemText
               primary={
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="subtitle2" fontWeight={600}>
+                  <Typography variant="subtitle2" fontWeight={600} color="text.primary">
                     {booking.room}
                   </Typography>
                   <Chip 
-                    label={booking.status}
+                    label={t[booking.status as keyof typeof t] || booking.status}
                     size="small"
                     color={booking.status === 'confirmed' ? 'success' : 'warning'}
                     variant="outlined"
@@ -205,13 +212,17 @@ const QuickActionsCard = () => {
 export default function UserDashboard() {
   const { user } = useAuth();
   const theme = useTheme();
+  const { language } = useSettings();
+  const t = translations[language];
 
   return (
     <Box sx={{
       minHeight: '100%',
       width: '100%',
       maxWidth: '100%',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+      background: theme.palette.mode === 'light' 
+        ? 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)'
+        : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${alpha(theme.palette.background.paper, 0.5)} 100%)`,
       position: 'relative',
       pb: 6,
       overflowX: 'hidden'
@@ -226,11 +237,11 @@ export default function UserDashboard() {
       }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
-            Dashboard
+          <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1, color: 'text.primary' }}>
+            {t.dashboard}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-            Your personalized workspace overview and quick actions
+            {t.personalizedWorkspace || 'Your personalized workspace overview and quick actions'}
           </Typography>
         </Box>
 
@@ -243,8 +254,10 @@ export default function UserDashboard() {
               sx={{
                 p: { xs: 3, md: 4 },
                 borderRadius: 5,
-                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                color: 'white',
+                background: theme.palette.mode === 'light'
+                  ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                  : `linear-gradient(135deg, ${theme.palette.success.dark} 0%, ${alpha(theme.palette.success.main, 0.8)} 100%)`,
+                color: theme.palette.success.contrastText,
                 position: 'relative',
                 overflow: 'hidden',
                 minHeight: 180,
@@ -260,10 +273,10 @@ export default function UserDashboard() {
                 </Avatar>
                 <Box>
                   <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2, mb: 0.5 }}>
-                    Welcome back, {user?.displayName || 'John'}!
+                    {t.welcomeBack || 'Welcome back'}, {user?.displayName || 'John'}!
                   </Typography>
                   <Typography variant="body1" sx={{ opacity: 0.92, fontWeight: 400 }}>
-                    Ready to make the most of your workspace today?
+                    {t.readyToWork || 'Ready to make the most of your workspace today?'}
                   </Typography>
                 </Box>
               </Box>
@@ -287,7 +300,7 @@ export default function UserDashboard() {
                   }}
                   startIcon={<Bookmark />}
                 >
-                  Quick Book
+                  {t.quickBook || 'Quick Book'}
                 </Button>
                 <Button
                   variant="outlined"
@@ -309,7 +322,7 @@ export default function UserDashboard() {
                   }}
                   startIcon={<TrendingUp />}
                 >
-                  View Analytics
+                  {t.viewAnalytics || 'View Analytics'}
                 </Button>
               </Box>
             </Paper>
