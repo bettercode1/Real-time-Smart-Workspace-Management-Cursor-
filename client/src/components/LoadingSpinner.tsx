@@ -2,38 +2,122 @@ import React from 'react';
 import { Box, CircularProgress, Typography, Fade, Skeleton } from '@mui/material';
 import { keyframes } from '@mui/system';
 
-// Floating animation
+// Modern floating animation with easing
 const float = keyframes`
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% { 
+    transform: translateY(0px) scale(1); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateY(-15px) scale(1.02); 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(0px) scale(1); 
+    opacity: 0.8;
+  }
 `;
 
-// Pulse animation
+// Smooth pulse with scaling
 const pulse = keyframes`
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
+  0% { 
+    transform: scale(0.8); 
+    opacity: 0.6; 
+  }
+  50% { 
+    transform: scale(1.2); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: scale(0.8); 
+    opacity: 0.6; 
+  }
 `;
 
-// Gradient animation
+// Enhanced gradient animation
 const gradientShift = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% { 
+    background-position: 0% 50%; 
+    transform: rotate(0deg);
+  }
+  25% { 
+    background-position: 100% 0%; 
+    transform: rotate(90deg);
+  }
+  50% { 
+    background-position: 100% 50%; 
+    transform: rotate(180deg);
+  }
+  75% { 
+    background-position: 0% 100%; 
+    transform: rotate(270deg);
+  }
+  100% { 
+    background-position: 0% 50%; 
+    transform: rotate(360deg);
+  }
+`;
+
+// Wave animation for dots
+const wave = keyframes`
+  0%, 60%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-20px) scale(1.3);
+    opacity: 1;
+  }
+`;
+
+// Morphing shape animation
+const morph = keyframes`
+  0% { 
+    border-radius: 50% 50% 50% 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  25% { 
+    border-radius: 60% 40% 60% 40%;
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% { 
+    border-radius: 40% 60% 40% 60%;
+    transform: rotate(180deg) scale(1);
+  }
+  75% { 
+    border-radius: 60% 40% 60% 40%;
+    transform: rotate(270deg) scale(1.1);
+  }
+  100% { 
+    border-radius: 50% 50% 50% 50%;
+    transform: rotate(360deg) scale(1);
+  }
+`;
+
+// Glow effect
+const glow = keyframes`
+  0% { 
+    box-shadow: 0 0 5px rgba(99,102,241,0.3), 0 0 10px rgba(99,102,241,0.2), 0 0 15px rgba(99,102,241,0.1);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(99,102,241,0.6), 0 0 30px rgba(99,102,241,0.4), 0 0 40px rgba(99,102,241,0.3);
+  }
+  100% { 
+    box-shadow: 0 0 5px rgba(99,102,241,0.3), 0 0 10px rgba(99,102,241,0.2), 0 0 15px rgba(99,102,241,0.1);
+  }
 `;
 
 interface LoadingSpinnerProps {
   size?: number;
   message?: string;
-  variant?: 'circular' | 'linear' | 'dots' | 'card' | 'fullscreen';
+  variant?: 'circular' | 'linear' | 'dots' | 'card' | 'fullscreen' | 'modern' | 'wave' | 'morph' | 'glow';
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
 }
 
 export default function LoadingSpinner({ 
   size = 40, 
   message = 'Loading...', 
-  variant = 'circular',
+  variant = 'modern',
   color = 'primary' 
 }: LoadingSpinnerProps) {
   
@@ -47,7 +131,9 @@ export default function LoadingSpinner({
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+            backgroundSize: '400% 400%',
+            animation: `${gradientShift} 6s ease infinite`,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -57,62 +143,61 @@ export default function LoadingSpinner({
         >
           <Box
             sx={{
-              animation: `${float} 3s ease-in-out infinite`,
-              mb: 3,
+              animation: `${float} 4s ease-in-out infinite`,
+              mb: 4,
+              position: 'relative',
             }}
           >
             <Box
               sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                background: 'linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899)',
-                backgroundSize: '300% 300%',
-                animation: `${gradientShift} 3s ease infinite`,
+                width: 100,
+                height: 100,
+                background: 'linear-gradient(45deg, #ffffff, #f8fafc, #e0e7ff)',
+                backgroundSize: '200% 200%',
+                animation: `${morph} 4s ease-in-out infinite, ${glow} 2s ease-in-out infinite`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 10px 30px rgba(99,102,241,0.3)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(255,255,255,0.3)',
               }}
             >
               <Box
                 sx={{
-                  width: 60,
-                  height: 60,
+                  width: 4,
+                  height: 4,
+                  backgroundColor: '#6366f1',
                   borderRadius: '50%',
-                  background: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  animation: `${pulse} 1s ease-in-out infinite`,
                 }}
-              >
-                <CircularProgress size={30} thickness={4} sx={{ color: '#6366f1' }} />
-              </Box>
+              />
             </Box>
           </Box>
           
           <Typography 
-            variant="h6" 
+            variant="h5" 
             sx={{ 
-              fontWeight: 600, 
-              color: '#374151',
-              animation: `${pulse} 2s ease-in-out infinite`,
+              fontWeight: 700, 
+              color: '#ffffff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              animation: `${float} 3s ease-in-out infinite`,
+              mb: 2,
             }}
           >
             {message}
           </Typography>
           
-          <Box sx={{ mt: 1, display: 'flex', gap: 0.5 }}>
-            {[0, 1, 2].map((i) => (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {[0, 1, 2, 3, 4].map((i) => (
               <Box
                 key={i}
                 sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  bgcolor: '#6366f1',
-                  animation: `${pulse} 1.5s ease-in-out infinite`,
-                  animationDelay: `${i * 0.2}s`,
+                  width: 3,
+                  height: 16,
+                  borderRadius: 2,
+                  background: 'rgba(255,255,255,0.8)',
+                  animation: `${wave} 1.2s ease-in-out infinite`,
+                  animationDelay: `${i * 0.1}s`,
                 }}
               />
             ))}
@@ -122,26 +207,126 @@ export default function LoadingSpinner({
     );
   }
 
-  if (variant === 'dots') {
+  if (variant === 'modern') {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
-          {[0, 1, 2].map((i) => (
+        <Box
+          sx={{
+            width: size,
+            height: size,
+            background: 'linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #6366f1)',
+            backgroundSize: '300% 300%',
+            animation: `${morph} 3s ease-in-out infinite, ${gradientShift} 4s ease infinite`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: size * 0.6,
+              height: size * 0.6,
+              backgroundColor: 'rgba(255,255,255,0.9)',
+              borderRadius: '50%',
+              animation: `${pulse} 2s ease-in-out infinite`,
+            }}
+          />
+        </Box>
+        {message && (
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ fontWeight: 600 }}
+          >
+            {message}
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
+  if (variant === 'wave') {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'end', gap: 0.5 }}>
+          {[0, 1, 2, 3, 4].map((i) => (
             <Box
               key={i}
               sx={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                bgcolor: `${color}.main`,
-                animation: `${pulse} 1.5s ease-in-out infinite`,
-                animationDelay: `${i * 0.2}s`,
+                width: 4,
+                height: 20,
+                borderRadius: 2,
+                background: `linear-gradient(180deg, #6366f1, #8b5cf6)`,
+                animation: `${wave} 1.5s ease-in-out infinite`,
+                animationDelay: `${i * 0.1}s`,
               }}
             />
           ))}
         </Box>
         {message && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            {message}
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
+  if (variant === 'glow') {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            width: size,
+            height: size,
+            borderRadius: '50%',
+            background: 'linear-gradient(45deg, #6366f1, #8b5cf6)',
+            animation: `${glow} 2s ease-in-out infinite, ${float} 3s ease-in-out infinite`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: size * 0.5,
+              height: size * 0.5,
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255,255,255,0.9)',
+              animation: `${pulse} 1.5s ease-in-out infinite`,
+            }}
+          />
+        </Box>
+        {message && (
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            {message}
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
+  if (variant === 'dots') {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          {[0, 1, 2].map((i) => (
+            <Box
+              key={i}
+              sx={{
+                width: 14,
+                height: 14,
+                borderRadius: '50%',
+                background: `linear-gradient(45deg, #6366f1, #8b5cf6)`,
+                animation: `${wave} 1.8s ease-in-out infinite`,
+                animationDelay: `${i * 0.2}s`,
+                boxShadow: '0 2px 8px rgba(99,102,241,0.3)',
+              }}
+            />
+          ))}
+        </Box>
+        {message && (
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
             {message}
           </Typography>
         )}
@@ -189,18 +374,36 @@ export default function LoadingSpinner({
       <Box sx={{ width: '100%', mb: 2 }}>
         <Box
           sx={{
-            height: 4,
-            borderRadius: 2,
-            background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #6366f1)',
-            backgroundSize: '300% 100%',
-            animation: `${gradientShift} 2s ease infinite`,
+            height: 6,
+            borderRadius: 3,
+            background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #f59e0b, #6366f1)',
+            backgroundSize: '400% 100%',
+            animation: `${gradientShift} 3s ease infinite`,
+            boxShadow: '0 2px 8px rgba(99,102,241,0.3)',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+              animation: `${gradientShift} 1.5s ease infinite`,
+            }
           }}
         />
         {message && (
           <Typography 
             variant="caption" 
             color="text.secondary"
-            sx={{ display: 'block', textAlign: 'center', mt: 1 }}
+            sx={{ 
+              display: 'block', 
+              textAlign: 'center', 
+              mt: 1,
+              fontWeight: 500 
+            }}
           >
             {message}
           </Typography>
@@ -209,29 +412,31 @@ export default function LoadingSpinner({
     );
   }
 
-  // Default circular variant
+  // Default circular variant with modern styling
   return (
     <Box 
       sx={{ 
         display: 'flex', 
-        flexDirection: 'column', 
         alignItems: 'center', 
         gap: 2 
       }}
     >
-      <CircularProgress 
-        size={size} 
-        thickness={4}
-        sx={{ 
-          color: `${color}.main`,
-          animation: `${float} 2s ease-in-out infinite`,
-        }} 
+      <Box
+        sx={{
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          border: `3px solid rgba(99,102,241,0.2)`,
+          borderTop: `3px solid #6366f1`,
+          animation: `${gradientShift} 1s linear infinite, ${glow} 2s ease-in-out infinite`,
+          position: 'relative',
+        }}
       />
       {message && (
         <Typography 
           variant="body2" 
           color="text.secondary"
-          sx={{ fontWeight: 500 }}
+          sx={{ fontWeight: 600 }}
         >
           {message}
         </Typography>

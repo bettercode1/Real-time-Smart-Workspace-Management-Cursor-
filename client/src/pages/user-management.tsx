@@ -346,7 +346,7 @@ export default function UserManagementPage() {
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
             <Button 
               variant="outlined" 
-              startIcon={refreshing ? <LoadingSpinner size={16} variant="dots" /> : <Refresh />} 
+              startIcon={refreshing ? <LoadingSpinner size={16} variant="glow" /> : <Refresh />} 
               sx={{ borderRadius: 2 }}
               onClick={handleRefresh}
               disabled={refreshing}

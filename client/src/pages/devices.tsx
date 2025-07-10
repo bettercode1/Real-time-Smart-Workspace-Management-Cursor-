@@ -338,7 +338,7 @@ export default function DevicesPage() {
             </FormControl>
             <Button 
               variant="outlined" 
-              startIcon={refreshing ? <LoadingSpinner size={16} variant="dots" /> : <Refresh />} 
+              startIcon={refreshing ? <LoadingSpinner size={16} variant="modern" /> : <Refresh />} 
               sx={{ borderRadius: 2 }}
               onClick={handleRefresh}
               disabled={refreshing}
