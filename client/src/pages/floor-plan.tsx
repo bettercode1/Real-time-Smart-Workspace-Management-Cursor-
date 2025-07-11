@@ -493,11 +493,11 @@ export default function FloorPlanPage() {
               alignItems: 'center'
             }}>
               <Box>
-                <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>
-                  {t('interactiveFloorPlan')}
+                <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
+                  Floor Plan
                 </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  {t('clickAvailableSeatsToBook')} • {t('realTimeOccupancyUpdates')}
+                <Typography variant="body1" color="text.secondary">
+                  Interactive Workspace Layout and Space Management
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', gap: 1 }}>

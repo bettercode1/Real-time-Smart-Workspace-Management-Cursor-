@@ -265,7 +265,7 @@ export default function BookingsPage() {
   return (
     <PageContainer
       title="Workspace Booking"
-      description="Manage your workspace reservations, check availability, and book meeting rooms or desks"
+      description="Manage Your Workspace Reservations, Check Availability, and Book Meeting Rooms or Desks"
     >
       <Box sx={{ mb: 3 }}>
         {/* Header Section with Tabs */}

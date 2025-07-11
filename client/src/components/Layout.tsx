@@ -27,7 +27,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       height: '100vh', 
       overflow: 'hidden', 
       width: '100%',
-      maxWidth: '100%'
+      maxWidth: '100%',
+      backgroundColor: theme.palette.background.default,
     }}>
       {/* Desktop Sidebar */}
       {!isMobile && <Sidebar />}
@@ -46,10 +47,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           width: isMobile ? '100%' : 'calc(100% - 280px)',
           maxWidth: isMobile ? '100%' : 'calc(100% - 280px)',
           background: theme.palette.mode === 'light' 
-            ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+            ? 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
             : 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
           position: 'relative',
-          marginLeft: isMobile ? 0 : '280px', // Sidebar offset
+          marginLeft: isMobile ? 0 : '280px',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -59,14 +60,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             bottom: 0,
             background: theme.palette.mode === 'light'
               ? `
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.04) 0%, transparent 50%)
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.02) 0%, transparent 50%)
               `
               : `
-                radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(96, 165, 250, 0.06) 0%, transparent 50%)
+                radial-gradient(circle at 20% 80%, rgba(96, 165, 250, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(129, 140, 248, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(96, 165, 250, 0.03) 0%, transparent 50%)
               `,
             pointerEvents: 'none',
             zIndex: 0
@@ -77,35 +78,39 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Box
           sx={{
             position: 'absolute',
-            top: 18,
-            right: 32,
+            top: 16,
+            right: 24,
             zIndex: 10,
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            background: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.85)',
-            borderRadius: 999,
+            background: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.9)' : 'rgba(30,41,59,0.9)',
+            borderRadius: 20,
             px: 2,
-            py: 0.5,
-            boxShadow: '0 2px 8px rgba(99,102,241,0.08)',
+            py: 0.75,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
             border: `1px solid ${theme.palette.divider}`,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 500,
             color: theme.palette.text.secondary,
-            transition: 'background 0.2s',
+            transition: 'all 0.2s ease',
+            backdropFilter: 'blur(10px)',
             '&:hover': {
-              background: theme.palette.mode === 'light' ? 'rgba(248,250,252,0.98)' : 'rgba(51,65,85,0.98)',
+              background: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.95)' : 'rgba(30,41,59,0.95)',
+              transform: 'translateY(-1px)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
             }
           }}
           aria-label="Powered by BetterCode"
         >
-          <span style={{ fontSize: 13, fontWeight: 500, marginRight: 6 }}>Powered by</span>
+          <span style={{ fontSize: 12, fontWeight: 500, marginRight: 4 }}>Powered by</span>
           <img
             src={bettercodeLogo}
             alt="BetterCode logo"
-            style={{ height: 22, width: 'auto', display: 'inline-block', verticalAlign: 'middle' }}
+            style={{ height: 18, width: 'auto', display: 'inline-block', verticalAlign: 'middle' }}
           />
         </Box>
+        
         {/* Content Container */}
         <Box 
           sx={{ 
@@ -115,10 +120,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             zIndex: 1,
             pt: isMobile ? 8 : 0,
             px: { xs: 2, sm: 3, md: 4 },
-            py: { xs: 2, sm: 3, md: 4 },
+            py: { xs: 3, sm: 4, md: 5 },
             width: '100%',
             maxWidth: '100%',
-            minWidth: 0 // Prevent flex items from overflowing
+            minWidth: 0,
+            '&::-webkit-scrollbar': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: theme.palette.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+              borderRadius: '3px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: theme.palette.mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.2)',
+            },
           }}
         >
           {children}

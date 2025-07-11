@@ -453,7 +453,7 @@ export default function RoomSetupPage() {
   return (
     <PageContainer
       title="Room Setup"
-      description="Configure and manage workspace rooms and areas"
+      description="Configure and Manage Workspace Rooms and Areas"
     >
       <Grid container spacing={3}>
         {/* Room Statistics */}
@@ -538,7 +538,7 @@ export default function RoomSetupPage() {
             >
               <MeetingRoom sx={{ fontSize: 64, color: '#90caf9', mb: 2 }} />
               <Typography variant="h5" fontWeight={700} color="primary" mb={1}>
-                No Rooms Configured
+                Room Management
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={3}>
                 Start by adding your first room to begin managing your workspace.

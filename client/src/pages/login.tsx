@@ -90,12 +90,12 @@ export default function Login() {
           alt="BetterCode logo"
           style={{ height: 22, width: 'auto', display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}
         />
-        <span style={{ fontWeight: 700, fontSize: 14, color: '#222' }}>BetterCode</span>
+        <span style={{ fontWeight: 700, fontSize: 14, color: '#222' }}></span>
       </Box>
       <Card sx={{ width: '100%', maxWidth: 420, p: 3, borderRadius: 4, boxShadow: '0 8px 32px rgba(99,102,241,0.10)' }}>
         <CardContent>
           <Box textAlign="center" mb={4}>
-            <Typography variant="h3" fontWeight={900} color="primary" mb={1} sx={{ letterSpacing: 1 }}>
+            <Typography variant="h4" fontWeight={600} color="primary" mb={1} sx={{ letterSpacing: 1 }}>
               SmartSpace
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>

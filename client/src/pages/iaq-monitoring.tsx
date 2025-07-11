@@ -470,7 +470,7 @@ export default function IAQMonitoringPage() {
   return (
     <PageContainer
       title="IAQ Monitoring"
-      description="Monitor indoor air quality and environmental conditions across all spaces"
+      description="Monitor Indoor Air Quality and Environmental Conditions across all spaces"
     >
       <Grid container spacing={3}>
         {/* Environmental Overview */}

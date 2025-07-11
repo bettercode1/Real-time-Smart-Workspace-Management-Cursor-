@@ -339,8 +339,8 @@ export default function UserManagementPage() {
             <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
               User Management
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-              Manage user accounts, roles, and access permissions
+            <Typography variant="body1" color="text.secondary">
+              Manage User Accounts, Permissions, and Access Control
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

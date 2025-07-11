@@ -32,7 +32,7 @@ export const translations = {
     confirm: "Confirm",
     
     // Dashboard
-    welcome: "Welcome back",
+    welcome: "Welcome Back",
     overview: "Overview",
     quickStats: "Quick Stats",
     recentActivity: "Recent Activity",
@@ -72,7 +72,7 @@ export const translations = {
     
     // User Dashboard
     personalizedWorkspace: "Your personalized workspace overview and quick actions",
-    welcomeBack: "Welcome back",
+    welcomeBack: "Welcome Back",
     readyToWork: "Ready to make the most of your workspace today?",
     quickBook: "Quick Book",
     viewAnalytics: "View Analytics",
@@ -198,11 +198,11 @@ export const translations = {
     bookingCalendar: "جلسة الحجز",
     myBookings: "حجوزاتي",
     upcomingThisWeek: "الحجوزات القادمة هذا الأسبوع",
-    unreadMessages: "رسائل غير قرائية",
+    unreadMessages: "الرسائل غير المقروءة",
     logout: "تسجيل الخروج",
-    admin: "المدير",
-    user: "المستخدم",
-  }
+    admin: "مدير",
+    user: "مستخدم",
+  },
 };
 
 export type Language = keyof typeof translations;

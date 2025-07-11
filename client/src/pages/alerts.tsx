@@ -515,7 +515,7 @@ export default function AlertsPage() {
               <Box sx={{ textAlign: 'center', py: 6 }}>
                 <NotificationsActive sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
                 <Typography variant="h6" color="text.secondary" gutterBottom>
-                  No alerts to display
+                  No Alerts to Display
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   All caught up! You'll see new alerts here as they arrive.

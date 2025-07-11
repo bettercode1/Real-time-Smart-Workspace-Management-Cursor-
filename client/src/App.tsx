@@ -4,7 +4,7 @@ import { ThemeProvider, CssBaseline, Box, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
-import { lightTheme, darkTheme } from "@/lib/theme";
+import { lightTheme, darkTheme } from "@/theme";
 import Layout from "@/components/Layout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import AdminRoute from "@/components/AdminRoute";

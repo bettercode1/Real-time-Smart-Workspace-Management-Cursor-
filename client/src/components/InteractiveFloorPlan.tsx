@@ -99,7 +99,10 @@ export default function InteractiveFloorPlan({ selectedFloor, currentFloor, floo
   const [modalOpen, setModalOpen] = useState(false);
 
   // Filter seats by selectedFloor
-  const filteredSeats = seats.filter(seat => seat.floor.replace(/\s+/g, '-').toLowerCase() === selectedFloor.replace(/\s+/g, '-').toLowerCase() || seat.floor === selectedFloor);
+  const filteredSeats = seats.filter(seat =>
+    (seat.floor || '').replace(/\s+/g, '-').toLowerCase() === (selectedFloor || '').replace(/\s+/g, '-').toLowerCase() ||
+    seat.floor === selectedFloor
+  );
 
   const handleSeatClick = (seat: Seat) => {
     if (seat.status === 'available') {

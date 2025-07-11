@@ -326,10 +326,10 @@ export default function AnalyticsPage() {
         <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
           <Box>
             <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
-              Analytics Dashboard
+              Analytics Overview
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-              Essential analytics with occupancy trends, booking insights, and space utilization
+            <Typography variant="body1" color="text.secondary">
+              Monitor Workspace Performance and Usage Patterns
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -463,7 +463,7 @@ export default function AnalyticsPage() {
                 minHeight: 400
               }}>
                 <Typography variant="h6" fontWeight={600} mb={3}>
-                  Today's Occupancy Trend
+                  Real-Time Metrics
                 </Typography>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={occupancyData}>

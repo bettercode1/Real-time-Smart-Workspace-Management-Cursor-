@@ -259,7 +259,7 @@ const EmptyDevicePlaceholder = () => (
   >
     <DevicesOther sx={{ fontSize: 64, color: '#90caf9', mb: 2 }} />
     <Typography variant="h5" fontWeight={700} color="primary" mb={1}>
-      No Devices Found
+      Device Overview
     </Typography>
     <Typography variant="body1" color="text.secondary" mb={3}>
       You haven't added any devices yet. Start by adding your first IoT device to monitor your workspace!
@@ -322,8 +322,8 @@ export default function DevicesPage() {
             <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1 }}>
               Device Management
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-              Monitor and manage all connected IoT devices in your workspace
+            <Typography variant="body1" color="text.secondary">
+              Monitor and Manage IoT Devices and Sensors
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

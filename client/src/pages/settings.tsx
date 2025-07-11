@@ -223,7 +223,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <PageContainer title={t.title} description={t.subtitle}>
+    <PageContainer 
+      title="Settings" 
+      description="Manage Your Preferences and Account Settings"
+    >
       <Grid container spacing={3}>
         {/* Profile Settings */}
         <Grid item xs={12} md={6}>

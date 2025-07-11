@@ -27,10 +27,10 @@ const QuickStatsCard = ({ title, value, subtitle, color, icon }: {
       elevation={0} 
       sx={{ 
         p: 3, 
-        borderRadius: 3,
+        borderRadius: 2,
         background: theme.palette.mode === 'light' 
           ? `linear-gradient(135deg, ${alpha(color, 0.04)} 0%, ${alpha(color, 0.08)} 100%)`
-          : `linear-gradient(135deg, ${alpha(color, 0.1)} 0%, ${alpha(color, 0.15)} 100%)`,
+          : `linear-gradient(135deg, ${alpha(color, 0.08)} 0%, ${alpha(color, 0.12)} 100%)`,
         border: `1px solid ${alpha(color, 0.1)}`,
         transition: 'all 0.2s ease',
         position: 'relative',
@@ -41,22 +41,22 @@ const QuickStatsCard = ({ title, value, subtitle, color, icon }: {
           top: 0,
           left: 0,
           right: 0,
-          height: '3px',
+          height: '2px',
           background: `linear-gradient(90deg, ${color} 0%, ${alpha(color, 0.7)} 100%)`,
         },
         '&:hover': {
           transform: 'translateY(-2px)',
-          boxShadow: `0 8px 24px ${alpha(color, 0.15)}`,
+          boxShadow: `0 4px 12px ${alpha(color, 0.15)}`,
           borderColor: alpha(color, 0.2),
         }
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ letterSpacing: 0.5, textTransform: 'uppercase' }}>
+          <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ letterSpacing: 0.5, textTransform: 'uppercase', mb: 1, display: 'block' }}>
             {title}
           </Typography>
-          <Typography variant="h4" fontWeight={700} color="text.primary" sx={{ my: 1, lineHeight: 1.2 }}>
+          <Typography variant="h4" fontWeight={700} color="text.primary" sx={{ mb: 1, lineHeight: 1.2 }}>
             {value}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
@@ -65,16 +65,16 @@ const QuickStatsCard = ({ title, value, subtitle, color, icon }: {
         </Box>
         <Box 
           sx={{ 
-            p: 2,
-            borderRadius: 2,
+            p: 1.5,
+            borderRadius: 1.5,
             background: `linear-gradient(135deg, ${color} 0%, ${alpha(color, 0.8)} 100%)`,
             color: 'white',
-            boxShadow: `0 4px 12px ${alpha(color, 0.3)}`,
+            boxShadow: `0 2px 8px ${alpha(color, 0.25)}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minWidth: 48,
-            height: 48
+            minWidth: 44,
+            height: 44
           }}
         >
           {icon}
@@ -92,7 +92,7 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
       elevation={0} 
       sx={{ 
         p: 4, 
-        borderRadius: 3,
+        borderRadius: 2,
         background: theme.palette.mode === 'light'
           ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
           : `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
@@ -116,9 +116,9 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
           <Box
             sx={{
-              width: 64,
-              height: 64,
-              borderRadius: 3,
+              width: 56,
+              height: 56,
+              borderRadius: 2,
               background: alpha('#ffffff', 0.15),
               backdropFilter: 'blur(20px)',
               display: 'flex',
@@ -127,7 +127,7 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
               border: `1px solid ${alpha('#ffffff', 0.2)}`,
             }}
           >
-            <AdminPanelSettings sx={{ fontSize: 32, color: 'white' }} />
+            <AdminPanelSettings sx={{ fontSize: 28, color: 'white' }} />
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h4" fontWeight={700} mb={1} sx={{ lineHeight: 1.2 }}>
@@ -149,7 +149,7 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
               border: `1px solid ${alpha('#ffffff', 0.2)}`,
               color: 'white',
               fontWeight: 600,
-              borderRadius: 2,
+              borderRadius: 1.5,
               px: 3,
               py: 1,
               fontSize: '0.875rem',
@@ -168,10 +168,10 @@ const AdminWelcomeCard = ({ user }: { user: any }) => {
             size="large"
             sx={{ 
               borderColor: alpha('#ffffff', 0.3),
-              borderWidth: 1.5,
+              borderWidth: 1,
               color: 'white',
               fontWeight: 600,
-              borderRadius: 2,
+              borderRadius: 1.5,
               px: 3,
               py: 1,
               fontSize: '0.875rem',
@@ -207,41 +207,53 @@ const ManagementCard = ({ title, subtitle, icon, color, onClick }: {
       onClick={onClick}
       sx={{
         p: 3,
-        borderRadius: 3,
-        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: 2,
         background: theme.palette.mode === 'light' 
           ? `linear-gradient(135deg, ${alpha(color, 0.04)} 0%, ${alpha(color, 0.08)} 100%)`
-          : `linear-gradient(135deg, ${alpha(color, 0.1)} 0%, ${alpha(color, 0.15)} 100%)`,
+          : `linear-gradient(135deg, ${alpha(color, 0.08)} 0%, ${alpha(color, 0.12)} 100%)`,
         border: `1px solid ${alpha(color, 0.1)}`,
+        cursor: onClick ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
-        '&:hover': {
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover': onClick ? {
           transform: 'translateY(-2px)',
-          boxShadow: `0 8px 24px ${alpha(color, 0.15)}`,
+          boxShadow: `0 4px 12px ${alpha(color, 0.15)}`,
           borderColor: alpha(color, 0.2),
-        }
+        } : {},
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          background: `linear-gradient(90deg, ${color} 0%, ${alpha(color, 0.7)} 100%)`,
+        },
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Box 
           sx={{ 
             p: 1.5,
-            borderRadius: 2,
+            borderRadius: 1.5,
             background: `linear-gradient(135deg, ${color} 0%, ${alpha(color, 0.8)} 100%)`,
             color: 'white',
+            boxShadow: `0 2px 8px ${alpha(color, 0.25)}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minWidth: 40,
-            height: 40
+            minWidth: 44,
+            height: 44
           }}
         >
           {icon}
         </Box>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="h6" fontWeight={600} color="text.primary">
+          <Typography variant="h6" fontWeight={600} color="text.primary" sx={{ mb: 0.5 }}>
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
             {subtitle}
           </Typography>
         </Box>
@@ -252,72 +264,101 @@ const ManagementCard = ({ title, subtitle, icon, color, onClick }: {
 
 const RecentActivityCard = () => {
   const theme = useTheme();
-  
-  const activities = [
-    { text: "New user registration", time: "2 minutes ago", type: "user" },
-    { text: "Room booking confirmed", time: "5 minutes ago", type: "booking" },
-    { text: "System maintenance completed", time: "10 minutes ago", type: "system" },
-    { text: "Alert resolved", time: "15 minutes ago", type: "alert" },
-  ];
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'user': return <Person />;
       case 'booking': return <EventAvailable />;
-      case 'system': return <Settings />;
       case 'alert': return <Warning />;
+      case 'user': return <Person />;
+      case 'device': return <AdminPanelSettings />;
       default: return <Notifications />;
     }
   };
 
   const getActivityColor = (type: string) => {
     switch (type) {
-      case 'user': return theme.palette.success.main;
-      case 'booking': return theme.palette.info.main;
-      case 'system': return theme.palette.warning.main;
-      case 'alert': return theme.palette.error.main;
-      default: return theme.palette.primary.main;
+      case 'booking': return '#8b5cf6';
+      case 'alert': return '#ef4444';
+      case 'user': return '#3b82f6';
+      case 'device': return '#10b981';
+      default: return '#64748b';
     }
   };
 
+  const activities = [
+    { id: 1, type: 'booking', message: 'New Booking Request for Room A-101', time: '2 minutes ago', user: 'John Doe' },
+    { id: 2, type: 'alert', message: 'Temperature Alert in Room B-203', time: '5 minutes ago', user: 'System' },
+    { id: 3, type: 'user', message: 'New User Registration: Sarah Wilson', time: '10 minutes ago', user: 'Admin' },
+    { id: 4, type: 'device', message: 'Device Offline: Sensor-001', time: '15 minutes ago', user: 'System' },
+    { id: 5, type: 'booking', message: 'Booking Cancelled for Room C-305', time: '20 minutes ago', user: 'Mike Johnson' },
+  ];
+
   return (
-    <Card elevation={0} sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-      <Typography variant="h6" fontWeight={600} mb={2}>
+    <Card elevation={0} sx={{ p: 3, borderRadius: 2, height: '100%' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h6" fontWeight={600} color="text.primary">
         Recent Activity
       </Typography>
+        <Chip 
+          label="Live" 
+          size="small" 
+          sx={{ 
+            backgroundColor: alpha(theme.palette.success.main, 0.1),
+            color: theme.palette.success.main,
+            fontWeight: 600,
+          }} 
+        />
+      </Box>
+      
       <List sx={{ p: 0 }}>
         {activities.map((activity, index) => (
-          <ListItem key={index} sx={{ px: 0, py: 1 }}>
-            <ListItemIcon sx={{ minWidth: 40 }}>
+          <ListItem
+            key={activity.id}
+            sx={{
+              p: 0,
+              mb: 2,
+              borderRadius: 1,
+              background: theme.palette.mode === 'light' 
+                ? alpha(getActivityColor(activity.type), 0.04)
+                : alpha(getActivityColor(activity.type), 0.08),
+              border: `1px solid ${alpha(getActivityColor(activity.type), 0.1)}`,
+              '&:last-child': { mb: 0 },
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, width: '100%' }}>
               <Box
                 sx={{
                   p: 1,
                   borderRadius: 1,
-                  background: alpha(getActivityColor(activity.type), 0.1),
-                  color: getActivityColor(activity.type),
+                  background: `linear-gradient(135deg, ${getActivityColor(activity.type)} 0%, ${alpha(getActivityColor(activity.type), 0.8)} 100%)`,
+                  color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 32,
-                  height: 32
+                  minWidth: 32,
+                  height: 32,
+                  mt: 0.5,
                 }}
               >
                 {getActivityIcon(activity.type)}
               </Box>
-            </ListItemIcon>
-            <ListItemText
-              primary={activity.text}
-              secondary={activity.time}
-              primaryTypographyProps={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: 'text.primary'
-              }}
-              secondaryTypographyProps={{
-                fontSize: '0.75rem',
-                color: 'text.secondary'
-              }}
-            />
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
+                  {activity.message}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+                    {activity.user}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    •
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {activity.time}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           </ListItem>
         ))}
       </List>
@@ -327,295 +368,259 @@ const RecentActivityCard = () => {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const theme = useTheme();
   const { language } = useSettings();
+  const theme = useTheme();
   const t = translations[language];
 
-  // Floor management state
-  const [floors, setFloors] = React.useState<Floor[]>([
-    { id: 1, name: 'Floor 1', rooms: 8 },
-    { id: 2, name: 'Floor 2', rooms: 25 },
-    { id: 3, name: 'Floor 3', rooms: 12 },
-    { id: 4, name: 'Floor 4', rooms: 6 },
-  ]);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [editFloor, setEditFloor] = React.useState<Floor | null>(null);
+  const [openFloorDialog, setOpenFloorDialog] = React.useState(false);
+  const [editingFloor, setEditingFloor] = React.useState<Floor | null>(null);
   const [floorName, setFloorName] = React.useState('');
-  const [floorRooms, setFloorRooms] = React.useState('');
+  const [floors, setFloors] = React.useState<Floor[]>([
+    { id: 1, name: 'Ground Floor', rooms: 12 },
+    { id: 2, name: 'First Floor', rooms: 15 },
+    { id: 3, name: 'Second Floor', rooms: 8 },
+  ]);
 
   const handleAddFloor = () => {
-    setEditFloor(null);
+    setEditingFloor(null);
     setFloorName('');
-    setFloorRooms('');
-    setModalOpen(true);
+    setOpenFloorDialog(true);
   };
+
   const handleEditFloor = (floor: Floor) => {
-    setEditFloor(floor);
+    setEditingFloor(floor);
     setFloorName(floor.name);
-    setFloorRooms(floor.rooms.toString());
-    setModalOpen(true);
+    setOpenFloorDialog(true);
   };
+
   const handleDeleteFloor = (id: number) => {
-    setFloors(floors.filter(f => f.id !== id));
+    setFloors(floors.filter(floor => floor.id !== id));
   };
+
   const handleSaveFloor = () => {
-    if (editFloor) {
-      setFloors(floors.map(f => f.id === editFloor.id ? { ...f, name: floorName, rooms: parseInt(floorRooms) } : f));
+    if (editingFloor) {
+      setFloors(floors.map(floor => 
+        floor.id === editingFloor.id 
+          ? { ...floor, name: floorName }
+          : floor
+      ));
     } else {
-      setFloors([...floors, { id: Date.now(), name: floorName, rooms: parseInt(floorRooms) }]);
+      setFloors([...floors, { 
+        id: Math.max(...floors.map(f => f.id)) + 1, 
+        name: floorName, 
+        rooms: 0 
+      }]);
     }
-    setModalOpen(false);
+    setOpenFloorDialog(false);
   };
 
   return (
-    <Box sx={{
-      minHeight: '100%',
-      width: '100%',
-      maxWidth: '100%',
-      background: theme.palette.mode === 'light' 
-        ? 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)'
-        : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${alpha(theme.palette.background.paper, 0.5)} 100%)`,
-      position: 'relative',
-      pb: 6,
-      overflowX: 'hidden'
-    }}>
-      <Box sx={{ 
-        maxWidth: '1200px', 
-        mx: 'auto', 
-        px: { xs: 2, md: 3 }, 
-        pt: { xs: 4, md: 6 },
-        width: '100%',
-        overflowX: 'hidden'
-      }}>
-        {/* Header */}
+    <PageContainer>
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight={800} sx={{ mb: 1, letterSpacing: -1, color: 'text.primary' }}>
-            {t.dashboard} - Admin
+        <Typography variant="h1" fontWeight={700} color="text.primary" sx={{ mb: 1, fontSize: { xs: 32, md: 40 } }}>
+          Admin Dashboard
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500 }}>
-            Monitor, manage, and optimize your workspace in real time
+        <Typography variant="body1" color="text.secondary">
+          Monitor and manage your workspace infrastructure
           </Typography>
         </Box>
-        {/* Welcome Card + Stats */}
-        <Grid container spacing={3} alignItems="stretch" sx={{ mb: 4, width: '100%', mx: 0 }}>
-          <Grid item xs={12} md={7} sx={{ width: '100%', maxWidth: '100%' }}>
+
             {/* Welcome Card */}
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 3, md: 4 },
-                borderRadius: 5,
-                background: theme.palette.mode === 'light'
-                  ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
-                  : `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
-                color: theme.palette.primary.contrastText,
-                position: 'relative',
-                overflow: 'hidden',
-                minHeight: 180,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                boxShadow: '0 8px 32px rgba(99,102,241,0.10)',
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
-                <Avatar sx={{ width: 56, height: 56, bgcolor: 'rgba(255,255,255,0.12)', fontSize: 36, mr: 2 }}>
-                  <AdminPanelSettings sx={{ fontSize: 36, color: '#fff' }} />
-                </Avatar>
-                <Box>
-                  <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2, mb: 0.5 }}>
-                    Welcome, {user?.displayName || 'John Admin'}!
+      <Box sx={{ mb: 4 }}>
+        <AdminWelcomeCard user={user} />
+      </Box>
+
+      {/* Quick Stats */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <QuickStatsCard
+            title="Total Users"
+            value="1,247"
+            subtitle="+12% from last month"
+            color="#3b82f6"
+            icon={<People sx={{ fontSize: 20 }} />}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <QuickStatsCard
+            title="Active Bookings"
+            value="89"
+            subtitle="23 pending approval"
+            color="#8b5cf6"
+            icon={<EventAvailable sx={{ fontSize: 20 }} />}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <QuickStatsCard
+            title="Devices Online"
+            value="156"
+            subtitle="98.5% uptime"
+            color="#10b981"
+            icon={<AdminPanelSettings sx={{ fontSize: 20 }} />}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <QuickStatsCard
+            title="Alerts"
+            value="3"
+            subtitle="2 critical, 1 warning"
+            color="#ef4444"
+            icon={<Warning sx={{ fontSize: 20 }} />}
+          />
+        </Grid>
+      </Grid>
+
+      {/* Main Content Grid */}
+      <Grid container spacing={3}>
+        {/* Left Column */}
+        <Grid item xs={12} lg={8}>
+          <Grid container spacing={3}>
+            {/* Floor Management */}
+            <Grid item xs={12}>
+              <Card elevation={0} sx={{ p: 3, borderRadius: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                  <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Floor Management
                   </Typography>
-                  <Typography variant="body1" sx={{ opacity: 0.92, fontWeight: 400 }}>
-                    System Administrator Dashboard - Monitor and manage your workspace
-                  </Typography>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<Add />}
+                    onClick={handleAddFloor}
+                    sx={{ borderRadius: 1.5 }}
+                  >
+                    Add Floor
+                  </Button>
                 </Box>
-              </Box>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 1 }}>
-                <Button
-                  variant="contained"
-                  size="large"
+                
+                <Grid container spacing={2}>
+                  {floors.map((floor) => (
+                    <Grid item xs={12} sm={6} md={4} key={floor.id}>
+                      <Card
+                        elevation={0}
                   sx={{
-                    background: 'rgba(255,255,255,0.18)',
-                    color: '#fff',
-                    fontWeight: 700,
-                    borderRadius: 999,
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1rem',
-                    textTransform: 'none',
-                    boxShadow: 'none',
+                          p: 2.5,
+                          borderRadius: 1.5,
+                          border: `1px solid ${theme.palette.divider}`,
+                          transition: 'all 0.2s ease',
                     '&:hover': {
-                      background: 'rgba(255,255,255,0.28)',
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     },
                   }}
-                  startIcon={<Settings />}
+                      >
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                          <Typography variant="h6" fontWeight={600} color="text.primary">
+                            {floor.name}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEditFloor(floor)}
+                              sx={{ color: theme.palette.primary.main }}
+                            >
+                              <Edit sx={{ fontSize: 16 }} />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDeleteFloor(floor.id)}
+                              sx={{ color: theme.palette.error.main }}
                 >
-                  System Settings
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{
-                    borderColor: 'rgba(255,255,255,0.38)',
-                    color: '#fff',
-                    fontWeight: 700,
-                    borderRadius: 999,
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1rem',
-                    textTransform: 'none',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      borderColor: 'rgba(255,255,255,0.58)',
-                      background: 'rgba(255,255,255,0.10)',
-                    },
-                  }}
-                  startIcon={<Security />}
-                >
-                  Security Panel
-                </Button>
+                              <Delete sx={{ fontSize: 16 }} />
+                            </IconButton>
               </Box>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={5} sx={{ width: '100%', maxWidth: '100%' }}>
-            {/* Stats Cards Row */}
-            <Grid container spacing={2} sx={{ width: '100%', mx: 0 }}>
-              <Grid item xs={12} sm={6}>
-                <Card elevation={0} sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  background: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)',
-                  boxShadow: '0 2px 8px rgba(99,102,241,0.06)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  minHeight: 120,
-                }}>
-                  <Box sx={{
-                    bgcolor: '#818cf8', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Person sx={{ fontSize: 28 }} />
                   </Box>
-                  <Typography variant="h5" fontWeight={800} color="#3730a3">128</Typography>
-                  <Typography fontWeight={600} color="#6366f1" fontSize={15}>Active Users</Typography>
-                  <Typography color="#818cf8" fontSize={13}>Currently online</Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                          {floor.rooms} rooms
+                        </Typography>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Card elevation={0} sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                  boxShadow: '0 2px 8px rgba(16,185,129,0.06)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  minHeight: 120,
-                }}>
-                  <Box sx={{
-                    bgcolor: '#34d399', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <EventAvailable sx={{ fontSize: 28 }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={800} color="#065f46">42</Typography>
-                  <Typography fontWeight={600} color="#10b981" fontSize={15}>Bookings</Typography>
-                  <Typography color="#34d399" fontSize={13}>Today</Typography>
+                  ))}
+              </Grid>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Card elevation={0} sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
-                  boxShadow: '0 2px 8px rgba(251,191,36,0.06)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  minHeight: 120,
-                }}>
-                  <Box sx={{
-                    bgcolor: '#fbbf24', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Warning sx={{ fontSize: 28 }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={800} color="#b45309">3</Typography>
-                  <Typography fontWeight={600} color="#f59e42" fontSize={15}>Alerts</Typography>
-                  <Typography color="#fbbf24" fontSize={13}>Requires attention</Typography>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Card elevation={0} sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-                  boxShadow: '0 2px 8px rgba(59,130,246,0.06)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                  minHeight: 120,
-                }}>
-                  <Box sx={{
-                    bgcolor: '#60a5fa', color: '#fff', borderRadius: 999, p: 1.5, mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Dashboard sx={{ fontSize: 28 }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={800} color="#1e40af">All OK</Typography>
-                  <Typography fontWeight={600} color="#3b82f6" fontSize={15}>Systems</Typography>
-                  <Typography color="#60a5fa" fontSize={13}>All systems operational</Typography>
-                </Card>
-              </Grid>
+
+            {/* Analytics Cards */}
+            <Grid item xs={12}>
+              <AnalyticsCards />
             </Grid>
           </Grid>
         </Grid>
-        {/* Notifications & IAQ */}
-        <Grid container spacing={3} alignItems="stretch" sx={{ width: '100%', mx: 0 }}>
-          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-              <Typography variant="h6" fontWeight={700} mb={2}>
-                Recent Notifications
+
+        {/* Right Column */}
+        <Grid item xs={12} lg={4}>
+          <Grid container spacing={3}>
+            {/* Recent Activity */}
+            <Grid item xs={12}>
+              <RecentActivityCard />
+            </Grid>
+
+            {/* Management Cards */}
+            <Grid item xs={12}>
+              <Typography variant="h6" fontWeight={600} color="text.primary" sx={{ mb: 2 }}>
+                Quick Actions
               </Typography>
-              <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-                <NotificationCenter />
-              </Box>
-            </Paper>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <ManagementCard
+                    title="User Management"
+                    subtitle="Manage user accounts and permissions"
+                    icon={<People />}
+                    color="#3b82f6"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ManagementCard
+                    title="Device Control"
+                    subtitle="Monitor and control IoT devices"
+                    icon={<AdminPanelSettings />}
+                    color="#10b981"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ManagementCard
+                    title="System Settings"
+                    subtitle="Configure system preferences"
+                    icon={<Settings />}
+                    color="#8b5cf6"
+                  />
+                </Grid>
+              </Grid>
           </Grid>
-          <Grid item xs={12} md={6} sx={{ width: '100%', maxWidth: '100%' }}>
-            <Paper elevation={1} sx={{ p: 3, borderRadius: 4, background: 'background.paper', minHeight: 240, width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-              <Typography variant="h6" fontWeight={700} mb={2}>
-                IAQ Monitoring
-              </Typography>
-              <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-                <IAQWidgets />
-              </Box>
-            </Paper>
           </Grid>
         </Grid>
-        {/* Floor Management Section */}
-        <Card elevation={0} sx={{ mt: 4, mb: 4, borderRadius: 4, background: theme.palette.mode === 'dark' ? alpha(theme.palette.primary.main, 0.08) : alpha(theme.palette.primary.main, 0.03) }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={700}>{t.floorManagement || 'Floor Management'}</Typography>
-              <Button variant="contained" startIcon={<Add />} onClick={handleAddFloor}>{t.addFloor || 'Add Floor'}</Button>
-            </Box>
-            <List>
-              {floors.map(floor => (
-                <ListItem key={floor.id} secondaryAction={
-                  <Box>
-                    <IconButton onClick={() => handleEditFloor(floor)} color="primary"><Edit /></IconButton>
-                    <IconButton onClick={() => handleDeleteFloor(floor.id)} color="error"><Delete /></IconButton>
-                  </Box>
-                }>
-                  <ListItemText primary={floor.name} secondary={`${t.rooms || 'Rooms'}: ${floor.rooms}`} />
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-        <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-          <DialogTitle>{editFloor ? (t.editFloor || 'Edit Floor') : (t.addFloor || 'Add Floor')}</DialogTitle>
-          <DialogContent>
-            <TextField label={t.floorName || 'Floor Name'} value={floorName} onChange={e => setFloorName(e.target.value)} fullWidth sx={{ mb: 2 }} />
-            <TextField label={t.rooms || 'Rooms'} value={floorRooms} onChange={e => setFloorRooms(e.target.value)} type="number" fullWidth />
+      </Grid>
+
+      {/* Floor Dialog */}
+      <Dialog open={openFloorDialog} onClose={() => setOpenFloorDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ pb: 1 }}>
+          {editingFloor ? 'Edit Floor' : 'Add New Floor'}
+        </DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Floor Name"
+            fullWidth
+            variant="outlined"
+            value={floorName}
+            onChange={(e) => setFloorName(e.target.value)}
+            sx={{ mb: 2 }}
+          />
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setModalOpen(false)}>{t.cancel || 'Cancel'}</Button>
-            <Button onClick={handleSaveFloor} variant="contained">{t.save || 'Save'}</Button>
+        <DialogActions sx={{ p: 3, pt: 1 }}>
+          <Button onClick={() => setOpenFloorDialog(false)}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveFloor} 
+            variant="contained"
+            disabled={!floorName.trim()}
+          >
+            {editingFloor ? 'Update' : 'Add'}
+          </Button>
           </DialogActions>
         </Dialog>
-      </Box>
-    </Box>
+    </PageContainer>
   );
 } 

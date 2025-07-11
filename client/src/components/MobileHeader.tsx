@@ -16,7 +16,8 @@ import {
   ListItemText,
   useMediaQuery,
   useTheme,
-  Divider
+  Divider,
+  alpha
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -28,7 +29,8 @@ import {
   NotificationsActive,
   Settings,
   ExitToApp,
-  ChevronRight
+  ChevronRight,
+  BusinessCenter
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -67,31 +69,68 @@ const MobileHeader = () => {
   ];
 
   const drawer = (
-    <Box sx={{ width: 280, height: '100%', bgcolor: 'background.paper' }}>
+    <Box sx={{ 
+      width: 280, 
+      height: '100%', 
+      bgcolor: theme.palette.background.paper,
+      background: theme.palette.mode === 'light'
+        ? 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'
+        : 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+    }}>
       <Box sx={{ 
         p: 3, 
         borderBottom: '1px solid',
-        borderColor: 'divider',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        borderColor: theme.palette.divider,
+        background: theme.palette.mode === 'light'
+          ? 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)'
+          : 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)',
         color: 'white'
       }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box
+            sx={{
+              width: 48,
+              height: 48,
+              borderRadius: 2,
+              background: alpha('#ffffff', 0.15),
+              backdropFilter: 'blur(20px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: `1px solid ${alpha('#ffffff', 0.2)}`,
+            }}
+          >
+            <BusinessCenter sx={{ fontSize: 24, color: 'white' }} />
+          </Box>
+          <Box>
+            <Typography variant="h6" fontWeight={700} sx={{ letterSpacing: '-0.01em' }}>
+              SmartSpace
+            </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 500 }}>
+              Workspace Management
+            </Typography>
+          </Box>
+        </Box>
+        
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar 
             sx={{ 
-              width: 48, 
-              height: 48,
-              bgcolor: 'rgba(255,255,255,0.2)',
-              border: '2px solid rgba(255,255,255,0.3)'
+              width: 40, 
+              height: 40,
+              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.8)} 0%, ${alpha('#ffffff', 0.6)} 100%)`,
+              border: `1px solid ${alpha('#ffffff', 0.3)}`,
+              fontSize: '0.875rem',
+              fontWeight: 600,
             }}
           >
-            <Person />
+            {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U'}
           </Avatar>
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              {user?.displayName || 'User'}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 0.25 }}>
+              {user?.displayName || user?.email || 'User'}
             </Typography>
-            <Typography variant="caption" sx={{ opacity: 0.8 }}>
-              {user?.email}
+            <Typography variant="caption" sx={{ opacity: 0.8, fontWeight: 500 }}>
+              {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase() : 'User'}
             </Typography>
           </Box>
         </Box>
@@ -102,47 +141,50 @@ const MobileHeader = () => {
           <ListItem 
             key={index}
             sx={{ 
-              borderRadius: 2,
+              borderRadius: 1,
               mb: 0.5,
+              transition: 'all 0.2s ease',
               '&:hover': {
-                bgcolor: 'action.hover'
+                bgcolor: alpha(theme.palette.primary.main, 0.08),
               }
             }}
           >
-            <ListItemIcon sx={{ color: 'primary.main', minWidth: 40 }}>
+            <ListItemIcon sx={{ color: theme.palette.primary.main, minWidth: 40 }}>
               {item.icon}
             </ListItemIcon>
             <ListItemText 
               primary={item.label}
               primaryTypographyProps={{
                 fontWeight: 500,
-                fontSize: '0.95rem'
+                fontSize: '0.875rem',
+                color: theme.palette.text.primary,
               }}
             />
-            <ChevronRight sx={{ color: 'text.secondary', fontSize: 20 }} />
+            <ChevronRight sx={{ color: theme.palette.text.secondary, fontSize: 18 }} />
           </ListItem>
         ))}
         
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 2, borderColor: theme.palette.divider }} />
         
         <ListItem 
           onClick={handleLogout}
           sx={{ 
-            borderRadius: 2,
-            color: 'error.main',
+            borderRadius: 1,
+            color: theme.palette.error.main,
+            transition: 'all 0.2s ease',
             '&:hover': {
-              bgcolor: 'error.lighter'
+              bgcolor: alpha(theme.palette.error.main, 0.08),
             }
           }}
         >
-          <ListItemIcon sx={{ color: 'error.main', minWidth: 40 }}>
-            <ExitToApp />
+          <ListItemIcon sx={{ color: theme.palette.error.main, minWidth: 40 }}>
+            <ExitToApp sx={{ fontSize: 20 }} />
           </ListItemIcon>
           <ListItemText 
             primary="Logout"
             primaryTypographyProps={{
               fontWeight: 500,
-              fontSize: '0.95rem'
+              fontSize: '0.875rem',
             }}
           />
         </ListItem>
@@ -160,22 +202,23 @@ const MobileHeader = () => {
         position="fixed" 
         elevation={0}
         sx={{ 
-          bgcolor: 'background.paper',
-          color: 'text.primary',
+          bgcolor: theme.palette.mode === 'light' ? 'rgba(255,255,255,0.9)' : 'rgba(15,23,42,0.9)',
+          color: theme.palette.text.primary,
           borderBottom: '1px solid',
-          borderColor: 'divider',
-          zIndex: theme.zIndex.drawer + 1
+          borderColor: theme.palette.divider,
+          zIndex: theme.zIndex.drawer + 1,
+          backdropFilter: 'blur(20px)',
         }}
       >
-        <Toolbar sx={{ px: 2 }}>
+        <Toolbar sx={{ px: 2, minHeight: 64 }}>
           <IconButton
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ 
               mr: 2,
-              color: 'primary.main',
+              color: theme.palette.primary.main,
               '&:hover': {
-                bgcolor: 'primary.lighter'
+                bgcolor: alpha(theme.palette.primary.main, 0.08),
               }
             }}
           >
@@ -188,21 +231,22 @@ const MobileHeader = () => {
             sx={{ 
               flexGrow: 1,
               fontWeight: 700,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              color: 'transparent'
+              color: 'transparent',
+              letterSpacing: '-0.01em',
             }}
           >
-            Smart Workspace
+            SmartSpace
           </Typography>
 
           <IconButton 
+            color="inherit"
             sx={{ 
               mr: 1,
-              color: 'text.secondary',
               '&:hover': {
-                bgcolor: 'action.hover'
+                bgcolor: alpha(theme.palette.primary.main, 0.08),
               }
             }}
           >
@@ -215,47 +259,25 @@ const MobileHeader = () => {
             onClick={handleProfileMenuOpen}
             sx={{ 
               p: 0.5,
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
-              '&:hover': { 
-                bgcolor: 'primary.dark' 
+              '&:hover': {
+                bgcolor: alpha(theme.palette.primary.main, 0.08),
               }
             }}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
-              <Person />
+            <Avatar 
+              sx={{ 
+                width: 32, 
+                height: 32,
+                background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.8)} 0%, ${alpha(theme.palette.secondary.main, 0.8)} 100%)`,
+                fontSize: '0.75rem',
+                fontWeight: 600,
+              }}
+            >
+              {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U'}
             </Avatar>
           </IconButton>
         </Toolbar>
       </AppBar>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleProfileMenuClose}
-        sx={{ mt: 1 }}
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-            minWidth: 200,
-            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)'
-          }
-        }}
-      >
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Person sx={{ mr: 2, color: 'primary.main' }} />
-          Profile
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Settings sx={{ mr: 2, color: 'primary.main' }} />
-          Settings
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-          <ExitToApp sx={{ mr: 2 }} />
-          Logout
-        </MenuItem>
-      </Menu>
 
       <Drawer
         variant="temporary"
@@ -265,17 +287,54 @@ const MobileHeader = () => {
           keepMounted: true,
         }}
         sx={{
-          display: { xs: 'block', lg: 'none' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
+          display: { xs: 'block' },
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
             width: 280,
-            borderRadius: '0 16px 16px 0',
-            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)'
+            border: 'none',
+            boxShadow: theme.palette.mode === 'light'
+              ? '2px 0 8px rgba(0,0,0,0.1)'
+              : '2px 0 8px rgba(0,0,0,0.3)',
           },
         }}
       >
         {drawer}
       </Drawer>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleProfileMenuClose}
+        PaperProps={{
+          elevation: 3,
+          sx: {
+            mt: 1,
+            minWidth: 200,
+            borderRadius: 2,
+            border: `1px solid ${theme.palette.divider}`,
+          }
+        }}
+      >
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <Person fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleLogout} sx={{ color: theme.palette.error.main }}>
+          <ListItemIcon>
+            <ExitToApp fontSize="small" sx={{ color: theme.palette.error.main }} />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   );
 };
